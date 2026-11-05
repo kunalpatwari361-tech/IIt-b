@@ -35,6 +35,21 @@ The report covers:
 
 **AI is never the final judge.** The LLM only reads documents and drafts text. Rules and validated models set every outcome.
 
+## Models
+
+| # | Model | Folder | Status |
+|---|---|---|---|
+| 1 | Credit scorecard (live) | [models/credit_scorecard](models/credit_scorecard/README.md) | Trained on L&T Indian loan data. Test AUC 0.595. |
+| 2 | Credit challenger (shadow) | [models/credit_challenger](models/credit_challenger/README.md) | Trained on L&T Indian loan data. Test AUC 0.621, beats model 1 by +0.026. |
+
+To set up Python and run all the tests:
+
+```bash
+py -3.11 -m venv .venv
+.venv\Scripts\python -m pip install -r models/credit_challenger/requirements.txt
+.venv\Scripts\python -m pytest
+```
+
 ## Updating the PDF
 
 If you edit `docs/nirnay-report.html`, rebuild the PDF:

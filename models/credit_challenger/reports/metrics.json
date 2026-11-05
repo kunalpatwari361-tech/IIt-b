@@ -1,0 +1,78 @@
+{
+  "model": "credit_challenger",
+  "version": "challenger-v1",
+  "mode": "shadow",
+  "dataset": "lt",
+  "dataset_title": "L&T Vehicle Loan Default (India)",
+  "trained_at": "2026-11-05",
+  "split": "out of time: trained on Aug-Sep 2018 loans, tested on Oct 2018 loans",
+  "trees": 181,
+  "rows": {
+    "train": 134790,
+    "test": 98364
+  },
+  "train": {
+    "auc": 0.6441,
+    "gini": 0.2883,
+    "ks": 0.2101
+  },
+  "test": {
+    "auc": 0.6206,
+    "gini": 0.2412,
+    "ks": 0.1781
+  },
+  "scorecard_test": {
+    "auc": 0.5945,
+    "gini": 0.189,
+    "ks": 0.1406
+  },
+  "auc_gap_vs_scorecard": {
+    "auc_gap": 0.0261,
+    "low_95": 0.0241,
+    "high_95": 0.0283,
+    "challenger_better": true
+  },
+  "same_decision_as_scorecard": 0.7744,
+  "grades_monotonic": true,
+  "approval_rate_test": 0.0967,
+  "monotone_constraints": {
+    "bureau_score": -1,
+    "credit_history_years": -1,
+    "overdue_accounts": 1,
+    "recent_delinquencies": 1,
+    "enquiries": 1,
+    "ltv": 1,
+    "loan_amount": 1
+  },
+  "monotone_violations": {
+    "bureau_score": 0,
+    "credit_history_years": 0,
+    "overdue_accounts": 0,
+    "recent_delinquencies": 0,
+    "enquiries": 0,
+    "ltv": 0,
+    "loan_amount": 0
+  },
+  "left_out_on_purpose": {
+    "State_ID, Current_pincode_ID, branch_id": "Where someone lives. Can stand in for community or caste.",
+    "supplier_id, manufacturer_id, Employee_code_ID": "Which dealer, brand or staff member handled the loan, not the borrower.",
+    "Aadhar_flag, PAN_flag and other ID flags": "Belong to the Identity gate. Aadhaar is voluntary, so not giving it must not cost points.",
+    "PERFORM_CNS.SCORE.DESCRIPTION": "Repeats the bureau score as a band.",
+    "asset_cost": "Already inside loan-to-value.",
+    "age_years": "Age. Widened the approval gap for younger applicants for almost no accuracy gain."
+  },
+  "fairness_checks_flagged": [
+    "age_band 30-44",
+    "age_band 45-59",
+    "age_band under 30",
+    "state state 12",
+    "state state 13",
+    "state state 14",
+    "state state 16",
+    "state state 2",
+    "state state 3",
+    "state state 7",
+    "state state 9"
+  ],
+  "export_matches_model": true
+}

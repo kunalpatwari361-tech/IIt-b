@@ -1,0 +1,4 @@
+-r ../credit_scorecard/requirements.txt
+lightgbm>=4.3
+shap>=0.45
+matplotlib>=3.8

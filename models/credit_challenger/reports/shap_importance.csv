@@ -1,0 +1,13 @@
+input,label,mean_abs_shap,mean_abs_points,monotone
+ltv,Loan-to-value (%),0.21579,15.57,1
+bureau_score,Bureau score,0.19851,14.32,-1
+loan_amount,Loan amount (₹),0.1078,7.78,1
+credit_history_years,Years since first loan,0.09683,6.98,-1
+employment_type,Employment type,0.08886,6.41,0
+active_accounts,Active loans,0.07243,5.22,0
+enquiries,Recent loan enquiries,0.04907,3.54,1
+recent_delinquencies,Loans defaulted in the last 6 months,0.03877,2.8,1
+existing_emi,Existing EMIs (₹ per month),0.03651,2.63,0
+new_accounts_6m,New loans in the last 6 months,0.02396,1.73,0
+overdue_accounts,Loans currently overdue,0.01724,1.24,1
+bureau_status,Bureau record,0.01567,1.13,0

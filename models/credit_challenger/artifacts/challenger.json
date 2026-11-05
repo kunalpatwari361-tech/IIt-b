@@ -1,0 +1,123 @@
+{
+  "model": "credit_challenger",
+  "version": "challenger-v1",
+  "mode": "shadow",
+  "dataset": "lt",
+  "trained_on": "L&T Vehicle Loan Default (India) (134,790 training rows)",
+  "trained_at": "2026-11-05",
+  "base_score": 650,
+  "pdo": 50,
+  "reference_log_odds": -1.442102892988448,
+  "trees": 181,
+  "params": {
+    "objective": "binary",
+    "learning_rate": 0.03,
+    "num_leaves": 31,
+    "min_data_in_leaf": 200,
+    "feature_fraction": 0.8,
+    "bagging_fraction": 0.8,
+    "bagging_freq": 1,
+    "lambda_l2": 1.0,
+    "monotone_constraints_method": "basic",
+    "verbose": -1,
+    "seed": 42
+  },
+  "features": [
+    "bureau_score",
+    "bureau_status",
+    "overdue_accounts",
+    "recent_delinquencies",
+    "credit_history_years",
+    "enquiries",
+    "new_accounts_6m",
+    "active_accounts",
+    "existing_emi",
+    "loan_amount",
+    "ltv",
+    "employment_type"
+  ],
+  "inputs": {
+    "bureau_score": {
+      "group": "Repayment history",
+      "label": "Bureau score",
+      "missing_below": 300,
+      "type": "numerical",
+      "monotone": -1
+    },
+    "bureau_status": {
+      "group": "Repayment history",
+      "label": "Bureau record",
+      "type": "categorical",
+      "categories": [
+        "no_history",
+        "not_scored",
+        "scored"
+      ],
+      "monotone": 0
+    },
+    "overdue_accounts": {
+      "group": "Repayment history",
+      "label": "Loans currently overdue",
+      "type": "numerical",
+      "monotone": 1
+    },
+    "recent_delinquencies": {
+      "group": "Repayment history",
+      "label": "Loans defaulted in the last 6 months",
+      "type": "numerical",
+      "monotone": 1
+    },
+    "credit_history_years": {
+      "group": "Repayment history",
+      "label": "Years since first loan",
+      "type": "numerical",
+      "monotone": -1
+    },
+    "enquiries": {
+      "group": "Repayment history",
+      "label": "Recent loan enquiries",
+      "type": "numerical",
+      "monotone": 1
+    },
+    "new_accounts_6m": {
+      "group": "Repayment history",
+      "label": "New loans in the last 6 months",
+      "type": "numerical",
+      "monotone": 0
+    },
+    "active_accounts": {
+      "group": "Repayment history",
+      "label": "Active loans",
+      "type": "numerical",
+      "monotone": 0
+    },
+    "existing_emi": {
+      "group": "Affordability",
+      "label": "Existing EMIs (₹ per month)",
+      "type": "numerical",
+      "monotone": 0
+    },
+    "loan_amount": {
+      "group": "Affordability",
+      "label": "Loan amount (₹)",
+      "type": "numerical",
+      "monotone": 1
+    },
+    "ltv": {
+      "group": "Collateral",
+      "label": "Loan-to-value (%)",
+      "type": "numerical",
+      "monotone": 1
+    },
+    "employment_type": {
+      "group": "Stability",
+      "label": "Employment type",
+      "type": "categorical",
+      "categories": [
+        "salaried",
+        "self_employed"
+      ],
+      "monotone": 0
+    }
+  }
+}

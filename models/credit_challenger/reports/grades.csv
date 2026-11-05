@@ -1,0 +1,6 @@
+grade,score_from,flag,applicants,share,default_rate,predicted_default_rate
+A,760,pass,763,0.0078,0.059,0.039
+B,700,pass,8752,0.089,0.1122,0.0872
+C,650,refer,34283,0.3485,0.1799,0.1524
+D,600,reject,49534,0.5036,0.2805,0.2497
+E,300,reject,5032,0.0512,0.4056,0.3761

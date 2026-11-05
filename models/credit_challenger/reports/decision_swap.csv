@@ -1,0 +1,10 @@
+scorecard,challenger,applicants,default_rate
+approve,approve,4325,0.0987
+approve,refer,2260,0.1761
+approve,reject,93,0.3118
+refer,approve,5115,0.1157
+refer,refer,27220,0.1787
+refer,reject,9848,0.2818
+reject,approve,75,0.1067
+reject,refer,4803,0.1886
+reject,reject,44625,0.2943
