@@ -1,0 +1,16 @@
+category,predicted,count,example,original_category
+spend,transfer,76,IMPS-2507895169-ANJALI REDDY-YES BANK-Zepto,Groceries
+spend,other_income,58,bought vegetables and essentials at BigBasket,Groceries
+spend,investment,39,hotel booked through Cleartrip,Travel
+spend,emi,34,ACH/TP ACH Cadabams Hospital 9489443114,Hospital & Medical
+spend,refund,30,Sony LIV,Entertainment & Subscriptions
+spend,bills,27,pharmacy bill paid at Practo Pharmacy,Medicine & Pharmacy
+spend,insurance,23,ACH/TP ACH Fortis Healthcare 3554316527,Hospital & Medical
+bills,spend,13,UPI/BSES Rajdhani/priya.416@paytm/Payment/IDFC,Utilities
+spend,salary,13,INOX Movies Ref#56317999,Entertainment & Subscriptions
+spend,bank_charges,13,lab test fee at Practo Consultation,Hospital & Medical
+other_income,refund,11,Cashback Credit,Income & Deposits
+other_income,spend,8,POS Sold Item Payment BANGALORE,Income & Deposits
+bank_charges,spend,8,UPI-SMS Alert Charges-vikram.868@okicici-IDFC-402671132-UPI,Fees & Interest
+other_income,investment,8,ACH/TP ACH Sold Item Payment 3238866056,Income & Deposits
+bank_charges,other_income,7,POS Overdraft Interest Charge PUNE,Fees & Interest

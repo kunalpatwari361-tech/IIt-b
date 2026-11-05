@@ -43,6 +43,7 @@ The report covers:
 | 2 | Credit challenger (shadow) | [models/credit_challenger](models/credit_challenger/README.md) | Trained on L&T Indian loan data. Test AUC 0.621, beats model 1 by +0.026. |
 | 3 | Fraud classifier | [models/fraud_classifier](models/fraud_classifier/README.md) | Trained on BAF (no Indian labelled data is public). Catches 53% of fraud at 5% false alarms. |
 | 4 | Anomaly detector | [models/anomaly_detector](models/anomaly_detector/README.md) | IsolationForest plus integrity rules, trained on L&T Indian data without labels. Catches 84% of planted odd applications; flags 1.2% of real ones. |
+| 5 | Bank transaction tagger | [models/transaction_tagger](models/transaction_tagger/README.md) | TF-IDF + logistic regression on Indian bank narrations (our generator + a Hugging Face set). Macro F1 0.83 on unseen formats, 0.65 on a different source. |
 
 To set up Python and run all the tests:
 

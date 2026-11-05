@@ -1,0 +1,21 @@
+[
+  {"date": "2025-07-01", "amount": 62000, "direction": "credit", "text": "NEFT CR-HDFC0000240-TECH MAHINDRA-SALARY JUL 2025-HDFCN52102345678"},
+  {"date": "2025-07-03", "amount": 14500, "direction": "debit", "text": "ACH D- BAJAJ FINANCE LTD-P400ABC1234"},
+  {"date": "2025-07-05", "amount": 18000, "direction": "debit", "text": "UPI/518612345678/RENT JUL/suresh77@oksbi/SBI"},
+  {"date": "2025-07-09", "amount": 1450, "direction": "debit", "text": "BBPS/MSEDCL/558213"},
+  {"date": "2025-07-14", "amount": 640, "direction": "debit", "text": "UPI/518912345671/SWIGGY/swiggy@ybl/Payment"},
+  {"date": "2025-07-20", "amount": 5000, "direction": "debit", "text": "SIP HDFC MUTUAL FUND 771204"},
+  {"date": "2025-08-01", "amount": 62000, "direction": "credit", "text": "NEFT CR-HDFC0000240-TECH MAHINDRA-SALARY AUG 2025-HDFCN52102399812"},
+  {"date": "2025-08-03", "amount": 14500, "direction": "debit", "text": "ACH D RETURN-BAJAJ FINANCE LTD-INSUFFICIENT FUNDS"},
+  {"date": "2025-08-03", "amount": 590, "direction": "debit", "text": "RETURN CHGS ACH P400ABC1234"},
+  {"date": "2025-08-04", "amount": 14500, "direction": "debit", "text": "ACH D- BAJAJ FINANCE LTD-P400ABC1234"},
+  {"date": "2025-08-05", "amount": 18000, "direction": "debit", "text": "UPI/519012345690/RENT AUG/suresh77@oksbi/SBI"},
+  {"date": "2025-08-11", "amount": 40000, "direction": "credit", "text": "CASH DEPOSIT-CDM S1AN4821 PUNE"},
+  {"date": "2025-08-12", "amount": 2000, "direction": "debit", "text": "ATM WDL-ATM CASH S1BW1190 PUNE"},
+  {"date": "2025-08-28", "amount": 2310, "direction": "debit", "text": "LIC OF INDIA PREMIUM 330192"},
+  {"date": "2025-09-01", "amount": 62000, "direction": "credit", "text": "NEFT CR-HDFC0000240-TECH MAHINDRA-SALARY SEP 2025-HDFCN52102411112"},
+  {"date": "2025-09-03", "amount": 14500, "direction": "debit", "text": "ACH D- BAJAJ FINANCE LTD-P400ABC1234"},
+  {"date": "2025-09-05", "amount": 18000, "direction": "debit", "text": "UPI/519312345611/RENT SEP/suresh77@oksbi/SBI"},
+  {"date": "2025-09-10", "amount": 118, "direction": "debit", "text": "SMS ALERT CHGS SEP2025"},
+  {"date": "2025-09-30", "amount": 412, "direction": "credit", "text": "INT.PD:01-07-2025 TO 30-09-2025"}
+]

@@ -1,0 +1,37 @@
+{
+  "model": "transaction_tagger",
+  "version": "tagger-v1",
+  "trained_at": "2026-11-05",
+  "training_rows": {
+    "nirnay_generator": 2100,
+    "hf_karthik_eswar": 970
+  },
+  "checks": {
+    "unseen_formats": {
+      "accuracy": 0.8252,
+      "macro_f1": 0.8248,
+      "examples": 2100
+    },
+    "cross_source": {
+      "accuracy": 0.5608,
+      "macro_f1": 0.647,
+      "examples": 970
+    },
+    "cross_source_bank_code": {
+      "accuracy": 0.5972,
+      "macro_f1": 0.6586,
+      "examples": 499
+    },
+    "cross_source_plain_language": {
+      "accuracy": 0.5223,
+      "macro_f1": 0.5712,
+      "examples": 471
+    },
+    "combined": {
+      "accuracy": 0.9964,
+      "macro_f1": 0.997,
+      "examples": 3070
+    }
+  },
+  "export_matches_model": true
+}

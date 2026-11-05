@@ -1,0 +1,48 @@
+{
+  "model": "transaction_tagger",
+  "version": "tagger-v1",
+  "trained_at": "2026-11-05",
+  "sklearn_version": "1.9.1",
+  "categories": [
+    "bank_charges",
+    "bills",
+    "bounce",
+    "cash_deposit",
+    "cash_withdrawal",
+    "emi",
+    "insurance",
+    "investment",
+    "other_income",
+    "refund",
+    "rent",
+    "salary",
+    "spend",
+    "tax",
+    "transfer"
+  ],
+  "category_direction": {
+    "salary": "credit",
+    "other_income": "credit",
+    "cash_deposit": "credit",
+    "refund": "credit",
+    "emi": "debit",
+    "rent": "debit",
+    "cash_withdrawal": "debit",
+    "bounce": "debit",
+    "bank_charges": "debit",
+    "bills": "debit",
+    "insurance": "debit",
+    "investment": "debit",
+    "tax": "debit",
+    "spend": "debit",
+    "transfer": "either"
+  },
+  "training_rows": {
+    "nirnay_generator": 2100,
+    "hf_karthik_eswar": 970
+  },
+  "sources": {
+    "nirnay_generator": "models/transaction_tagger/generator.py",
+    "hf_karthik_eswar": "https://huggingface.co/datasets/Karthik-Eswar/indian-transaction-categorization-synthetic"
+  }
+}
