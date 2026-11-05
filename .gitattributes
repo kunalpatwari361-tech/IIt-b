@@ -1,0 +1,3 @@
+# LightGBM cannot read its model file with Windows line endings.
+# Stop Git from converting model files on Windows checkouts.
+models/**/artifacts/*.txt -text

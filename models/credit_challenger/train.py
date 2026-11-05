@@ -198,7 +198,9 @@ def train(raw: pd.DataFrame, dataset: Dataset = LT, out_dir: Path = HERE,
     }
     (out_dir / "artifacts").mkdir(parents=True, exist_ok=True)
     (out_dir / "reports").mkdir(parents=True, exist_ok=True)
-    booster.save_model(str(out_dir / "artifacts" / "model.txt"))
+    # LightGBM cannot read its model file with Windows line endings, so always write plain "\n".
+    (out_dir / "artifacts" / "model.txt").write_text(booster.model_to_string().replace("\r\n", "\n"),
+                                                     encoding="utf-8", newline="\n")
     (out_dir / "artifacts" / "challenger.json").write_text(json.dumps(meta, indent=2, ensure_ascii=False),
                                                            encoding="utf-8")
     challenger = Challenger.load(out_dir / "artifacts")
