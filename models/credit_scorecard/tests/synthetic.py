@@ -26,8 +26,16 @@ def make_lt_applications(n: int = 8000, seed: int = 11) -> pd.DataFrame:
     target = (rng.random(n) < 1 / (1 + np.exp(-log_odds))).astype(int)
     disbursal = pd.Timestamp("2018-08-01") + pd.to_timedelta(rng.integers(0, 92, n), unit="D")
     birth = disbursal - pd.to_timedelta((age * 365.25).astype(int), unit="D")
+    total = accounts + np.where(has_history, rng.poisson(1.5, n), 0)
+    sanctioned = np.where(total > 0, total * rng.uniform(20000, 80000, n), 0).round()
+    avg_years = np.where(has_history, np.minimum(years, rng.integers(0, 6, n)), 0)
     return pd.DataFrame({
         "UniqueID": np.arange(400000, 400000 + n),
+        "PRI.NO.OF.ACCTS": total, "SEC.NO.OF.ACCTS": 0,
+        "PRI.CURRENT.BALANCE": (sanctioned * rng.uniform(0, 0.8, n)).round(), "SEC.CURRENT.BALANCE": 0,
+        "PRI.SANCTIONED.AMOUNT": sanctioned, "SEC.SANCTIONED.AMOUNT": 0,
+        "PRI.DISBURSED.AMOUNT": (sanctioned * rng.uniform(0.9, 1.0, n)).round(), "SEC.DISBURSED.AMOUNT": 0,
+        "AVERAGE.ACCT.AGE": [f"{y}yrs {m}mon" for y, m in zip(avg_years, rng.integers(0, 12, n))],
         "disbursed_amount": loan, "asset_cost": (loan / (ltv / 100)).round(), "ltv": ltv,
         "Date.of.Birth": birth.strftime("%d-%m-%y"), "DisbursalDate": disbursal.strftime("%d-%m-%y"),
         "Employment.Type": rng.choice(["Salaried", "Self employed", None], n, p=[0.42, 0.55, 0.03]),

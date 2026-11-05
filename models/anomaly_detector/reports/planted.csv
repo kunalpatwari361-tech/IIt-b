@@ -1,0 +1,7 @@
+plant_type,planted,caught_by_forest,caught_by_rules,caught_total,caught_very_unusual,kind,what_was_changed
+loan_stacking,500,0.968,0.0,0.968,0.578,extreme,"6-12 new loans and 8-20 enquiries in the last 6 months, with matching extra EMIs"
+inflated_loan,500,0.06,0.0,0.06,0.002,extreme,Loan and asset cost both 4-8x a normal application (LTV still consistent)
+borrowed_score,500,0.002,1.0,1.0,1.0,contradiction,Bureau score of 780-890 but no loans of any kind on record
+impossible_history,500,1.0,1.0,1.0,1.0,contradiction,Credit history that would have started at age 2-8
+over_disbursed,500,0.24,1.0,1.0,1.0,contradiction,Past loans disbursed at 2-4x the amount sanctioned
+tampered_ltv,500,0.87,1.0,1.0,1.0,contradiction,Stated LTV cut by 30-50 points below what loan / asset cost implies

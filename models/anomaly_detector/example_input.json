@@ -1,0 +1,20 @@
+{
+  "loan_amount": 52000,
+  "asset_cost": 70000,
+  "ltv": 76.4,
+  "bureau_score": 700,
+  "total_accounts": 2,
+  "active_accounts": 1,
+  "overdue_accounts": 0,
+  "outstanding_balance": 30000,
+  "sanctioned_total": 80000,
+  "disbursed_total": 78000,
+  "existing_emi": 2500,
+  "new_accounts_6m": 0,
+  "recent_delinquencies": 0,
+  "enquiries": 0,
+  "credit_history_years": 4,
+  "avg_account_age_years": 2,
+  "age_years": 34,
+  "employment_type": "salaried"
+}

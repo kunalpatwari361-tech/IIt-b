@@ -1,0 +1,55 @@
+{
+  "model": "anomaly_detector",
+  "version": "anomaly-v1",
+  "dataset": "L&T Vehicle Loan Default (India), labels not used for training",
+  "source": "https://www.kaggle.com/datasets/mamtadhaker/lt-vehicle-loan-default-prediction",
+  "trained_at": "2026-11-05",
+  "split": "learn on Aug-Sep 2018, test on Oct 2018 plus planted odd applications",
+  "rows": {
+    "train": 134790,
+    "test": 98364,
+    "planted": 3000
+  },
+  "thresholds": {
+    "unusual": 0.5225139696546824,
+    "very_unusual": 0.6133905353133029
+  },
+  "planted_caught_total": 0.838,
+  "planted_caught_by_forest": 0.5233,
+  "planted_caught_by_rules": 0.6667,
+  "planted_caught_very_unusual": 0.7633,
+  "planted_caught_by_kind": {
+    "extreme": {
+      "forest": 0.514,
+      "total": 0.514
+    },
+    "contradiction": {
+      "forest": 0.528,
+      "total": 1.0
+    }
+  },
+  "real_october": {
+    "applications": 98364,
+    "flagged_total": 0.0121,
+    "flagged_by_forest": 0.0112,
+    "flagged_by_rules": 0.0029,
+    "rule_hits": {
+      "ltv_mismatch": 7,
+      "score_without_loans": 0,
+      "history_before_16": 167,
+      "count_contradiction": 0,
+      "over_disbursed_2x": 115
+    },
+    "flagged_very_unusual": 0.0038,
+    "default_rate_flagged": 0.2456,
+    "default_rate_not_flagged": 0.235
+  },
+  "shap_adds_up": true,
+  "left_out_on_purpose": {
+    "State_ID, Current_pincode_ID, branch_id": "Where someone lives. A rare location must not make an application 'odd'.",
+    "supplier_id, manufacturer_id, Employee_code_ID": "IDs with no order; they describe the dealer or staff, not the applicant.",
+    "Aadhar_flag, PAN_flag and other ID flags": "Aadhaar is voluntary; choosing a different ID must not look suspicious.",
+    "age_years on its own": "A very young or old applicant is rare but not suspicious. Age is used only to spot a credit history that starts before 18."
+  },
+  "export_matches_model": true
+}
