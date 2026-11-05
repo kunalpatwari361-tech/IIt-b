@@ -1,0 +1,35 @@
+input,group,bin,points,default_rate
+bureau_score,Repayment history,below 418,-29,0.2842
+bureau_score,Repayment history,418 to 616,-13,0.2384
+bureau_score,Repayment history,616 to 682,12,0.176
+bureau_score,Repayment history,682 to 738,22,0.1551
+bureau_score,Repayment history,738 or more,38,0.1272
+bureau_score,Repayment history,missing,-7,0.2218
+credit_history_years,Repayment history,below 0.208,-5,0.2241
+credit_history_years,Repayment history,0.208 to 0.792,3,0.1947
+credit_history_years,Repayment history,0.792 to 2.88,4,0.191
+credit_history_years,Repayment history,2.88 to 4.54,8,0.1758
+credit_history_years,Repayment history,4.54 or more,17,0.1499
+credit_history_years,Repayment history,missing,0,
+loan_amount,Affordability,"below 39,142",16,0.1357
+loan_amount,Affordability,"39,142 to 43,526",12,0.1513
+loan_amount,Affordability,"43,526 to 45,754",6,0.1739
+loan_amount,Affordability,"45,754 to 47,375",5,0.1804
+loan_amount,Affordability,"47,375 to 50,315",2,0.1925
+loan_amount,Affordability,"50,315 to 51,758",-1,0.2103
+loan_amount,Affordability,"51,758 to 53,022",-3,0.2168
+loan_amount,Affordability,"53,022 to 55,404",-5,0.2325
+loan_amount,Affordability,"55,404 or more",-6,0.2349
+loan_amount,Affordability,missing,0,
+ltv,Collateral,below 53.5,38,0.1207
+ltv,Collateral,53.5 to 62.2,29,0.1358
+ltv,Collateral,62.2 to 66.8,21,0.1535
+ltv,Collateral,66.8 to 69.3,11,0.1749
+ltv,Collateral,69.3 to 72.9,8,0.1841
+ltv,Collateral,72.9 to 74.3,3,0.1968
+ltv,Collateral,74.3 to 78.5,3,0.1969
+ltv,Collateral,78.5 to 83.4,-8,0.2254
+ltv,Collateral,83.4 to 84.6,-17,0.254
+ltv,Collateral,84.6 to 89.2,-18,0.2555
+ltv,Collateral,89.2 or more,-19,0.2597
+ltv,Collateral,missing,0,

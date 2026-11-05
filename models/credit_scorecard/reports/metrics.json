@@ -1,0 +1,87 @@
+{
+  "model": "credit_scorecard",
+  "version": "scorecard-v1",
+  "dataset": "lt",
+  "dataset_title": "L&T Vehicle Loan Default (India)",
+  "source": "https://www.kaggle.com/datasets/mamtadhaker/lt-vehicle-loan-default-prediction",
+  "trained_at": "2026-11-05",
+  "split": "out of time: trained on Aug-Sep 2018 loans, tested on Oct 2018 loans",
+  "rows": {
+    "train": 134790,
+    "test": 98364,
+    "default_rate_train": 0.2039,
+    "default_rate_test": 0.2351
+  },
+  "train": {
+    "auc": 0.6124,
+    "gini": 0.2248,
+    "ks": 0.1688
+  },
+  "test": {
+    "auc": 0.5945,
+    "gini": 0.189,
+    "ks": 0.1406
+  },
+  "test_using_rounded_score": {
+    "auc": 0.5947,
+    "gini": 0.1893,
+    "ks": 0.1398
+  },
+  "inputs_used": [
+    "bureau_score",
+    "credit_history_years",
+    "loan_amount",
+    "ltv"
+  ],
+  "information_value": {
+    "bureau_score": 0.0686,
+    "bureau_status": 0.0165,
+    "overdue_accounts": 0.0092,
+    "recent_delinquencies": 0.0068,
+    "credit_history_years": 0.0227,
+    "enquiries": 0.0059,
+    "new_accounts_6m": 0.0107,
+    "active_accounts": 0.0194,
+    "existing_emi": 0.0061,
+    "loan_amount": 0.0514,
+    "ltv": 0.0736,
+    "age_years": 0.0117,
+    "employment_type": 0.0051
+  },
+  "dropped_low_iv": [
+    "bureau_status",
+    "overdue_accounts",
+    "recent_delinquencies",
+    "enquiries",
+    "new_accounts_6m",
+    "active_accounts",
+    "existing_emi",
+    "age_years",
+    "employment_type"
+  ],
+  "dropped_flipped_sign": [],
+  "excluded_on_purpose": {
+    "State_ID, Current_pincode_ID, branch_id": "Where someone lives. Can stand in for community or caste.",
+    "supplier_id, manufacturer_id, Employee_code_ID": "Which dealer, brand or staff member handled the loan, not the borrower.",
+    "Aadhar_flag, PAN_flag and other ID flags": "Belong to the Identity gate. Aadhaar is voluntary, so not giving it must not cost points.",
+    "PERFORM_CNS.SCORE.DESCRIPTION": "Repeats the bureau score as a band.",
+    "asset_cost": "Already inside loan-to-value."
+  },
+  "grades_monotonic": true,
+  "approval_rate_test": 0.0679,
+  "fairness_checks_flagged": [
+    "age_band 30-44",
+    "age_band under 30",
+    "state state 12",
+    "state state 13",
+    "state state 14",
+    "state state 17",
+    "state state 18",
+    "state state 2",
+    "state state 3",
+    "state state 4",
+    "state state 8",
+    "state state 9"
+  ],
+  "export_matches_model": true
+}

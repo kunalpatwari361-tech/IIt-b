@@ -18,8 +18,6 @@ from typing import Any
 import numpy as np
 import pandas as pd
 
-from .features import FEATURES
-
 DEFAULT_PATH = Path(__file__).resolve().parent / "artifacts" / "scorecard.json"
 
 # Grade bands from the report. A and B pass, C goes to an officer, D and E are
@@ -69,10 +67,15 @@ class Scorecard:
             )
         return cls(json.loads(path.read_text(encoding="utf-8")))
 
+    def _missing(self, name: str, value: Any) -> bool:
+        """Missing, or a 'no score' code such as a bureau score of 0."""
+        floor = self.inputs[name].get("missing_below")
+        return _is_missing(value) or (floor is not None and float(value) < floor)
+
     def _bin(self, name: str, value: Any) -> int | None:
         """Bin index for one value, or None when the value is missing or unknown."""
         s = self.inputs[name]
-        if _is_missing(value):
+        if self._missing(name, value):
             return None
         if s["type"] == "numerical":
             return int(np.searchsorted(s["splits"], float(value), side="right"))
@@ -83,9 +86,10 @@ class Scorecard:
         s = self.inputs[name]
         idx = self._bin(name, value)
         if idx is None:
-            label = "missing" if _is_missing(value) else "unknown value"
-            woe = s["missing_woe"] if _is_missing(value) else 0.0
-            points = s["missing_points"] if _is_missing(value) else 0
+            missing = self._missing(name, value)
+            label = "missing" if missing else "unknown value"
+            woe = s["missing_woe"] if missing else 0.0
+            points = s["missing_points"] if missing else 0
             return woe, points, label
         return s["woe"][idx], s["points"][idx], s["bins"][idx]
 
@@ -99,8 +103,8 @@ class Scorecard:
             log_odds_bad += s["coef"] * woe
             factors.append({
                 "input": name,
-                "label": FEATURES[name]["label"],
-                "group": FEATURES[name]["group"],
+                "label": s["label"],
+                "group": s["group"],
                 "value": None if _is_missing(value) else value,
                 "bin": bin_label,
                 "points": points,
@@ -112,6 +116,7 @@ class Scorecard:
         return {
             "model": "credit_scorecard",
             "model_version": self.version,
+            "trained_on": self.spec["dataset"],
             "score": score,
             "grade": grade,
             "flag": flag,
@@ -129,6 +134,8 @@ class Scorecard:
         for name, s in self.inputs.items():
             col = X[name]
             missing = col.isna().to_numpy()
+            if s.get("missing_below") is not None:
+                missing = missing | (pd.to_numeric(col, errors="coerce") < s["missing_below"]).to_numpy()
             if s["type"] == "numerical":
                 idx = np.searchsorted(s["splits"], col.fillna(0).to_numpy(dtype=float), side="right")
                 known = ~missing

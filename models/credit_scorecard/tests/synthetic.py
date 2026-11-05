@@ -1,4 +1,4 @@
-"""Make fake applications in the Home Credit column format, for tests only.
+"""Make fake applications in each dataset's column format, for tests only.
 
 Risk is driven by a hidden factor, so the scorecard has a real pattern to learn.
 None of this is real customer data.
@@ -7,7 +7,45 @@ import numpy as np
 import pandas as pd
 
 
+def make_lt_applications(n: int = 8000, seed: int = 11) -> pd.DataFrame:
+    rng = np.random.default_rng(seed)
+    risk = rng.normal(size=n)
+    has_history = rng.random(n) < 0.5
+    score = np.where(has_history, np.clip(650 - 90 * risk + rng.normal(0, 60, n), 300, 890).round(), 0)
+    not_scored = has_history & (rng.random(n) < 0.06)
+    score = np.where(not_scored, rng.integers(14, 19, n), score)
+    accounts = np.where(has_history, rng.poisson(2, n), 0)
+    overdue = np.where(has_history, rng.binomial(accounts, np.clip(0.1 + 0.08 * risk, 0, 1)), 0)
+    delinquent = np.minimum(overdue, rng.poisson(np.clip(0.2 + 0.3 * risk, 0, None)) * has_history)
+    years = np.where(has_history, rng.integers(0, 12, n), 0)
+    months = np.where(has_history, rng.integers(0, 12, n), 0)
+    age = rng.uniform(19, 66, n)
+    ltv = np.clip(rng.normal(75 + 4 * risk, 10), 10, 95).round(2)
+    loan = rng.normal(55000, 12000, n).clip(15000).round()
+    log_odds = -1.5 + 0.9 * risk + 0.03 * (ltv - 75) - 0.02 * (age - 35) + 0.4 * (overdue > 0)
+    target = (rng.random(n) < 1 / (1 + np.exp(-log_odds))).astype(int)
+    disbursal = pd.Timestamp("2018-08-01") + pd.to_timedelta(rng.integers(0, 92, n), unit="D")
+    birth = disbursal - pd.to_timedelta((age * 365.25).astype(int), unit="D")
+    return pd.DataFrame({
+        "UniqueID": np.arange(400000, 400000 + n),
+        "disbursed_amount": loan, "asset_cost": (loan / (ltv / 100)).round(), "ltv": ltv,
+        "Date.of.Birth": birth.strftime("%d-%m-%y"), "DisbursalDate": disbursal.strftime("%d-%m-%y"),
+        "Employment.Type": rng.choice(["Salaried", "Self employed", None], n, p=[0.42, 0.55, 0.03]),
+        "State_ID": rng.integers(1, 8, n),
+        "PERFORM_CNS.SCORE": score,
+        "PRI.ACTIVE.ACCTS": accounts, "SEC.ACTIVE.ACCTS": 0,
+        "PRI.OVERDUE.ACCTS": overdue, "SEC.OVERDUE.ACCTS": 0,
+        "PRIMARY.INSTAL.AMT": accounts * rng.integers(0, 3000, n), "SEC.INSTAL.AMT": 0,
+        "NEW.ACCTS.IN.LAST.SIX.MONTHS": np.minimum(accounts, rng.poisson(0.4, n)),
+        "DELINQUENT.ACCTS.IN.LAST.SIX.MONTHS": delinquent,
+        "CREDIT.HISTORY.LENGTH": [f"{y}yrs {m}mon" for y, m in zip(years, months)],
+        "NO.OF_INQUIRIES": rng.poisson(np.clip(0.2 + 0.15 * risk, 0.01, None)),
+        "loan_default": target,
+    })
+
+
 def make_applications(n: int = 8000, seed: int = 7) -> pd.DataFrame:
+    """Home Credit format."""
     rng = np.random.default_rng(seed)
     risk = rng.normal(size=n)  # hidden: higher means more likely to default
 
