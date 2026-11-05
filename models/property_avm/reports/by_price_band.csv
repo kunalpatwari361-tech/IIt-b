@@ -1,0 +1,4 @@
+group,typical_pct_error,within_10pct,within_20pct,range_coverage,range_plus_minus_pct,median_estimate_to_price,listings
+30 to 75 lakh,12.0,0.431,0.71,0.824,27.2,1.021,6128
+above 75 lakh,13.0,0.402,0.679,0.773,26.9,0.952,5342
+up to 30 lakh,18.1,0.298,0.535,0.735,32.1,1.14,1482

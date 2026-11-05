@@ -1,0 +1,16 @@
+{
+  "city": "gurugram",
+  "locality": "Sector 65",
+  "society": "Emaar Digi Homes",
+  "area_sqft": 1650,
+  "is_carpet_area": 0,
+  "bhk": 3,
+  "bathrooms": 3,
+  "balconies": 2,
+  "floor": 9,
+  "total_floors": 22,
+  "is_new": 0,
+  "furnishing": "Semi-Furnished",
+  "facing": "North - East",
+  "declared_price": 31000000
+}

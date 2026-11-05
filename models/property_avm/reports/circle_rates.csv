@@ -1,0 +1,3 @@
+city,listings_with_circle_rate,share_of_city_listings,median_price_to_circle_value,share_listed_below_circle_value
+delhi,2779,1.0,1.52,0.229
+gurugram,1835,0.633,2.58,0.05

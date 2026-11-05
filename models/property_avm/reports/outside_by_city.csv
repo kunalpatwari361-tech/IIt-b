@@ -1,0 +1,7 @@
+group,typical_pct_error,within_10pct,within_20pct,range_coverage,range_plus_minus_pct,median_estimate_to_price,listings,typical_pct_error_city_level_removed
+mumbai,91.5,0.063,0.133,0.355,53.8,1.908,6828,56.1
+kolkata,48.3,0.111,0.226,0.343,29.0,1.156,6259,44.9
+bangalore,37.0,0.16,0.299,0.517,34.4,1.164,5403,33.4
+chennai,26.8,0.222,0.403,0.532,24.9,1.111,4147,23.5
+delhi,37.6,0.165,0.322,0.573,42.9,1.165,3841,32.7
+hyderabad,35.2,0.16,0.313,0.507,20.6,1.342,1817,18.7

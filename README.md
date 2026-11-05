@@ -45,12 +45,13 @@ The report covers:
 | 4 | Anomaly detector | [models/anomaly_detector](models/anomaly_detector/README.md) | IsolationForest plus integrity rules, trained on L&T Indian data without labels. Catches 84% of planted odd applications; flags 1.2% of real ones. |
 | 5 | Bank transaction tagger | [models/transaction_tagger](models/transaction_tagger/README.md) | TF-IDF + logistic regression on Indian bank narrations (our generator + a Hugging Face set). Macro F1 0.83 on unseen formats, 0.65 on a different source. |
 | 6 | Document classifier | [models/document_classifier](models/document_classifier/README.md) | TF-IDF + logistic regression on the OCR text of 480 fake Indian lending documents in 13 types. 88% accuracy on unseen layouts, 100% on outside scans; no wrong type accepted. |
+| 7 | Property valuation (AVM) | [models/property_avm](models/property_avm/README.md) | LightGBM (P10/P50/P90) on 64,756 Indian flat listings plus Delhi and Gurugram circle rates. Typical error 12.9% (18.2% in unseen localities); the range holds 79–81% of prices. |
 
 To set up Python and run all the tests:
 
 ```bash
 py -3.11 -m venv .venv
-.venv\Scripts\python -m pip install -r models/document_classifier/requirements.txt
+.venv\Scripts\python -m pip install -r models/property_avm/requirements.txt
 .venv\Scripts\python -m pytest
 ```
 

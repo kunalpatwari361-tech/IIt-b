@@ -1,0 +1,79 @@
+{
+  "model": "property_avm",
+  "version": "avm-v1",
+  "trained_at": "2026-11-05",
+  "training_listings": 64756,
+  "target_range_coverage": 0.8,
+  "conformal_widen_log": 0.0346,
+  "checks": {
+    "random_split": {
+      "typical_pct_error": 12.9,
+      "within_10pct": 0.404,
+      "within_20pct": 0.677,
+      "range_coverage": 0.793,
+      "range_plus_minus_pct": 27.6,
+      "median_estimate_to_price": 1.003,
+      "listings": 12952,
+      "locality_median_baseline_pct_error": 18.8
+    },
+    "unseen_localities": {
+      "typical_pct_error": 18.2,
+      "within_10pct": 0.296,
+      "within_20pct": 0.539,
+      "range_coverage": 0.81,
+      "range_plus_minus_pct": 40.4,
+      "median_estimate_to_price": 1.006,
+      "listings": 12883,
+      "locality_median_baseline_pct_error": 25.2
+    },
+    "circle_rate_effect_unseen_localities": {
+      "with_circle_rate": {
+        "typical_pct_error": 20.5,
+        "within_10pct": 0.252,
+        "within_20pct": 0.482,
+        "range_coverage": 0.877,
+        "range_plus_minus_pct": 54.4,
+        "median_estimate_to_price": 1.006,
+        "listings": 894
+      },
+      "without_circle_rate": {
+        "typical_pct_error": 22.3,
+        "within_10pct": 0.247,
+        "within_20pct": 0.462,
+        "range_coverage": 0.857,
+        "range_plus_minus_pct": 56.2,
+        "median_estimate_to_price": 0.997,
+        "listings": 894
+      }
+    },
+    "outside_source_metros_2020": {
+      "typical_pct_error": 45.2,
+      "within_10pct": 0.136,
+      "within_20pct": 0.262,
+      "range_coverage": 0.448,
+      "range_plus_minus_pct": 34.5,
+      "median_estimate_to_price": 1.247,
+      "listings": 28295,
+      "metros_predicting_itself_pct_error": 29.3
+    },
+    "outside_source_metros_2020_without_mumbai": {
+      "typical_pct_error": 37.7,
+      "within_10pct": 0.159,
+      "within_20pct": 0.303,
+      "range_coverage": 0.478,
+      "range_plus_minus_pct": 31.0,
+      "median_estimate_to_price": 1.17,
+      "listings": 21467
+    },
+    "outside_source_metros_2020_city_level_removed": {
+      "typical_pct_error": 37.1,
+      "within_10pct": 0.156,
+      "within_20pct": 0.299,
+      "range_coverage": 0.494,
+      "range_plus_minus_pct": 34.5,
+      "median_estimate_to_price": 1.0,
+      "listings": 28295
+    }
+  },
+  "export_matches_model": true
+}
