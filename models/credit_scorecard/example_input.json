@@ -1,0 +1,12 @@
+{
+  "bureau_score_1": 0.62,
+  "bureau_score_2": 0.58,
+  "bureau_score_3": 0.55,
+  "payment_to_income": 0.18,
+  "loan_to_income": 3.2,
+  "loan_to_price": 1.1,
+  "owns_property": "yes",
+  "years_employed": 6,
+  "age_years": 32,
+  "employment_type": "salaried"
+}
