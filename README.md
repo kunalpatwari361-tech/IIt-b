@@ -55,6 +55,14 @@ py -3.11 -m venv .venv
 .venv\Scripts\python -m pytest
 ```
 
+## Apps
+
+| App | Folder | Status |
+|---|---|---|
+| Customer app (Flutter, Android/iOS/web, English and Hindi) | [app](app/README.md) | All screens built: sign-in, consent, eligibility, selfie, documents, decision with reasons and KFS, property photos. Runs against a sample engine with the report's three demo cases (Ravi approved, Meena referred, Arjun rejected). |
+| Staff portal (React + Next.js) | – | Not started |
+| Decision engine (FastAPI) | – | Not started; the app's `lib/services/api.dart` defines the calls it must answer |
+
 ## Updating the PDF
 
 If you edit `docs/nirnay-report.html`, rebuild the PDF:
