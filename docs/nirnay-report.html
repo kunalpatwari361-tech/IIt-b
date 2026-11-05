@@ -1,0 +1,1767 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Nirnay Underwriting Engine</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=JetBrains+Mono:wght@400;600&family=Noto+Sans+Devanagari:wght@400;600&family=Source+Sans+3:ital,wght@0,400;0,600;0,700;1,400&display=swap">
+<style>
+/* Layout: long-form report. Sticky contents rail beside one reading column on wide screens; figures use the full column; text stays near 70ch. */
+:root{
+  --bg:#F3F6F5; --surface:#FFFFFF; --surface-2:#E8EEEB; --ink:#14201C; --ink-2:#4B5A55; --line:#C8D3CE;
+  --accent:#28499A; --accent-soft:#E3E9F7; --ai:#7A3E8E; --ai-soft:#F3E9F6;
+  --ok:#1C7746; --ok-soft:#DFF1E6; --warn:#985A05; --warn-soft:#FAEDD6; --bad:#AF2B22; --bad-soft:#F8E1DE;
+  --frame:#1A2421;
+  --font-display:"Bricolage Grotesque","Segoe UI",system-ui,sans-serif;
+  --font-body:"Source Sans 3","Segoe UI",system-ui,-apple-system,sans-serif;
+  --font-mono:"JetBrains Mono",ui-monospace,Consolas,monospace;
+  --font-deva:"Noto Sans Devanagari","Nirmala UI",Mangal,sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0E1412; --surface:#151D1A; --surface-2:#1C2622; --ink:#E3EBE7; --ink-2:#A2B1AB; --line:#2F3D38;
+    --accent:#93AAF0; --accent-soft:#1D2848; --ai:#D49BE5; --ai-soft:#32203A;
+    --ok:#5DC98D; --ok-soft:#132E1F; --warn:#E8B058; --warn-soft:#382811; --bad:#F08B80; --bad-soft:#3B1916;
+    --frame:#3A4844; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0E1412; --surface:#151D1A; --surface-2:#1C2622; --ink:#E3EBE7; --ink-2:#A2B1AB; --line:#2F3D38;
+  --accent:#93AAF0; --accent-soft:#1D2848; --ai:#D49BE5; --ai-soft:#32203A;
+  --ok:#5DC98D; --ok-soft:#132E1F; --warn:#E8B058; --warn-soft:#382811; --bad:#F08B80; --bad-soft:#3B1916;
+  --frame:#3A4844; color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}}
+body{background:var(--bg);color:var(--ink);font-family:var(--font-body);font-size:17px;line-height:1.6;-webkit-font-smoothing:antialiased}
+a{color:var(--accent);text-underline-offset:2px}
+a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:4px}
+.wrap{max-width:1260px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:32px 64px}
+.layout{display:grid;grid-template-columns:minmax(0,1fr);gap:32px}
+@media (min-width:1120px){
+  .layout{grid-template-columns:210px minmax(0,1fr);gap:48px}
+  .toc{position:sticky;top:calc(env(safe-area-inset-top,0px) + 24px);align-self:start;max-height:calc(100vh - 48px);overflow:auto}
+}
+.content{min-width:0;max-width:1010px}
+p,li{max-width:70ch}
+p{margin:0 0 .9rem}
+ul,ol{margin:0 0 1rem;padding-left:1.25rem}
+li{margin:.25rem 0}
+h1,h2{font-family:var(--font-display);font-weight:700;text-wrap:balance;letter-spacing:-.015em}
+h1{font-size:clamp(2rem,1.1rem + 3.2vw,3.15rem);line-height:1.06;margin:.6rem 0 1rem}
+h2{font-size:clamp(1.5rem,1.15rem + 1.1vw,1.95rem);line-height:1.18;margin:0 0 .75rem}
+h3{font-size:1.12rem;line-height:1.3;margin:1.8rem 0 .5rem;font-weight:700;text-wrap:balance}
+.eyebrow{font-size:.76rem;letter-spacing:.09em;text-transform:uppercase;font-weight:600;color:var(--ink-2);margin:0}
+.lede{font-size:1.16rem;line-height:1.55;color:var(--ink);max-width:62ch}
+.meta{font-size:.92rem;color:var(--ink-2)}
+.muted{color:var(--ink-2)}
+.small{font-size:.9rem}
+code,.mono{font-family:var(--font-mono);font-size:.86em}
+[lang="hi"]{font-family:var(--font-deva)}
+
+/* header */
+.hero{padding-block:8px 28px}
+.facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:12px;overflow:hidden;margin-top:24px}
+.facts div{background:var(--surface);padding:14px 16px;min-width:0}
+.facts b{display:block;font-family:var(--font-display);font-size:1.35rem;line-height:1.2}
+.facts span{font-size:.9rem;color:var(--ink-2)}
+
+/* toc */
+.toc{font-size:.92rem}
+.toc p{margin:0 0 .5rem}
+.toc ol{list-style:none;padding:0;margin:0;display:grid;gap:2px}
+@media (max-width:1119px){.toc ol{grid-template-columns:repeat(auto-fit,minmax(200px,1fr));column-gap:16px} .toc{border:1px solid var(--line);border-radius:12px;padding:14px 16px;background:var(--surface)}}
+.toc a{display:block;padding:4px 8px;border-radius:6px;color:var(--ink-2);text-decoration:none}
+.toc a:hover{background:var(--surface-2);color:var(--ink)}
+.toc .req a{padding-left:20px}
+
+/* sections */
+section{border-top:1px solid var(--line);padding-block:44px 12px;scroll-margin-top:12px}
+.req-tag{display:inline-flex;gap:8px;align-items:center;font-size:.8rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--accent);margin:0 0 .5rem}
+.req-tag .n{display:inline-grid;place-items:center;width:24px;height:24px;border-radius:50%;background:var(--accent);color:var(--surface);font-size:.78rem;letter-spacing:0}
+.ask{border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:12px 16px;margin:0 0 1.2rem;font-size:.95rem;max-width:72ch}
+.ask b{color:var(--ink-2);font-weight:600}
+
+/* grids */
+.two{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;margin:1rem 0 1.2rem}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:16px 18px;min-width:0}
+.card h3,.card h4{margin:0 0 .4rem}
+.card h4{font-size:1rem}
+.card p,.card li{font-size:.97rem}
+.card ul{margin-bottom:.4rem}
+.choices{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px 28px;margin:1rem 0}
+.choices div{min-width:0;padding-top:10px;border-top:2px solid var(--ink)}
+.choices b{display:block;margin-bottom:2px}
+.choices p{font-size:.97rem;margin:0}
+.note{background:var(--surface-2);border-radius:10px;padding:14px 16px;margin:1rem 0 1.2rem;font-size:.96rem;max-width:74ch}
+.note p:last-child{margin:0}
+
+/* tables */
+.tbl-wrap{overflow-x:auto;margin:1rem 0 1.4rem;border:1px solid var(--line);border-radius:10px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-size:.94rem;line-height:1.45}
+th,td{padding:10px 12px;text-align:left;vertical-align:top;border-bottom:1px solid var(--line)}
+thead th{background:var(--surface-2);font-weight:700;font-size:.86rem;white-space:nowrap}
+tbody tr:last-child td{border-bottom:0}
+td.num,th.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.w-wide{min-width:760px}
+.w-mid{min-width:620px}
+td b{font-weight:700}
+
+/* chips */
+.chip{display:inline-block;font-size:.78rem;font-weight:700;padding:2px 9px;border-radius:999px;white-space:nowrap;line-height:1.5}
+.chip-ok{background:var(--ok-soft);color:var(--ok)}
+.chip-warn{background:var(--warn-soft);color:var(--warn)}
+.chip-bad{background:var(--bad-soft);color:var(--bad)}
+.chip-ai{background:var(--ai-soft);color:var(--ai)}
+.chip-core{background:var(--accent-soft);color:var(--accent)}
+.chip-info{background:var(--surface-2);color:var(--ink-2)}
+
+/* figures */
+figure{margin:1.2rem 0 1.6rem}
+.fig-scroll{overflow-x:auto;border:1px solid var(--line);border-radius:12px;background:var(--surface);padding:12px}
+figcaption{font-size:.9rem;color:var(--ink-2);margin-top:.6rem;max-width:78ch}
+.legend{display:flex;flex-wrap:wrap;gap:8px 16px;font-size:.86rem;color:var(--ink-2);margin-top:.5rem}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.sw{width:14px;height:14px;border-radius:3px;border:1.5px solid;display:inline-block}
+.sw-ai{background:var(--ai-soft);border-color:var(--ai)}
+.sw-core{background:var(--accent-soft);border-color:var(--accent)}
+.sw-box{background:var(--surface);border-color:var(--line)}
+.dg{display:block;width:100%;height:auto;min-width:860px;font-family:var(--font-body)}
+.dg text{fill:var(--ink);font-size:12px}
+.dg .c{text-anchor:middle}
+.dg .e{text-anchor:end}
+.dg .t{font-weight:700;font-size:12.5px}
+.dg .s{fill:var(--ink-2);font-size:11px}
+.dg .k{fill:var(--ink-2);font-size:10px;font-weight:700;letter-spacing:.08em}
+.dg .k-warn{fill:var(--warn)}
+.dg .k-bad{fill:var(--bad)}
+.dg .k-ai{fill:var(--ai)}
+.dg .lbl{fill:var(--ink-2);font-size:12px;font-weight:700}
+.dg .box{fill:var(--surface);stroke:var(--line);stroke-width:1.2}
+.dg .box-core{fill:var(--accent-soft);stroke:var(--accent)}
+.dg .box-ai{fill:var(--ai-soft);stroke:var(--ai)}
+.dg .box-ok{fill:var(--ok-soft);stroke:var(--ok)}
+.dg .box-warn{fill:var(--warn-soft);stroke:var(--warn)}
+.dg .dashed{stroke-dasharray:5 4}
+.dg .band{fill:var(--surface-2)}
+.dg .band-warn{fill:var(--warn-soft)}
+.dg .band-bad{fill:var(--bad-soft)}
+.dg .grp{fill:var(--surface-2)}
+.dg .grp-dash{fill:var(--surface-2);stroke:var(--ai);stroke-width:1.2;stroke-dasharray:6 4}
+.dg .ln{stroke:var(--ink-2);stroke-width:1.4;fill:none}
+.dg .ln-warn{stroke:var(--warn);stroke-width:1.6;fill:none}
+.dg .ln-bad{stroke:var(--bad);stroke-width:1.6;fill:none}
+.dg .dash{stroke-dasharray:5 4}
+.dg .ah{fill:var(--ink-2)}
+.dg .ah-warn{fill:var(--warn)}
+.dg .ah-bad{fill:var(--bad)}
+
+/* formula */
+.formula{font-family:var(--font-mono);font-size:.88rem;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px 16px;overflow-x:auto;line-height:1.75;margin:1rem 0}
+.formula div{white-space:nowrap}
+
+/* mockups */
+.mocks{display:grid;grid-template-columns:minmax(0,320px) minmax(0,1fr);gap:24px;align-items:start;margin:1.2rem 0}
+@media (max-width:760px){.mocks{grid-template-columns:minmax(0,1fr)}}
+.phone{width:100%;max-width:320px;border:10px solid var(--frame);border-radius:34px;background:var(--surface);overflow:hidden;justify-self:center}
+.phone-in{padding:18px 18px 22px;font-size:.92rem}
+.ph-top{display:flex;justify-content:space-between;align-items:center;font-weight:700;font-family:var(--font-display);margin-bottom:12px}
+.ph-lang{font-family:var(--font-body);font-weight:400;font-size:.8rem;color:var(--ink-2);border:1px solid var(--line);border-radius:999px;padding:1px 9px}
+.ph-id{font-size:.78rem;color:var(--ink-2);margin:0 0 6px}
+.ph-amt{font-family:var(--font-display);font-size:2rem;font-weight:700;margin:8px 0 0;font-variant-numeric:tabular-nums}
+.ph-sub{font-size:.86rem;color:var(--ink-2);margin:0 0 8px}
+.ph-hi{font-size:.9rem;margin:0 0 12px;padding:8px 10px;background:var(--surface-2);border-radius:8px}
+.ph-h{font-weight:700;margin:0 0 4px;font-size:.88rem}
+.phone ul{font-size:.84rem;padding-left:1.1rem;margin:0 0 14px}
+.ph-btn{display:block;text-align:center;background:var(--accent);color:var(--surface);border-radius:10px;padding:10px;font-weight:700;font-size:.9rem}
+.ph-link{text-align:center;font-size:.84rem;color:var(--accent);margin:10px 0 0}
+.portal{border:1px solid var(--line);border-radius:12px;background:var(--surface);overflow:hidden;min-width:0}
+.portal-bar{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px;padding:10px 14px;background:var(--surface-2);font-size:.86rem;font-weight:600}
+.portal-bar span:last-child{font-weight:400;color:var(--ink-2)}
+.portal .tbl-wrap{margin:0;border:0;border-radius:0}
+.portal table{font-size:.86rem}
+.portal-foot{padding:10px 14px;font-size:.84rem;color:var(--ink-2);border-top:1px solid var(--line)}
+
+/* simulator */
+.sim{display:grid;grid-template-columns:minmax(0,1fr);gap:20px;margin-top:1rem}
+@media (min-width:980px){.sim{grid-template-columns:minmax(0,380px) minmax(0,1fr)}}
+.sim-form{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:16px;min-width:0}
+.presets{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px}
+.presets button{font:inherit;font-size:.86rem;padding:6px 11px;border-radius:999px;border:1px solid var(--line);background:var(--surface-2);color:var(--ink);cursor:pointer}
+.presets button:hover{border-color:var(--accent)}
+.presets button[aria-pressed="true"]{background:var(--accent);color:var(--surface);border-color:var(--accent)}
+.fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px 12px}
+@media (max-width:420px){.fields{grid-template-columns:minmax(0,1fr)}}
+.fields .full{grid-column:1/-1}
+.fields label{display:flex;flex-direction:column;gap:3px;font-size:.82rem;font-weight:600;color:var(--ink-2);min-width:0}
+.fields input,.fields select{font:inherit;font-size:.95rem;font-weight:400;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:7px 9px;width:100%;min-width:0;font-variant-numeric:tabular-nums}
+.fields .check{flex-direction:row;align-items:center;gap:8px;font-weight:600}
+.fields .check input{width:auto}
+.fields fieldset{grid-column:1/-1;border:0;border-top:1px solid var(--line);margin:6px 0 0;padding:10px 0 0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px 12px;min-width:0}
+@media (max-width:420px){.fields fieldset{grid-template-columns:minmax(0,1fr)}}
+.fields legend{font-size:.76rem;letter-spacing:.08em;text-transform:uppercase;font-weight:700;color:var(--ink-2);padding:0 0 4px}
+.sim-out{min-width:0;display:grid;gap:14px;align-content:start}
+.banner{border-radius:12px;padding:16px 18px;border:1.5px solid}
+.banner.ok{background:var(--ok-soft);border-color:var(--ok)}
+.banner.warn{background:var(--warn-soft);border-color:var(--warn)}
+.banner.bad{background:var(--bad-soft);border-color:var(--bad)}
+.banner .word{font-family:var(--font-display);font-size:1.6rem;font-weight:700;line-height:1.1;margin:0}
+.banner.ok .word{color:var(--ok)} .banner.warn .word{color:var(--warn)} .banner.bad .word{color:var(--bad)}
+.banner p{margin:.35rem 0 0;font-size:.98rem}
+.metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.metrics div{background:var(--surface);padding:10px 12px;min-width:0}
+.metrics span{display:block;font-size:.78rem;color:var(--ink-2)}
+.metrics b{font-size:1.12rem;font-variant-numeric:tabular-nums}
+.metrics small{display:block;font-size:.78rem;color:var(--ink-2)}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px 16px;min-width:0}
+.panel h4{margin:0 0 .5rem;font-size:.98rem}
+.gates{list-style:none;padding:0;margin:0;display:grid;gap:0}
+.gates li{display:grid;grid-template-columns:150px minmax(0,1fr);gap:4px 12px;padding:8px 0;border-top:1px solid var(--line);max-width:none;margin:0;font-size:.92rem}
+.gates li:first-child{border-top:0}
+@media (max-width:520px){.gates li{grid-template-columns:minmax(0,1fr)}}
+.gates .g{font-weight:700;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.gates .d p{margin:0}
+.bars{display:grid;gap:6px}
+.bar-row{display:grid;grid-template-columns:150px minmax(0,1fr) 48px;gap:10px;align-items:center;font-size:.88rem}
+@media (max-width:520px){.bar-row{grid-template-columns:110px minmax(0,1fr) 42px}}
+.track{position:relative;height:14px;background:var(--surface-2);border-radius:3px}
+.track::after{content:"";position:absolute;left:50%;top:-3px;bottom:-3px;width:1px;background:var(--ink-2)}
+.fill{position:absolute;top:0;bottom:0;border-radius:3px}
+.fill.pos{left:50%;background:var(--ok)}
+.fill.neg{right:50%;background:var(--bad)}
+.bar-row .v{text-align:right;font-variant-numeric:tabular-nums;font-weight:600}
+.bar-row .why{grid-column:2/4;font-size:.8rem;color:var(--ink-2);margin-top:-4px}
+.cust{margin:0;padding-left:1.1rem;font-size:.94rem}
+pre.record{font-family:var(--font-mono);font-size:.76rem;line-height:1.5;background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:12px;overflow:auto;max-height:340px;margin:0;white-space:pre}
+.dl{display:grid;grid-template-columns:minmax(0,190px) minmax(0,1fr);gap:8px 20px;margin:1rem 0}
+@media (max-width:620px){.dl{grid-template-columns:minmax(0,1fr)}.dl dd{margin-bottom:8px}}
+.dl dt{font-weight:700}
+.dl dd{margin:0;max-width:70ch}
+ol.steps{counter-reset:s;list-style:none;padding:0}
+ol.steps li{counter-increment:s;position:relative;padding-left:36px;margin:.55rem 0}
+ol.steps li::before{content:counter(s);position:absolute;left:0;top:1px;width:24px;height:24px;border-radius:50%;background:var(--surface-2);border:1px solid var(--line);font-size:.8rem;font-weight:700;display:grid;place-items:center}
+.src li{font-size:.94rem;margin:.45rem 0}
+footer{border-top:1px solid var(--line);margin-top:40px;padding-top:20px;font-size:.9rem;color:var(--ink-2)}
+</style>
+
+<div class="wrap">
+  <header class="hero">
+    <p class="eyebrow">Hero Housing Fintech Challenge · Problem Statement 2 · Team solution report</p>
+    <h1>Nirnay: a humanless underwriting engine for Home Loans and LAP</h1>
+    <p class="lede"><i>Nirnay</i> (<span lang="hi">निर्णय</span>, “decision”) takes a Home Loan or Loan Against Property application from the first tap to an Approve, Refer or Reject decision. Clean cases need no person. Every check runs as code, every rule points to the regulation it comes from, and an auditor can replay every decision.</p>
+    <p class="meta">Version 1.0 · 5 November 2026 · Written for our team · “Nirnay” is a working name</p>
+    <div class="facts" role="list">
+      <div role="listitem"><b>8 of 8</b><span>required points covered, each mapped to a module</span></div>
+      <div role="listitem"><b>2 channels</b><span>mobile app and web portal on one engine</span></div>
+      <div role="listitem"><b>3 outcomes</b><span>Approve, Refer or Reject, always with reasons</span></div>
+      <div role="listitem"><b>Under 2 s</b><span>to compute a decision once data is in (design target)</span></div>
+    </div>
+  </header>
+
+  <div class="layout">
+    <nav class="toc" aria-label="Contents">
+      <p class="eyebrow">Contents</p>
+      <ol>
+        <li><a href="#summary">The short version</a></li>
+        <li><a href="#problem">The problem in plain words</a></li>
+        <li><a href="#coverage">How we cover all 8 points</a></li>
+        <li><a href="#channels">App and web portal</a></li>
+        <li><a href="#flow">End-to-end flow</a></li>
+        <li><a href="#sa">Solution architecture</a></li>
+        <li><a href="#ai-sa">AI solution architecture</a></li>
+        <li class="req"><a href="#r1">1 · Data sources</a></li>
+        <li class="req"><a href="#r2">2 · Eligibility and policy</a></li>
+        <li class="req"><a href="#r3">3 · Fraud and KYC/AML</a></li>
+        <li class="req"><a href="#r4">4 · Risk scoring</a></li>
+        <li class="req"><a href="#r5">5 · Documents and property</a></li>
+        <li class="req"><a href="#r6">6 · Compliance checks</a></li>
+        <li class="req"><a href="#r7">7 · Instant decisioning</a></li>
+        <li class="req"><a href="#r8">8 · Explainability</a></li>
+        <li><a href="#simulator">Decision simulator</a></li>
+        <li><a href="#build">Build plan and roles</a></li>
+        <li><a href="#risks">Risks and limits</a></li>
+        <li><a href="#glossary">Glossary</a></li>
+        <li><a href="#sources">Sources</a></li>
+      </ol>
+    </nav>
+
+    <main class="content">
+
+<!-- ============ SUMMARY ============ -->
+<section id="summary" style="border-top:0;padding-top:0">
+  <h2>The short version</h2>
+  <p>Problem Statement 2 asks for an engine that underwrites Home Loans and LAP with no person in the decision path. It has to follow NHB/RBI rules, internal credit policy, KYC/AML law, the Fair Practices Code and audit standards. Nirnay is our answer.</p>
+  <ul>
+    <li>Customers apply on a <b>mobile app</b> or the <b>web portal</b>. Consent screens let the engine pull data from credit bureaus, Account Aggregators, UIDAI, GSTN, EPFO, state land records and CERSAI.</li>
+    <li>The engine runs <b>eight automated gates</b>: identity, AML, fraud and documents, policy rules, property, affordability, risk grade and authority limit. It returns <b>Approve, Refer or Reject</b> with reason codes.</li>
+    <li>A <b>compliance gate</b> blocks any decision that breaks a coded regulation. Every decision is saved as a tamper-evident <b>decision record</b> that can be replayed years later.</li>
+  </ul>
+  <h3>Six choices that make it work</h3>
+  <div class="choices">
+    <div><b>Two-stage decision</b><p>An in-principle offer in minutes from the customer's own data, and a final sanction once property checks finish. Builder projects we have already checked skip most property work.</p></div>
+    <div><b>Rules and AI kept apart</b><p>Rules are versioned tables the credit team edits. Models produce scores. A large language model (LLM) reads documents and drafts text, and never sets an outcome.</p></div>
+    <div><b>Compliance as code</b><p>Each regulation becomes a rule tagged with its source clause. If a rule fails, no decision goes out.</p></div>
+    <div><b>Refer is a feature</b><p>Cases the rules say need a person, such as a politically exposed customer, go to an officer with a ready file. Officer decisions train the next model.</p></div>
+    <div><b>Replay any decision</b><p>The same inputs with the same rule and model versions always give the same answer, so audits are exact.</p></div>
+    <div><b>One engine, many front doors</b><p>App, portal, partner app and branch staff call the same APIs, so the same rules apply everywhere.</p></div>
+  </div>
+  <div class="note"><p><b>How to read this report.</b> In five minutes: read this section and the flow in <a href="#flow">section 5</a>. If you are building a part: read both architecture sections, then find your role in the <a href="#build">build plan</a>. You can test the decision logic yourself in the <a href="#simulator">simulator</a>.</p></div>
+</section>
+
+<!-- ============ PROBLEM ============ -->
+<section id="problem">
+  <h2>The problem in plain words</h2>
+  <p>Underwriting is the lender's answer to three questions. Can this person repay? Will they repay? Is the property good security if they don't? For a Home Loan the property is being bought. For LAP the customer already owns it and borrows against it.</p>
+  <p>Today a file moves through many hands. Sales collects papers. Operations checks KYC. Credit reads salary slips and bank statements. A lawyer checks the title. A valuer visits the property. Each team re-checks what the last one did, files go back to the customer for missing papers, and the customer waits days.</p>
+  <p>Problem Statement 2 asks us to replace that chain with one engine that decides on its own, follows every rule, and can show why it decided.</p>
+
+  <h3>What “humanless” means in our design</h3>
+  <ul>
+    <li>No person is needed to approve or reject a clean file.</li>
+    <li>People still own the rules, the models and the hard cases. The engine sends a case to a person (<b>Refer</b>) when a regulation requires it, for example a politically exposed person, or when data is missing or uncertain.</li>
+    <li>A customer can always ask for a person to review a rejection through the grievance process.</li>
+  </ul>
+
+  <h3>Why this is hard</h3>
+  <ul>
+    <li><b>Data is scattered.</b> Bureaus, banks, income tax, GST, PF and land records in every state all hold a piece.</li>
+    <li><b>Property is the slowest part.</b> Land records and encumbrance certificates are online in many states, not all, and formats differ.</li>
+    <li><b>Self-employed income is hard to read.</b> Many LAP customers have real income that is poorly documented.</li>
+    <li><b>Fraud targets every step.</b> Fake salary slips, edited bank statements, one property mortgaged twice, agents and valuers working together.</li>
+    <li><b>Rules change.</b> RBI consolidated its directions on 28 November 2025 and keeps amending them.</li>
+    <li><b>Every decision needs an explanation</b> that the customer, the auditor and the supervisor can each follow.</li>
+  </ul>
+
+  <div class="note"><p><b>A note on “NHB regulations”.</b> Since 9 August 2019 the RBI regulates housing finance companies, and the National Housing Bank (NHB) supervises them through inspections and regulatory returns. Most rules that used to be NHB directions now sit in RBI's Housing Finance Companies Directions, consolidated again on 28 November 2025. In this report, “NHB/RBI rules” means both.</p></div>
+
+  <h3>Home Loan and LAP are different problems</h3>
+  <div class="tbl-wrap"><table class="w-mid">
+    <thead><tr><th></th><th>Home Loan (HL)</th><th>Loan Against Property (LAP)</th></tr></thead>
+    <tbody>
+      <tr><td><b>Purpose</b></td><td>Buy, build or improve a home</td><td>Any lawful need: business, education, medical, other</td></tr>
+      <tr><td><b>Property</b></td><td>The home being bought, often under construction</td><td>A property the customer already owns</td></tr>
+      <tr><td><b>Typical borrower</b></td><td>Salaried and self-employed</td><td>Mostly self-employed and small-business owners</td></tr>
+      <tr><td><b>Loan-to-value (LTV) limit</b></td><td>RBI tiers: 90% up to ₹30 lakh, 80% above ₹30 lakh up to ₹75 lakh, 75% above ₹75 lakh</td><td>Set by internal policy; we assume 60% (illustrative)</td></tr>
+      <tr><td><b>Income proof</b></td><td>Salary slips, Form 16, bank credits, EPFO</td><td>ITR, GST returns, bank cash-flow</td></tr>
+      <tr><td><b>Extra checks</b></td><td>Builder and RERA status, source of own contribution, sale agreement</td><td>End use, existing charges, self-occupied or rented, business vintage</td></tr>
+      <tr><td><b>Main fraud risks</b></td><td>Fake income, inflated price, fake builder or seller</td><td>Property mortgaged twice, inflated value, round-tripped turnover</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<!-- ============ COVERAGE ============ -->
+<section id="coverage">
+  <h2>How we cover all eight points</h2>
+  <p>The challenge rules say to cover every point on the “What you need to do” page. This table maps each one to the part of Nirnay that handles it.</p>
+  <div class="tbl-wrap"><table class="w-wide">
+    <thead><tr><th>#</th><th>Required point</th><th>What we built</th><th>Key pieces</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td><a href="#r1">Integrate data sources</a></td><td>Integration hub with one adapter per source, behind a consent manager; data-flow diagram</td><td>AA, 4 bureaus, UIDAI, CKYCR, GSTN, EPFO, land records, CERSAI, RERA</td></tr>
+      <tr><td>2</td><td><a href="#r2">Eligibility and policy</a></td><td>Real-time eligibility maths plus policy rules as versioned decision tables, separate sets for HL and LAP</td><td>Rules engine, policy studio, maker-checker</td></tr>
+      <tr><td>3</td><td><a href="#r3">Fraud detection and KYC/AML</a></td><td>Automated KYC, AML screening that clears false matches by itself, fraud engine using rules, ML and a link graph</td><td>eKYC, PAN, face match, liveness, watch-lists, graph analytics</td></tr>
+      <tr><td>4</td><td><a href="#r4">Risk scoring</a></td><td>Readable scorecard (live) and a boosted-tree challenger give a 300–900 score and grade A–E, with points per factor</td><td>Scorecard, LightGBM, SHAP, calibration</td></tr>
+      <tr><td>5</td><td><a href="#r5">Documents and property</a></td><td>Document AI and property checks (title, encumbrance, CERSAI, RERA, valuation model, geo-tagged photos) in the same flow</td><td>OCR, tamper checks, AVM, LLM deed reader</td></tr>
+      <tr><td>6</td><td><a href="#r6">Compliance checks</a></td><td>Compliance gate: each regulation is a coded rule with its source; decision blocked unless all pass</td><td>RBI HFC, KYC and Digital Lending Directions, FPC, PMLA, DPDP</td></tr>
+      <tr><td>7</td><td><a href="#r7">Instant decisioning</a></td><td>Eight-gate pipeline, under 2 s to compute; Approve (with counter-offer), Refer or Reject</td><td>Orchestrator, decision service</td></tr>
+      <tr><td>8</td><td><a href="#r8">Explainability and governance</a></td><td>Reason codes, hash-chained decision records, replay, model governance mapped to RBI's FREE-AI framework</td><td>Audit ledger, audit portal, model cards</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<!-- ============ CHANNELS ============ -->
+<section id="channels">
+  <h2>One engine, two front doors: app and web portal</h2>
+  <p>Customers, partners and staff all reach the same engine through the same APIs. The <b>mobile app</b> is for doing things on the move with a camera. The <b>web portal</b> is for longer work at a desk, and it is where staff, vendors and auditors work.</p>
+  <div class="two">
+    <div class="card">
+      <h3>Mobile app (Android and iOS)</h3>
+      <h4>Customer app</h4>
+      <ul>
+        <li>Sign in with mobile OTP; the device is bound to the account.</li>
+        <li>Auto-fill from PAN, Aadhaar eKYC or DigiLocker, so the customer types very little.</li>
+        <li>Plain-language consent screens for the bureau pull, Account Aggregator and the DPDP privacy notice.</li>
+        <li>Camera: selfie with liveness, document capture with blur and glare checks, geo-tagged property photos and a short video walk-through.</li>
+        <li>Quick eligibility and EMI options before the full application.</li>
+        <li>Decision screen with reasons in English, Hindi and other Indian languages.</li>
+        <li>Key Facts Statement, eSign, and eNACH or UPI AutoPay inside the app.</li>
+        <li>Live status, WhatsApp and SMS updates, a help assistant, and one-tap grievance with officer details.</li>
+      </ul>
+      <h4>Partner app (DSA, connector, builder sales)</h4>
+      <ul>
+        <li>Start a lead; the customer gives consent on their own phone, so the partner never sees OTPs.</li>
+        <li>See pending items and payouts per file.</li>
+        <li>Builder sales can look up units in pre-approved projects.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Web portal</h3>
+      <ul>
+        <li><b>Customer portal:</b> the same journey as the app on a laptop; invite a co-applicant; download letters.</li>
+        <li><b>Partner portal:</b> bulk leads; builders upload RERA papers, approvals and plans once to get a project pre-approved.</li>
+        <li><b>Credit console:</b> the Refer queue with an AI-drafted file note, evidence viewer, re-pull of data, a decision with a mandatory reason, SLA timers, and a second approver for large loans.</li>
+        <li><b>Vendor portal:</b> empanelled lawyers and valuers receive referred cases, upload reports, and see SLAs.</li>
+        <li><b>Compliance and audit portal:</b> search and replay any decision, see rule and model versions, export evidence, regulatory reports, Fair Practices metrics such as turnaround times, rejection reasons and complaints.</li>
+        <li><b>Policy studio:</b> edit LTV, FOIR and score cut-offs as tables; maker-checker approval; test on past cases before going live; effective dates.</li>
+        <li><b>Model governance console:</b> model inventory, drift and fairness dashboards, override rates, and a kill switch that sends all new cases to Refer.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="mocks">
+    <div class="phone" role="img" aria-label="Sample customer app screen showing an in-principle approval of ₹45 lakh with reasons">
+      <div class="phone-in">
+        <div class="ph-top"><span>Nirnay</span><span class="ph-lang"><b>EN</b> · <span lang="hi">हिं</span></span></div>
+        <p class="ph-id">Application HL-2611-04821</p>
+        <span class="chip chip-ok">Approved in principle</span>
+        <p class="ph-amt">₹45,00,000</p>
+        <p class="ph-sub">EMI ₹39,767 · 20 years · 8.75% p.a. floating</p>
+        <p class="ph-hi" lang="hi">आपका होम लोन सैद्धांतिक रूप से स्वीकृत है।</p>
+        <p class="ph-h">Why you got this offer</p>
+        <ul>
+          <li>Strong repayment history (score 765)</li>
+          <li>EMIs use 49.8% of income; our limit is 50%</li>
+          <li>Loan is 75% of the property value; the limit is 80%</li>
+        </ul>
+        <span class="ph-btn">Add property details</span>
+        <p class="ph-link">View Key Facts Statement</p>
+      </div>
+    </div>
+    <div class="portal" role="img" aria-label="Sample credit console showing the Refer queue">
+      <div class="portal-bar"><span>Credit console · Refer queue</span><span>4 open · sample data</span></div>
+      <div class="tbl-wrap"><table class="w-mid">
+        <thead><tr><th>Application</th><th class="num">Amount</th><th>Why referred</th><th>Gate</th><th class="num">SLA left</th></tr></thead>
+        <tbody>
+          <tr><td class="mono">HL-2611-04807</td><td class="num">₹38.0 L</td><td>Possible PEP match on name and date of birth</td><td><span class="chip chip-warn">AML</span></td><td class="num">3 h 10 m</td></tr>
+          <tr><td class="mono">LAP-2611-01133</td><td class="num">₹72.0 L</td><td>Title chain has a gap: one co-owner deceased, no mutation online</td><td><span class="chip chip-warn">Property</span></td><td class="num">6 h 00 m</td></tr>
+          <tr><td class="mono">HL-2611-04815</td><td class="num">₹1.24 Cr</td><td>Above the ₹1 crore auto-sanction limit</td><td><span class="chip chip-warn">Authority</span></td><td class="num">1 h 45 m</td></tr>
+          <tr><td class="mono">HL-2611-04819</td><td class="num">₹22.5 L</td><td>No credit history; bank cash-flow is steady for 24 months</td><td><span class="chip chip-warn">Policy</span></td><td class="num">5 h 20 m</td></tr>
+        </tbody>
+      </table></div>
+      <div class="portal-foot">Each row opens a pre-filled file: facts with links to evidence, the engine's draft offer, and the exact rule that referred it. The officer's decision and reason are saved to the decision record.</div>
+    </div>
+  </div>
+  <p class="small muted">Sample screens. The app numbers come from the worked example in <a href="#r2">Requirement 2</a>; the queue rows are made up.</p>
+</section>
+
+<!-- ============ FLOW ============ -->
+<section id="flow">
+  <h2>End-to-end flow: application to decision</h2>
+  <p>The flow has two stages. Stage A uses data about the person and ends in an in-principle offer. Stage B adds the property and ends in the final sanction. Both stages end in the same three outcomes.</p>
+  <figure>
+    <div class="fig-scroll">
+      <svg class="dg" viewBox="0 0 1040 380" role="img" aria-label="Two-stage flow. Stage A: apply, identity, data pull, fraud and AML, policy check, risk score, in-principle decision. Stage B: property, document AI, title and legal, valuation, compliance gate, final decision, sign and mandate.">
+        <defs><marker id="f1a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="ah" d="M0,0 L10,5 L0,10 z"/></marker></defs>
+        <rect class="band" x="0" y="0" width="1040" height="168" rx="10"/>
+        <text class="k" x="20" y="26">STAGE A · IN-PRINCIPLE DECISION</text>
+        <text class="s e" x="1020" y="26">Target: under 5 minutes after the customer submits</text>
+        <rect class="box" x="21" y="40" width="128" height="80" rx="8"/>
+        <text class="k" x="31" y="60">STEP 1</text><text class="t" x="31" y="82">Apply &amp; consent</text><text class="s" x="31" y="100">app or web portal</text>
+        <rect class="box" x="166" y="40" width="128" height="80" rx="8"/>
+        <text class="k" x="176" y="60">STEP 2</text><text class="t" x="176" y="82">Identity (KYC)</text><text class="s" x="176" y="100">eKYC · PAN · CKYC</text>
+        <rect class="box" x="311" y="40" width="128" height="80" rx="8"/>
+        <text class="k" x="321" y="60">STEP 3</text><text class="t" x="321" y="82">Data pull</text><text class="s" x="321" y="100">bureau · AA · GST</text>
+        <rect class="box" x="456" y="40" width="128" height="80" rx="8"/>
+        <text class="k" x="466" y="60">STEP 4</text><text class="t" x="466" y="82">Fraud &amp; AML</text><text class="s" x="466" y="100">lists · signals</text>
+        <rect class="box" x="601" y="40" width="128" height="80" rx="8"/>
+        <text class="k" x="611" y="60">STEP 5</text><text class="t" x="611" y="82">Policy check</text><text class="s" x="611" y="100">LTV · FOIR · age</text>
+        <rect class="box" x="746" y="40" width="128" height="80" rx="8"/>
+        <text class="k" x="756" y="60">STEP 6</text><text class="t" x="756" y="82">Risk score</text><text class="s" x="756" y="100">grade A to E</text>
+        <rect class="box box-core" x="891" y="40" width="128" height="80" rx="8"/>
+        <text class="k" x="901" y="60">STEP 7</text><text class="t" x="901" y="82">Decision</text><text class="s" x="901" y="100">in-principle offer</text>
+        <line class="ln" x1="150" y1="80" x2="164" y2="80" marker-end="url(#f1a)"/>
+        <line class="ln" x1="295" y1="80" x2="309" y2="80" marker-end="url(#f1a)"/>
+        <line class="ln" x1="440" y1="80" x2="454" y2="80" marker-end="url(#f1a)"/>
+        <line class="ln" x1="585" y1="80" x2="599" y2="80" marker-end="url(#f1a)"/>
+        <line class="ln" x1="730" y1="80" x2="744" y2="80" marker-end="url(#f1a)"/>
+        <line class="ln" x1="875" y1="80" x2="889" y2="80" marker-end="url(#f1a)"/>
+        <text class="s c" x="85" y="144">you: 3–5 min</text>
+        <text class="s c" x="230" y="144">~10 sec</text>
+        <text class="s c" x="375" y="144">~30–90 sec</text>
+        <text class="s c" x="520" y="144">~5 sec</text>
+        <text class="s c" x="665" y="144">under 1 sec</text>
+        <text class="s c" x="810" y="144">under 1 sec</text>
+        <text class="s c" x="945" y="144">instant</text>
+        <path class="ln" d="M995 120 V186 H10 V292 H19" marker-end="url(#f1a)"/>
+        <text class="s c" x="520" y="202">customer accepts the offer, then adds the property</text>
+        <rect class="band" x="0" y="212" width="1040" height="168" rx="10"/>
+        <text class="k" x="20" y="238">STAGE B · FINAL SANCTION</text>
+        <text class="s e" x="1020" y="238">Target: minutes for pre-approved projects; 1–2 working days if a site visit is needed</text>
+        <rect class="box" x="21" y="252" width="128" height="80" rx="8"/>
+        <text class="k" x="31" y="272">STEP 8</text><text class="t" x="31" y="294">Property</text><text class="s" x="31" y="312">address · papers</text>
+        <rect class="box" x="166" y="252" width="128" height="80" rx="8"/>
+        <text class="k" x="176" y="272">STEP 9</text><text class="t" x="176" y="294">Document AI</text><text class="s" x="176" y="312">OCR · tamper check</text>
+        <rect class="box" x="311" y="252" width="128" height="80" rx="8"/>
+        <text class="k" x="321" y="272">STEP 10</text><text class="t" x="321" y="294">Title &amp; legal</text><text class="s" x="321" y="312">EC · CERSAI · RERA</text>
+        <rect class="box" x="456" y="252" width="128" height="80" rx="8"/>
+        <text class="k" x="466" y="272">STEP 11</text><text class="t" x="466" y="294">Valuation</text><text class="s" x="466" y="312">AVM · site photos</text>
+        <rect class="box box-core" x="601" y="252" width="128" height="80" rx="8"/>
+        <text class="k" x="611" y="272">STEP 12</text><text class="t" x="611" y="294">Compliance gate</text><text class="s" x="611" y="312">regulation as code</text>
+        <rect class="box box-core" x="746" y="252" width="128" height="80" rx="8"/>
+        <text class="k" x="756" y="272">STEP 13</text><text class="t" x="756" y="294">Final decision</text><text class="s" x="756" y="312">sanction + KFS</text>
+        <rect class="box" x="891" y="252" width="128" height="80" rx="8"/>
+        <text class="k" x="901" y="272">STEP 14</text><text class="t" x="901" y="294">Sign &amp; mandate</text><text class="s" x="901" y="312">eSign · eNACH</text>
+        <line class="ln" x1="150" y1="292" x2="164" y2="292" marker-end="url(#f1a)"/>
+        <line class="ln" x1="295" y1="292" x2="309" y2="292" marker-end="url(#f1a)"/>
+        <line class="ln" x1="440" y1="292" x2="454" y2="292" marker-end="url(#f1a)"/>
+        <line class="ln" x1="585" y1="292" x2="599" y2="292" marker-end="url(#f1a)"/>
+        <line class="ln" x1="730" y1="292" x2="744" y2="292" marker-end="url(#f1a)"/>
+        <line class="ln" x1="875" y1="292" x2="889" y2="292" marker-end="url(#f1a)"/>
+        <text class="s c" x="85" y="356">you: ~5 min</text>
+        <text class="s c" x="230" y="356">~20 sec</text>
+        <text class="s c" x="375" y="356">minutes to hours*</text>
+        <text class="s c" x="520" y="356">~1 min or a visit</text>
+        <text class="s c" x="665" y="356">under 1 sec</text>
+        <text class="s c" x="810" y="356">instant</text>
+        <text class="s c" x="955" y="356">you: ~5 min</text>
+      </svg>
+    </div>
+    <figcaption>The application moves through 14 automated steps in two stages. Times under each step are design targets. *Title checks depend on whether the state's land records and encumbrance certificates are online; where they are not, the case is referred to an empanelled lawyer through the vendor portal.</figcaption>
+  </figure>
+  <p>The engine itself decides in under two seconds once its inputs are in. Time in the flow goes to waiting for data: the customer filling the form, the Account Aggregator returning statements, a state portal returning an encumbrance certificate. If a source is slow, the application waits in a clear status the customer can see. The engine never guesses missing data.</p>
+  <p><b>Pre-approved projects.</b> A builder's project is checked once for title, approvals and RERA registration, then marked pre-approved. A unit in that project only needs unit-level checks, so Stage B can finish in minutes and many Home Loans complete in one sitting.</p>
+</section>
+
+<!-- ============ SA ============ -->
+<section id="sa">
+  <h2>Solution architecture (SA)</h2>
+  <p>Seven layers. Requests come in through the channels and pass the gateway. The orchestrator runs each application as a state machine and calls the decision services in order. Services get outside data through the integration hub and write evidence to the data layer. Every step emits an event that the audit ledger, notifications and dashboards consume.</p>
+  <figure>
+    <div class="fig-scroll">
+      <svg class="dg" viewBox="0 0 1040 650" role="img" aria-label="Layered solution architecture: channels, access and security, orchestration with event bus and core systems, nine decision services, integration hub and data stores, outside data sources, and the platform layer.">
+        <defs><marker id="f2a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="ah" d="M0,0 L10,5 L0,10 z"/></marker></defs>
+        <text class="lbl" x="20" y="52">Channels</text>
+        <text class="lbl" x="20" y="132">Access</text>
+        <text class="lbl" x="20" y="208">Orchestration</text>
+        <text class="lbl" x="20" y="312">Decision</text><text class="lbl" x="20" y="328">services</text>
+        <text class="lbl" x="20" y="446">Data &amp;</text><text class="lbl" x="20" y="462">integration</text>
+        <text class="lbl" x="20" y="553">Outside</text><text class="lbl" x="20" y="569">sources</text>
+        <text class="lbl" x="20" y="620">Platform</text>
+        <!-- channels -->
+        <rect class="box" x="160" y="16" width="134" height="64" rx="8"/><text class="t c" x="227" y="43">Customer app</text><text class="s c" x="227" y="61">Android · iOS</text>
+        <rect class="box" x="305" y="16" width="134" height="64" rx="8"/><text class="t c" x="372" y="43">Partner app</text><text class="s c" x="372" y="61">DSA · builder</text>
+        <rect class="box" x="450" y="16" width="134" height="64" rx="8"/><text class="t c" x="517" y="43">Customer portal</text><text class="s c" x="517" y="61">web self-service</text>
+        <rect class="box" x="596" y="16" width="134" height="64" rx="8"/><text class="t c" x="663" y="43">Credit console</text><text class="s c" x="663" y="61">refer queue</text>
+        <rect class="box" x="741" y="16" width="134" height="64" rx="8"/><text class="t c" x="808" y="43">Audit portal</text><text class="s c" x="808" y="61">compliance · audit</text>
+        <rect class="box" x="886" y="16" width="134" height="64" rx="8"/><text class="t c" x="953" y="43">Policy studio</text><text class="s c" x="953" y="61">rules · maker-checker</text>
+        <line class="ln" x1="590" y1="81" x2="590" y2="105" marker-end="url(#f2a)"/>
+        <text class="s" x="600" y="98">HTTPS · JSON</text>
+        <!-- access -->
+        <rect class="box" x="160" y="108" width="860" height="40" rx="8"/>
+        <text class="c" x="590" y="133">API gateway · WAF · OAuth2 / OIDC · rate limits · device binding · PII masking</text>
+        <line class="ln" x1="390" y1="149" x2="390" y2="173" marker-end="url(#f2a)"/>
+        <text class="s" x="400" y="166">start or resume an application</text>
+        <!-- orchestration -->
+        <rect class="box box-core" x="160" y="176" width="460" height="56" rx="8"/>
+        <text class="t c" x="390" y="200">Underwriting orchestrator</text>
+        <text class="s c" x="390" y="219">workflow engine · state per application · retries · SLA timers</text>
+        <rect class="box" x="632" y="176" width="228" height="56" rx="8"/>
+        <text class="t c" x="746" y="200">Event bus</text>
+        <text class="s c" x="746" y="219">every step emits an event</text>
+        <rect class="box" x="884" y="176" width="136" height="194" rx="8"/>
+        <text class="t c" x="952" y="199">Core systems</text>
+        <text class="s c" x="952" y="222">LOS · LMS</text>
+        <text class="s c" x="952" y="241">CRM</text>
+        <text class="s c" x="952" y="260">eSign · e-stamp</text>
+        <text class="s c" x="952" y="279">eNACH</text>
+        <text class="s c" x="952" y="298">UPI AutoPay</text>
+        <text class="s c" x="952" y="317">SMS · WhatsApp</text>
+        <text class="s c" x="952" y="336">email</text>
+        <line class="ln" x1="861" y1="204" x2="881" y2="204" marker-end="url(#f2a)"/>
+        <line class="ln" x1="390" y1="233" x2="390" y2="257" marker-end="url(#f2a)"/>
+        <text class="s" x="400" y="250">calls services, in parallel where safe</text>
+        <!-- services row 1 -->
+        <rect class="box box-ai" x="160" y="260" width="130" height="50" rx="8"/><text class="t c" x="225" y="281">KYC &amp; AML</text><text class="s c" x="225" y="299">eKYC · face · lists</text>
+        <rect class="box box-ai" x="302" y="260" width="130" height="50" rx="8"/><text class="t c" x="367" y="281">Fraud engine</text><text class="s c" x="367" y="299">rules · ML · graph</text>
+        <rect class="box box-core" x="445" y="260" width="130" height="50" rx="8"/><text class="t c" x="510" y="281">Policy rules</text><text class="s c" x="510" y="299">decision tables</text>
+        <rect class="box box-ai" x="588" y="260" width="130" height="50" rx="8"/><text class="t c" x="653" y="281">Risk scoring</text><text class="s c" x="653" y="299">scorecard + GBM</text>
+        <rect class="box box-ai" x="730" y="260" width="130" height="50" rx="8"/><text class="t c" x="795" y="281">Document AI</text><text class="s c" x="795" y="299">OCR · fields · tamper</text>
+        <!-- services row 2 -->
+        <rect class="box box-ai" x="160" y="320" width="166" height="50" rx="8"/><text class="t c" x="243" y="341">Property check</text><text class="s c" x="243" y="359">title · AVM · site photos</text>
+        <rect class="box box-core" x="338" y="320" width="166" height="50" rx="8"/><text class="t c" x="421" y="341">Compliance gate</text><text class="s c" x="421" y="359">regulation as code</text>
+        <rect class="box box-core" x="516" y="320" width="166" height="50" rx="8"/><text class="t c" x="599" y="341">Decision &amp; explain</text><text class="s c" x="599" y="359">outcome · reasons · trace</text>
+        <rect class="box box-core" x="694" y="320" width="166" height="50" rx="8"/><text class="t c" x="777" y="341">Offer &amp; sanction</text><text class="s c" x="777" y="359">pricing · KFS · letters</text>
+        <line class="ln" x1="290" y1="372" x2="290" y2="395" marker-start="url(#f2a)" marker-end="url(#f2a)"/>
+        <text class="s" x="300" y="389">fetch data</text>
+        <line class="ln" x1="640" y1="372" x2="640" y2="395" marker-start="url(#f2a)" marker-end="url(#f2a)"/>
+        <text class="s" x="650" y="389">read features · write evidence</text>
+        <!-- data band -->
+        <rect class="box" x="160" y="398" width="260" height="104" rx="8"/>
+        <text class="t c" x="290" y="424">Integration hub</text>
+        <text class="s c" x="290" y="445">one adapter per source</text>
+        <text class="s c" x="290" y="463">timeouts · retries · cache</text>
+        <text class="s c" x="290" y="481">circuit breakers · raw copy kept</text>
+        <rect class="box" x="432" y="398" width="188" height="46" rx="8"/><text class="t c" x="526" y="418">Application DB</text><text class="s c" x="526" y="435">PostgreSQL</text>
+        <rect class="box" x="632" y="398" width="188" height="46" rx="8"/><text class="t c" x="726" y="418">Feature store</text><text class="s c" x="726" y="435">online + offline</text>
+        <rect class="box" x="832" y="398" width="188" height="46" rx="8"/><text class="t c" x="926" y="418">Document vault</text><text class="s c" x="926" y="435">encrypted object store</text>
+        <rect class="box" x="432" y="456" width="188" height="46" rx="8"/><text class="t c" x="526" y="476">Audit ledger</text><text class="s c" x="526" y="493">append-only · hash-chained</text>
+        <rect class="box" x="632" y="456" width="188" height="46" rx="8"/><text class="t c" x="726" y="476">Data lake</text><text class="s c" x="726" y="493">warehouse · reports</text>
+        <rect class="box" x="832" y="456" width="188" height="46" rx="8"/><text class="t c" x="926" y="476">Model registry</text><text class="s c" x="926" y="493">versions · model cards</text>
+        <line class="ln" x1="290" y1="504" x2="290" y2="527" marker-start="url(#f2a)" marker-end="url(#f2a)"/>
+        <text class="s" x="300" y="520">consented API calls</text>
+        <!-- outside -->
+        <rect class="box" x="160" y="530" width="860" height="52" rx="8"/>
+        <text class="s c" x="590" y="551">UIDAI · DigiLocker · PAN · CKYCR · credit bureaus · Account Aggregators · GSTN · EPFO · MCA21</text>
+        <text class="s c" x="590" y="570">state land records · IGR (encumbrance) · CERSAI · RERA · e-Courts · sanctions and PEP lists · maps</text>
+        <!-- platform -->
+        <rect class="band" x="160" y="598" width="860" height="34" rx="8"/>
+        <text class="s c" x="590" y="620">Runs across every layer: India-region cloud · Kubernetes · encryption + KMS/HSM · SIEM · logs, metrics, traces · DR site</text>
+      </svg>
+    </div>
+    <div class="legend"><span><i class="sw sw-ai"></i>service that uses AI models</span><span><i class="sw sw-core"></i>rules-based (deterministic) service or core engine part</span><span><i class="sw sw-box"></i>infrastructure, data or channel</span></div>
+    <figcaption>The orchestrator is the only part that knows where an application stands. Services each do one job, so a rule change in policy does not redeploy fraud or scoring.</figcaption>
+  </figure>
+
+  <h3>What each layer does</h3>
+  <dl class="dl">
+    <dt>Channels</dt><dd>Customer and partner apps, and the web portals for customers, partners, credit officers, auditors and policy owners. All are thin clients over the same APIs.</dd>
+    <dt>Access and security</dt><dd>API gateway with a web application firewall, OAuth2/OpenID Connect login, role-based access, rate limits, device binding, and masking of personal data in logs.</dd>
+    <dt>Orchestration</dt><dd>A durable workflow engine keeps one state machine per application: which steps ran, what they returned, what is pending, and SLA timers. Steps are idempotent, so a retried bureau call does not create a second enquiry on the customer's report.</dd>
+    <dt>Decision services</dt><dd>Nine services with one job each. AI-backed ones return scores and facts; rules-based ones apply policy and regulation. The decision service combines their results into one outcome.</dd>
+    <dt>Data and integration</dt><dd>The integration hub talks to outside sources. The application database holds state, the feature store serves model inputs, the vault keeps documents, and the append-only audit ledger keeps decision records.</dd>
+    <dt>Core systems</dt><dd>The loan origination and management systems, CRM, eSign and e-stamp, eNACH and UPI AutoPay mandates, and notifications receive events after sanction.</dd>
+    <dt>Platform</dt><dd>India-region hosting, Kubernetes, encryption with managed keys, a security monitoring (SIEM) feed, full observability, and a disaster-recovery site.</dd>
+  </dl>
+
+  <h3>Technology stack</h3>
+  <div class="tbl-wrap"><table class="w-wide">
+    <thead><tr><th>Layer</th><th>Prototype (hackathon)</th><th>Production option</th><th>Why</th></tr></thead>
+    <tbody>
+      <tr><td>Mobile app</td><td>Flutter</td><td>Flutter</td><td>One codebase for Android and iOS; good camera support</td></tr>
+      <tr><td>Web portal</td><td>React + Next.js</td><td>React + Next.js</td><td>Role-based screens, server rendering for speed</td></tr>
+      <tr><td>Gateway</td><td>Kong or NGINX</td><td>Kong or cloud API gateway + WAF</td><td>Auth, rate limits, routing in one place</td></tr>
+      <tr><td>Services</td><td>Python FastAPI</td><td>FastAPI for AI services, Java Spring Boot for core</td><td>Python fits ML; Java fits long-lived core services</td></tr>
+      <tr><td>Workflow</td><td>Simple state machine, or Temporal</td><td>Temporal or Camunda 8</td><td>Durable state, retries, timers, full history</td></tr>
+      <tr><td>Rules</td><td>json-rules-engine or DMN tables</td><td>DMN (Camunda) or Drools</td><td>Business-editable tables with versions</td></tr>
+      <tr><td>Data</td><td>PostgreSQL, Redis</td><td>PostgreSQL (high availability), Redis</td><td>Reliable, well understood</td></tr>
+      <tr><td>Events</td><td>Redpanda</td><td>Kafka</td><td>Replayable event log for audit and analytics</td></tr>
+      <tr><td>ML</td><td>scikit-learn, LightGBM, SHAP, MLflow</td><td>Same + Feast feature store + drift monitoring</td><td>Explainable models with version control</td></tr>
+      <tr><td>Document AI</td><td>PaddleOCR or Tesseract + layout rules</td><td>OCR and layout models hosted in India</td><td>Indian documents, many scripts</td></tr>
+      <tr><td>LLM</td><td>Hosted model through a private endpoint</td><td>India-region private endpoint, no data retention</td><td>Data residency and privacy</td></tr>
+      <tr><td>Fraud graph</td><td>NetworkX</td><td>Neo4j</td><td>Finds rings through shared phones, devices, accounts</td></tr>
+      <tr><td>Storage</td><td>MinIO (S3-compatible)</td><td>Object store with write-once (object lock)</td><td>Tamper-evident evidence and records</td></tr>
+      <tr><td>Observability</td><td>OpenTelemetry, Prometheus, Grafana</td><td>Same + SIEM</td><td>Traces show where time goes in each application</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>Non-functional targets</h3>
+  <div class="tbl-wrap"><table class="w-mid">
+    <thead><tr><th>Quality</th><th>Design target</th></tr></thead>
+    <tbody>
+      <tr><td>Decision compute time</td><td>Under 2 seconds for 95% of decisions, once inputs are present</td></tr>
+      <tr><td>Stage A end to end</td><td>Under 5 minutes after the customer submits</td></tr>
+      <tr><td>Availability</td><td>99.9% for the decision path; a source outage pauses only the affected step</td></tr>
+      <tr><td>Recovery</td><td>Recovery point under 15 minutes, recovery time under 2 hours</td></tr>
+      <tr><td>Data residency</td><td>All personal and loan data stored and processed in India</td></tr>
+      <tr><td>Audit</td><td>100% of decisions have a record; 100% of replays match the original</td></tr>
+      <tr><td>Security</td><td>Encryption in transit and at rest, mTLS between services, secrets in a vault, least-privilege roles</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<!-- ============ AI SA ============ -->
+<section id="ai-sa">
+  <h2>AI solution architecture (AI SA)</h2>
+  <p>AI does three jobs in Nirnay. It <b>reads</b> documents, photos and deeds. It <b>predicts</b> income, default risk, fraud and property value. It <b>writes</b> file notes and help answers. It does not decide. The decision engine sets every outcome from rules and approved models, after each AI output has passed the guardrails.</p>
+  <figure>
+    <div class="fig-scroll">
+      <svg class="dg" viewBox="0 0 1040 584" role="img" aria-label="AI solution architecture: six input types feed three AI groups (perception, predictive ML, and GenAI assist which is advisory only). All outputs pass guardrails before the decision engine. Low-confidence outputs go to the refer queue. Outcomes and officer decisions feed MLOps, which deploys only approved model versions.">
+        <defs><marker id="f6a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="ah" d="M0,0 L10,5 L0,10 z"/></marker></defs>
+        <!-- inputs -->
+        <text class="k" x="20" y="26">INPUTS</text>
+        <rect class="box" x="20" y="40" width="160" height="52" rx="8"/><text class="t" x="32" y="62">Document images</text><text class="s" x="32" y="79">PDF · photo · scan</text>
+        <rect class="box" x="20" y="110" width="160" height="52" rx="8"/><text class="t" x="32" y="132">Selfie &amp; video</text><text class="s" x="32" y="149">live camera</text>
+        <rect class="box" x="20" y="180" width="160" height="52" rx="8"/><text class="t" x="32" y="202">Bank &amp; GST data</text><text class="s" x="32" y="219">AA · uploaded PDFs</text>
+        <rect class="box" x="20" y="250" width="160" height="52" rx="8"/><text class="t" x="32" y="272">Bureau &amp; form</text><text class="s" x="32" y="289">history · declared</text>
+        <rect class="box" x="20" y="320" width="160" height="52" rx="8"/><text class="t" x="32" y="342">Property data</text><text class="s" x="32" y="359">photos · maps · prices</text>
+        <rect class="box" x="20" y="390" width="160" height="52" rx="8"/><text class="t" x="32" y="412">Legal deeds</text><text class="s" x="32" y="429">regional languages</text>
+        <line class="ln" x1="205" y1="66" x2="205" y2="430"/>
+        <line class="ln" x1="180" y1="66" x2="205" y2="66"/>
+        <line class="ln" x1="180" y1="136" x2="205" y2="136"/>
+        <line class="ln" x1="180" y1="206" x2="205" y2="206"/>
+        <line class="ln" x1="180" y1="276" x2="205" y2="276"/>
+        <line class="ln" x1="180" y1="346" x2="205" y2="346"/>
+        <line class="ln" x1="180" y1="416" x2="205" y2="416"/>
+        <line class="ln" x1="205" y1="84" x2="228" y2="84" marker-end="url(#f6a)"/>
+        <line class="ln" x1="205" y1="254" x2="228" y2="254" marker-end="url(#f6a)"/>
+        <line class="ln" x1="205" y1="430" x2="228" y2="430" marker-end="url(#f6a)"/>
+        <!-- G1 perception -->
+        <rect class="grp" x="230" y="20" width="390" height="128" rx="10"/>
+        <text class="k k-ai" x="244" y="40">PERCEPTION</text>
+        <rect class="box box-ai" x="242" y="54" width="114" height="80" rx="8"/><text class="t c" x="299" y="78">Document AI</text><text class="s c" x="299" y="97">OCR · fields</text><text class="s c" x="299" y="113">tamper check</text>
+        <rect class="box box-ai" x="368" y="54" width="114" height="80" rx="8"/><text class="t c" x="425" y="78">Face &amp; liveness</text><text class="s c" x="425" y="97">1:1 face match</text><text class="s c" x="425" y="113">anti-spoof</text>
+        <rect class="box box-ai" x="494" y="54" width="114" height="80" rx="8"/><text class="t c" x="551" y="78">Property vision</text><text class="s c" x="551" y="97">geo-tag check</text><text class="s c" x="551" y="113">photo reuse</text>
+        <!-- G2 predictive -->
+        <rect class="grp" x="230" y="164" width="390" height="180" rx="10"/>
+        <text class="k k-ai" x="244" y="184">PREDICTIVE ML</text>
+        <rect class="box box-ai" x="242" y="196" width="114" height="60" rx="8"/><text class="t c" x="299" y="221">Income model</text><text class="s c" x="299" y="239">salary · cash-flow</text>
+        <rect class="box box-ai" x="368" y="196" width="114" height="60" rx="8"/><text class="t c" x="425" y="221">Credit risk</text><text class="s c" x="425" y="239">scorecard + GBM</text>
+        <rect class="box box-ai" x="494" y="196" width="114" height="60" rx="8"/><text class="t c" x="551" y="221">Fraud model</text><text class="s c" x="551" y="239">anomaly + graph</text>
+        <rect class="box box-ai" x="242" y="268" width="114" height="60" rx="8"/><text class="t c" x="299" y="293">AML matching</text><text class="s c" x="299" y="311">fuzzy · phonetic</text>
+        <rect class="box box-ai" x="368" y="268" width="114" height="60" rx="8"/><text class="t c" x="425" y="293">Valuation AVM</text><text class="s c" x="425" y="311">comparables · geo</text>
+        <rect class="box box-ai" x="494" y="268" width="114" height="60" rx="8"/><text class="t c" x="551" y="293">Entity match</text><text class="s c" x="551" y="311">dedupe · link IDs</text>
+        <!-- G3 genai -->
+        <rect class="grp-dash" x="230" y="360" width="390" height="142" rx="10"/>
+        <text class="k k-ai" x="244" y="380">GENAI ASSIST (LLM) · ADVISORY ONLY</text>
+        <rect class="box box-ai" x="242" y="392" width="177" height="44" rx="8"/><text class="t c" x="330" y="411">Deed reader</text><text class="s c" x="330" y="427">chain of title · flags</text>
+        <rect class="box box-ai" x="431" y="392" width="177" height="44" rx="8"/><text class="t c" x="519" y="411">Memo writer</text><text class="s c" x="519" y="427">file note for officers</text>
+        <rect class="box box-ai" x="242" y="446" width="177" height="44" rx="8"/><text class="t c" x="330" y="465">Customer assistant</text><text class="s c" x="330" y="481">Indian languages</text>
+        <rect class="box box-ai" x="431" y="446" width="177" height="44" rx="8"/><text class="t c" x="519" y="465">Letter filler</text><text class="s c" x="519" y="481">approved templates only</text>
+        <!-- guardrails -->
+        <line class="ln" x1="621" y1="84" x2="657" y2="172" marker-end="url(#f6a)"/>
+        <line class="ln" x1="621" y1="254" x2="657" y2="250" marker-end="url(#f6a)"/>
+        <line class="ln" x1="621" y1="430" x2="657" y2="330" marker-end="url(#f6a)"/>
+        <rect class="box" x="660" y="150" width="140" height="200" rx="8"/>
+        <text class="t c" x="730" y="176">Guardrails</text>
+        <text class="s c" x="730" y="200">schema &amp; range checks</text>
+        <text class="s c" x="730" y="219">confidence threshold</text>
+        <text class="s c" x="730" y="238">match against source</text>
+        <text class="s c" x="730" y="257">PII masked in prompts</text>
+        <text class="s c" x="730" y="276">grounded spans only</text>
+        <text class="s c" x="730" y="300">an LLM cannot set</text>
+        <text class="s c" x="730" y="316">the outcome</text>
+        <!-- engine -->
+        <line class="ln" x1="801" y1="200" x2="847" y2="200" marker-end="url(#f6a)"/>
+        <text class="s c" x="824" y="192">passed</text>
+        <rect class="box box-core" x="850" y="150" width="170" height="100" rx="8"/>
+        <text class="t c" x="935" y="178">Decision engine</text>
+        <text class="s c" x="935" y="199">rules + approved</text>
+        <text class="s c" x="935" y="215">models only</text>
+        <text class="t c" x="935" y="237">sets the outcome</text>
+        <line class="ln" x1="935" y1="251" x2="935" y2="277" marker-end="url(#f6a)"/>
+        <rect class="box" x="850" y="280" width="170" height="50" rx="8"/>
+        <text class="t c" x="935" y="301">Outcome + reasons</text>
+        <text class="s c" x="935" y="319">approve · refer · reject</text>
+        <!-- refer -->
+        <line class="ln" x1="730" y1="351" x2="730" y2="381" marker-end="url(#f6a)"/>
+        <text class="s" x="740" y="370">low confidence</text>
+        <rect class="box box-warn" x="660" y="384" width="140" height="50" rx="8"/>
+        <text class="t c" x="730" y="405">Refer queue</text>
+        <text class="s c" x="730" y="423">an officer decides</text>
+        <!-- mlops -->
+        <line class="ln" x1="935" y1="331" x2="935" y2="521" marker-end="url(#f6a)"/>
+        <text class="s e" x="925" y="470">outcomes + repayments</text>
+        <line class="ln" x1="730" y1="435" x2="730" y2="521" marker-end="url(#f6a)"/>
+        <text class="s" x="740" y="500">officer calls become labels</text>
+        <line class="ln" x1="425" y1="522" x2="425" y2="505" marker-end="url(#f6a)"/>
+        <text class="s" x="435" y="517">approved versions only</text>
+        <rect class="band" x="20" y="524" width="1000" height="48" rx="8"/>
+        <text class="k" x="36" y="544">MLOPS &amp; MODEL GOVERNANCE</text>
+        <text class="s" x="36" y="562">feature store · model registry · shadow → canary → live · drift and fairness monitors · SHAP reports · model cards · kill switch</text>
+      </svg>
+    </div>
+    <figcaption>Every AI output passes through guardrails before the decision engine sees it. The GenAI group sits inside a dashed boundary because its output is advisory: it extracts facts and drafts text, and it can never set an outcome. Officer decisions on referred cases become training labels.</figcaption>
+  </figure>
+
+  <h3>AI components</h3>
+  <div class="tbl-wrap"><table class="w-wide">
+    <thead><tr><th>Component</th><th>Technique</th><th>Input → output</th><th>Guardrail</th></tr></thead>
+    <tbody>
+      <tr><td><b>Document AI</b></td><td>OCR and layout model, document classifier, field extractor; tamper checks on file metadata, fonts, pixel patterns and QR codes</td><td>Images or PDFs → typed fields with a confidence for each</td><td>Low confidence asks for a re-upload; every field is cross-checked with a source API where one exists</td></tr>
+      <tr><td><b>Face and liveness</b></td><td>Face embeddings for 1:1 match; passive liveness to catch photos of photos and masks</td><td>Selfie and ID photo → match and liveness scores</td><td>Thresholds set from false-accept tests; a fail offers video KYC</td></tr>
+      <tr><td><b>Property vision</b></td><td>GPS and timestamp checks, perceptual hashing to catch reused photos, photo-versus-satellite comparison, construction-stage estimate</td><td>Photos and video → location and authenticity flags</td><td>Any mismatch sends a valuer</td></tr>
+      <tr><td><b>Income model</b></td><td>Text classification of bank narrations; salary, EMI and bounce detection; cash-flow volatility</td><td>Account Aggregator data or PDF statement → monthly income, obligations, red flags</td><td>Shown next to declared income; a big gap goes to Refer</td></tr>
+      <tr><td><b>Credit risk</b></td><td>Logistic scorecard with weight-of-evidence points (live); gradient-boosted trees with monotonic constraints (challenger); calibration to probability of default</td><td>Features → score, grade, points per factor</td><td>Independent validation before use; monthly stability and fairness checks</td></tr>
+      <tr><td><b>Fraud model</b></td><td>Supervised model on known fraud, anomaly detection, and graph analytics over shared phones, addresses, devices, accounts, agents and valuers</td><td>Application and its links → fraud score, ring alerts</td><td>Flags only; declaring a fraud follows RBI's fraud process</td></tr>
+      <tr><td><b>AML matching</b></td><td>Fuzzy and phonetic matching tuned for Indian names, transliteration between scripts, scoring on secondary IDs</td><td>Name, date of birth, IDs → match score</td><td>Possible matches go to Refer; the customer is never told why</td></tr>
+      <tr><td><b>Entity match</b></td><td>Record linkage across applications and internal data</td><td>Records → one linked customer, duplicate flags</td><td>Conservative thresholds; uncertain links are not merged</td></tr>
+      <tr><td><b>Valuation (AVM)</b></td><td>Gradient boosting or hedonic regression on registered prices, circle rates, listings and location features</td><td>Property → value range and confidence</td><td>Engine uses the lower of AVM and valuer value; low confidence sends a valuer</td></tr>
+      <tr><td><b>GenAI assist (LLM)</b></td><td>India-hosted LLM with retrieval over approved documents</td><td>Deeds → facts with source spans; reason codes → letter from an approved template; referred case → file note; customer question → answer</td><td>Each extracted fact must point to text in the source; no promises to customers; prompts logged; personal data masked</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>Six rules we follow for AI</h3>
+  <ol>
+    <li>Outcomes come from rules and validated models. An LLM never decides.</li>
+    <li>Every model has an owner, a model card, a version and a validation report before it goes live.</li>
+    <li>No protected attributes as inputs (gender, religion, caste, marital status). We also test for proxies such as PIN code.</li>
+    <li>Every AI output carries a confidence. Below the threshold, the case goes to Refer.</li>
+    <li>Models and data stay in India-region infrastructure. Personal data is masked in LLM prompts, and providers may not train on our data.</li>
+    <li>A kill switch sends every new case to Refer if monitoring shows a problem.</li>
+  </ol>
+
+  <h3>Model lifecycle (MLOps)</h3>
+  <ol class="steps">
+    <li><b>Data:</b> versioned training sets built from the feature store, so any model can be rebuilt exactly.</li>
+    <li><b>Train:</b> scorecard and challenger trained on the same data split.</li>
+    <li><b>Validate:</b> an independent reviewer checks accuracy (Gini, KS), stability, fairness and explanations.</li>
+    <li><b>Approve:</b> the model risk committee signs off; the model card goes to the registry.</li>
+    <li><b>Shadow:</b> the model scores live cases without affecting decisions; we compare it with the live model.</li>
+    <li><b>Canary:</b> a small share of traffic uses the new model, with automatic rollback.</li>
+    <li><b>Live and monitored:</b> drift (population stability index above 0.25 triggers review), performance on matured loans, approval and refer rates by segment, override rates, latency.</li>
+    <li><b>Retrain:</b> on a schedule or when a monitor fires, back to step 1.</li>
+  </ol>
+  <div class="note"><p><b>Cold start.</b> We do not have Hero's past loan data in the hackathon. Our demo model trains on the public Home Credit Default Risk dataset and we will say so in the demo. In production the scorecard is built on Hero's own loan book. Until there is enough history, it runs on bureau score plus an expert scorecard.</p></div>
+</section>
+
+<!-- ============ R1 ============ -->
+<section id="r1">
+  <p class="req-tag"><span class="n">1</span>Requirement 1 of 8</p>
+  <h2>Integrate data sources</h2>
+  <p class="ask"><b>Asked:</b> connect to multiple external data sources and show how data flows into the engine.</p>
+  <figure>
+    <div class="fig-scroll">
+      <svg class="dg" viewBox="0 0 1040 366" role="img" aria-label="Data flow: five groups of sources feed the integration hub, which the consent manager controls. The hub saves raw responses to the evidence vault and sends clean data to the applicant profile, then the feature store, then the decision engine, which writes a decision record linked to the evidence hashes.">
+        <defs><marker id="f3a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="ah" d="M0,0 L10,5 L0,10 z"/></marker></defs>
+        <rect class="box" x="20" y="20" width="230" height="56" rx="8"/><text class="t" x="34" y="43">Identity</text><text class="s" x="34" y="61">UIDAI · DigiLocker · PAN · CKYCR</text>
+        <rect class="box" x="20" y="88" width="230" height="56" rx="8"/><text class="t" x="34" y="111">Credit</text><text class="s" x="34" y="129">CIBIL · Experian · Equifax · CRIF</text>
+        <rect class="box" x="20" y="156" width="230" height="56" rx="8"/><text class="t" x="34" y="179">Income &amp; banking</text><text class="s" x="34" y="197">AA · GSTN · EPFO · ITR · MCA</text>
+        <rect class="box" x="20" y="224" width="230" height="56" rx="8"/><text class="t" x="34" y="247">Property</text><text class="s" x="34" y="265">land records · EC · CERSAI · RERA</text>
+        <rect class="box" x="20" y="292" width="230" height="56" rx="8"/><text class="t" x="34" y="315">Risk lists</text><text class="s" x="34" y="333">sanctions · PEP · negative lists</text>
+        <line class="ln" x1="251" y1="48" x2="287" y2="140" marker-end="url(#f3a)"/>
+        <line class="ln" x1="251" y1="116" x2="287" y2="165" marker-end="url(#f3a)"/>
+        <line class="ln" x1="251" y1="184" x2="287" y2="190" marker-end="url(#f3a)"/>
+        <line class="ln" x1="251" y1="252" x2="287" y2="215" marker-end="url(#f3a)"/>
+        <line class="ln" x1="251" y1="320" x2="287" y2="240" marker-end="url(#f3a)"/>
+        <rect class="box box-core" x="290" y="20" width="140" height="76" rx="8"/>
+        <text class="t c" x="360" y="44">Consent manager</text><text class="s c" x="360" y="63">AA consent artefact</text><text class="s c" x="360" y="80">bureau + DPDP notice</text>
+        <line class="ln" x1="360" y1="97" x2="360" y2="117" marker-end="url(#f3a)"/>
+        <text class="s" x="370" y="111">allows or blocks each call</text>
+        <rect class="box" x="290" y="120" width="140" height="140" rx="8"/>
+        <text class="t c" x="360" y="144">Integration hub</text>
+        <text class="s c" x="360" y="164">adapter per source</text>
+        <text class="s c" x="360" y="182">timeout + retry</text>
+        <text class="s c" x="360" y="200">circuit breaker</text>
+        <text class="s c" x="360" y="218">cache within consent</text>
+        <text class="s c" x="360" y="236">keeps raw response</text>
+        <line class="ln" x1="360" y1="261" x2="360" y2="287" marker-end="url(#f3a)"/>
+        <rect class="box" x="290" y="290" width="140" height="60" rx="8"/>
+        <text class="t c" x="360" y="314">Evidence vault</text><text class="s c" x="360" y="332">raw data + SHA-256</text>
+        <line class="ln" x1="431" y1="190" x2="477" y2="190" marker-end="url(#f3a)"/>
+        <text class="s c" x="455" y="182">normalise</text>
+        <rect class="box" x="480" y="150" width="140" height="80" rx="8"/>
+        <text class="t c" x="550" y="178">Applicant profile</text><text class="s c" x="550" y="197">one clean record</text><text class="s c" x="550" y="214">IDs matched</text>
+        <line class="ln" x1="621" y1="190" x2="667" y2="190" marker-end="url(#f3a)"/>
+        <text class="s c" x="645" y="182">features</text>
+        <rect class="box" x="670" y="150" width="130" height="80" rx="8"/>
+        <text class="t c" x="735" y="178">Feature store</text><text class="s c" x="735" y="197">income · FOIR · LTV</text><text class="s c" x="735" y="214">flags · history</text>
+        <line class="ln" x1="801" y1="190" x2="847" y2="190" marker-end="url(#f3a)"/>
+        <text class="s c" x="825" y="182">&lt; 50 ms</text>
+        <rect class="box box-core" x="850" y="130" width="170" height="120" rx="8"/>
+        <text class="t c" x="935" y="156">Decision engine</text>
+        <text class="s c" x="935" y="178">KYC · AML · fraud</text>
+        <text class="s c" x="935" y="196">policy · risk</text>
+        <text class="s c" x="935" y="214">property</text>
+        <text class="s c" x="935" y="232">compliance gate</text>
+        <line class="ln" x1="935" y1="251" x2="935" y2="287" marker-end="url(#f3a)"/>
+        <text class="s" x="945" y="274">writes</text>
+        <rect class="box" x="850" y="290" width="170" height="60" rx="8"/>
+        <text class="t c" x="935" y="314">Decision record</text><text class="s c" x="935" y="332">inputs · versions · reasons</text>
+        <path class="ln dash" d="M431 320 H847" marker-end="url(#f3a)"/>
+        <text class="s c" x="640" y="312">evidence hashes linked into the record</text>
+      </svg>
+    </div>
+    <figcaption>Data never reaches the engine without passing the consent manager and the integration hub. The raw response is hashed and kept, so an auditor can check that the engine saw exactly what the source sent.</figcaption>
+  </figure>
+
+  <h3>Sources we connect</h3>
+  <div class="tbl-wrap"><table class="w-wide">
+    <thead><tr><th>Source</th><th>What we get</th><th>How we connect</th><th>Used for</th></tr></thead>
+    <tbody>
+      <tr><td>UIDAI (Aadhaar)</td><td>eKYC data and photo, or offline XML</td><td>Licensed KUA partner where permitted; otherwise Aadhaar offline XML or DigiLocker</td><td>Identity, address</td></tr>
+      <tr><td>DigiLocker</td><td>Issuer-signed Aadhaar, PAN, driving licence and other issued documents</td><td>Partner API with customer consent</td><td>Identity, document authenticity</td></tr>
+      <tr><td>PAN verification (Protean, UTIITSL)</td><td>Name, status, Aadhaar–PAN link</td><td>API</td><td>Identity, duplicate checks</td></tr>
+      <tr><td>CKYCR (run by CERSAI)</td><td>Existing KYC record; we upload new ones</td><td>API</td><td>Faster KYC</td></tr>
+      <tr><td>Credit bureaus: TransUnion CIBIL, Experian, Equifax, CRIF High Mark</td><td>Score, loans, days past due, recent enquiries</td><td>API with consent; idempotent calls</td><td>Policy rules, risk score</td></tr>
+      <tr><td>Account Aggregator network</td><td>Bank statements and other financial data from participating institutions</td><td>As a Financial Information User, with a consent artefact per request</td><td>Income, cash-flow, obligations</td></tr>
+      <tr><td>GSTN</td><td>GST returns and turnover</td><td>Through a GST Suvidha Provider or AA, with consent</td><td>Self-employed income (mainly LAP)</td></tr>
+      <tr><td>Income tax records (ITR, AIS, Form 26AS)</td><td>Declared income, tax deducted</td><td>Customer-consented fetch or upload</td><td>Income check</td></tr>
+      <tr><td>EPFO (UAN)</td><td>Employer, PF contributions</td><td>Partner API with consent</td><td>Employment proof</td></tr>
+      <tr><td>MCA21</td><td>Company and director data</td><td>API</td><td>Employer and business checks</td></tr>
+      <tr><td>State land records and IGR</td><td>Owner, survey details, encumbrance certificate, registered deeds</td><td>State portals and APIs; coverage varies by state</td><td>Title, ownership</td></tr>
+      <tr><td>CERSAI security-interest registry</td><td>Existing mortgage on the property</td><td>Search API</td><td>Catching a property mortgaged twice</td></tr>
+      <tr><td>RERA (state authorities)</td><td>Project registration, builder, timelines</td><td>Portal</td><td>Under-construction Home Loans</td></tr>
+      <tr><td>e-Courts</td><td>Cases by party name</td><td>Search</td><td>Litigation on the borrower or property</td></tr>
+      <tr><td>Circle rates, maps, satellite (for example ISRO Bhuvan)</td><td>Guidance values, location, land use</td><td>Public data and map APIs</td><td>Valuation, location risk</td></tr>
+      <tr><td>Sanctions and PEP lists</td><td>UN Security Council list, lists under the UAPA, PEP and adverse-media data</td><td>Daily list refresh</td><td>AML screening</td></tr>
+      <tr><td>Internal systems (LOS, LMS, CRM)</td><td>Past loans and applications, internal negative list</td><td>Internal API</td><td>Duplicates, past fraud, existing exposure</td></tr>
+    </tbody>
+  </table></div>
+  <p>After the decision, the same hub connects to <b>execution services</b>: Aadhaar eSign, e-stamping, eNACH and UPI AutoPay mandates, bank account verification (penny drop), SMS and WhatsApp, and the loan systems.</p>
+
+  <h3>How the hub keeps data reliable</h3>
+  <ul>
+    <li><b>Consent first.</b> No call goes out without a valid consent for that purpose; consents are stored with their artefact IDs.</li>
+    <li><b>One adapter per source.</b> Each adapter turns the source's format into our standard format and has its own timeout and retry rules.</li>
+    <li><b>Fallbacks.</b> If the Account Aggregator is down, the customer can upload a PDF statement and Document AI reads it. The engine marks which path was used.</li>
+    <li><b>Circuit breakers.</b> A failing source is paused so it does not slow every application; affected steps wait in a clear status.</li>
+    <li><b>Evidence kept.</b> The raw response is stored with a SHA-256 hash, and the decision record points to it.</li>
+    <li><b>Quality checks.</b> Names, dates and amounts are normalised, and records from different sources are matched on PAN, mobile and date of birth.</li>
+  </ul>
+</section>
+
+<!-- ============ R2 ============ -->
+<section id="r2">
+  <p class="req-tag"><span class="n">2</span>Requirement 2 of 8</p>
+  <h2>Eligibility and policy</h2>
+  <p class="ask"><b>Asked:</b> assess eligibility in real time for Home Loans and LAP, and validate each case against internal credit policies.</p>
+  <p>Credit policy lives in the engine as <b>decision tables</b>, not hard-wired code. The credit team edits them in the policy studio. Every change needs a second approver (maker-checker), carries a version and an effective date, and is tested against past applications before it goes live. Home Loans and LAP have separate rule sets.</p>
+
+  <h3>How the eligible amount is worked out</h3>
+  <div class="formula">
+    <div>Max EMI           = net monthly income × FOIR cap − existing EMIs</div>
+    <div>Loan by income    = Max EMI × [1 − (1 + r)<sup>−n</sup>] ÷ r      (r = monthly rate, n = months)</div>
+    <div>Loan by property  = LTV cap × property value</div>
+    <div>Eligible loan     = the lowest of: loan by income, loan by property, product limit, amount asked</div>
+  </div>
+  <div class="card">
+    <h4>Worked example: Ravi, 32, salaried, buying a ₹60 lakh flat</h4>
+    <ul>
+      <li>Net income ₹1,00,000 a month; existing EMI ₹10,000; asks ₹45 lakh for 20 years at 8.75%.</li>
+      <li>FOIR cap 50% → max EMI = ₹50,000 − ₹10,000 = <b>₹40,000</b>.</li>
+      <li>At 8.75% for 240 months, each ₹1 of EMI supports about ₹113.16 of loan → loan by income ≈ <b>₹45.26 lakh</b>.</li>
+      <li>A loan between ₹30 lakh and ₹75 lakh has an 80% LTV cap → loan by property = <b>₹48 lakh</b>.</li>
+      <li>Eligible = lowest of ₹45.26 lakh, ₹48 lakh and the ₹45 lakh asked → <b>₹45 lakh</b>, EMI <b>₹39,767</b>. Total EMIs are 49.8% of income and LTV is 75%.</li>
+    </ul>
+  </div>
+
+  <h3>Policy parameters</h3>
+  <div class="tbl-wrap"><table class="w-mid">
+    <thead><tr><th>Parameter</th><th>Home Loan</th><th>LAP</th></tr></thead>
+    <tbody>
+      <tr><td>Minimum age at application</td><td>21</td><td>21</td></tr>
+      <tr><td>Maximum age when the loan ends</td><td>65 salaried, 70 self-employed</td><td>65 salaried, 70 self-employed</td></tr>
+      <tr><td>Maximum tenure</td><td>30 years</td><td>15 years</td></tr>
+      <tr><td>Bureau score</td><td colspan="2">700+ passes; 650–699 Refer; below 650 Reject; no history Refer</td></tr>
+      <tr><td>Recent late payments (12 months)</td><td colspan="2">30+ days late Refer; 90+ days late Reject</td></tr>
+      <tr><td>FOIR cap by monthly income</td><td colspan="2">45% up to ₹50,000; 50% up to ₹1,50,000; 60% above</td></tr>
+      <tr><td>LTV cap</td><td>RBI tiers: 90% / 80% / 75%</td><td>60%</td></tr>
+      <tr><td>Auto-sanction limit</td><td colspan="2">₹1 crore; above this, Refer to a senior officer</td></tr>
+      <tr><td>Interest rate used in the maths</td><td>8.75% floating</td><td>10.50% floating</td></tr>
+    </tbody>
+  </table></div>
+  <p class="small muted">Only the HL LTV tiers come from regulation. Every other value is illustrative. Hero's real credit policy plugs in through the policy studio.</p>
+
+  <h3>Product-specific checks</h3>
+  <div class="two">
+    <div class="card"><h4>Home Loan</h4><ul>
+      <li>Source of the customer's own contribution traced in bank data.</li>
+      <li>Builder and project in the pre-approved list, or RERA-registered with a clean record.</li>
+      <li>Disbursal schedule tied to construction stage for under-construction homes.</li>
+      <li>Stamp duty and registration are left out of the property cost for LTV, except where RBI allows them for homes costing ₹10 lakh or less.</li>
+    </ul></div>
+    <div class="card"><h4>LAP</h4><ul>
+      <li>End-use declaration captured; end-use monitoring set up after disbursal.</li>
+      <li>Property owned by the applicant or co-applicant; no undisclosed charge.</li>
+      <li>Business vintage and income from GST and ITR agree with bank credits.</li>
+      <li>Existing loan on the property must be taken over or closed at disbursal.</li>
+    </ul></div>
+  </div>
+  <p><b>Real time.</b> All rules run in under a second once features are ready. A quick check runs on declared data before the full application, so the customer sees a realistic amount early.</p>
+</section>
+
+<!-- ============ R3 ============ -->
+<section id="r3">
+  <p class="req-tag"><span class="n">3</span>Requirement 3 of 8</p>
+  <h2>Fraud detection and KYC/AML</h2>
+  <p class="ask"><b>Asked:</b> detect fraud and meet KYC/AML requirements without manual review.</p>
+
+  <h3>KYC, fully digital</h3>
+  <ol class="steps">
+    <li><b>Mobile OTP and device binding.</b> The device fingerprint is saved for fraud checks.</li>
+    <li><b>PAN check.</b> Name and status from the PAN service, plus the Aadhaar–PAN link status.</li>
+    <li><b>Aadhaar.</b> eKYC through a licensed partner where Hero is permitted, or Aadhaar offline XML or DigiLocker. Aadhaar numbers are stored only as tokens in an Aadhaar Data Vault, as UIDAI requires.</li>
+    <li><b>CKYCR.</b> Search and download an existing record; upload new records after onboarding.</li>
+    <li><b>Face match and liveness.</b> The selfie is matched to the ID photo; passive liveness rejects photos of photos and masks.</li>
+    <li><b>Fallback.</b> If the face match fails, the customer is offered video KYC (V-CIP) with an official, as RBI's KYC Directions allow.</li>
+  </ol>
+
+  <h3>AML, without manual review for clear cases</h3>
+  <ul>
+    <li><b>Screening:</b> names and dates of birth are checked against the UN Security Council lists, the lists under the UAPA, PEP lists and adverse media, at onboarding and again whenever a list updates.</li>
+    <li><b>Smart matching:</b> fuzzy, phonetic and cross-script matching handles Indian name spellings, so “Mohammed” and “Muhammad” or “Choudhary” and “Chaudhari” are compared properly.</li>
+    <li><b>Auto-clearing:</b> a name hit is cleared automatically when date of birth, PAN, father's name or nationality clearly differ. Only real possible matches reach a person.</li>
+    <li><b>Risk category:</b> each customer is rated low, medium or high from occupation, geography, product and source of funds. High risk gets enhanced checks.</li>
+    <li><b>Rules that need a person:</b> a politically exposed person needs enhanced checks and senior management approval under the KYC Directions, so the engine refers these cases by design.</li>
+    <li><b>No tipping-off:</b> the customer never sees an AML reason. Their message says only that the application needs more review. Suspicious cases are prepared for the Principal Officer, who files with FIU-IND.</li>
+  </ul>
+
+  <h3>Fraud checks</h3>
+  <div class="tbl-wrap"><table class="w-wide">
+    <thead><tr><th>Fraud type</th><th>Signal</th><th>Automated check</th></tr></thead>
+    <tbody>
+      <tr><td>Identity theft, synthetic identity</td><td>Face mismatch, PAN name mismatch, a device seen on many applications</td><td>Face match, PAN API, device fingerprint, velocity rules</td></tr>
+      <tr><td>Inflated income</td><td>Salary slip higher than bank credits, EPFO or AIS</td><td>Cross-source income reconciliation; employer check via EPFO and MCA</td></tr>
+      <tr><td>Forged documents</td><td>Edited PDF metadata, mixed fonts, wrong formats, QR that does not match</td><td>Document AI tamper checks, issuer verification through DigiLocker or QR</td></tr>
+      <tr><td>Fake bank statements</td><td>Balances that do not carry forward, odd transaction patterns</td><td>Prefer AA data (cannot be edited); balance-continuity checks on PDFs</td></tr>
+      <tr><td>Property fraud</td><td>Same property mortgaged twice, seller not the owner, inflated value</td><td>CERSAI search, encumbrance certificate, land-record owner match, AVM versus declared price, geo-tagged photos</td></tr>
+      <tr><td>Collusion rings</td><td>Many applications sharing a phone, address, employer, account, agent or valuer</td><td>Graph analytics with community detection</td></tr>
+      <tr><td>Round-tripping</td><td>Money moving in circles to inflate turnover</td><td>Transaction graph on bank and GST data</td></tr>
+    </tbody>
+  </table></div>
+  <p>High-confidence fraud is rejected; suspected fraud is referred. The engine raises flags and early warning signals only. Classifying a borrower as a fraud follows RBI's Fraud Risk Management Directions, which require a fair process such as a show-cause notice before that label is applied.</p>
+</section>
+
+<!-- ============ R4 ============ -->
+<section id="r4">
+  <p class="req-tag"><span class="n">4</span>Requirement 4 of 8</p>
+  <h2>Risk scoring</h2>
+  <p class="ask"><b>Asked:</b> score the risk of every application and show how the score is produced.</p>
+  <figure>
+    <div class="fig-scroll">
+      <svg class="dg" viewBox="0 0 1040 330" role="img" aria-label="Risk score production: four feature groups feed the live scorecard and a shadow GBM challenger. Scorecard points are calibrated to a probability of default, then turned into a score and grade, which drives the decision band, price spread and reason codes. Fraud signals go through a separate fraud model and fraud gate that can override the grade.">
+        <defs><marker id="f4a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="ah" d="M0,0 L10,5 L0,10 z"/></marker></defs>
+        <rect class="box" x="20" y="20" width="210" height="48" rx="8"/><text class="t" x="32" y="40">Repayment history</text><text class="s" x="32" y="57">bureau score · DPD · enquiries</text>
+        <rect class="box" x="20" y="78" width="210" height="48" rx="8"/><text class="t" x="32" y="98">Affordability</text><text class="s" x="32" y="115">income · FOIR · cash-flow</text>
+        <rect class="box" x="20" y="136" width="210" height="48" rx="8"/><text class="t" x="32" y="156">Stability</text><text class="s" x="32" y="173">job or business vintage · age</text>
+        <rect class="box" x="20" y="194" width="210" height="48" rx="8"/><text class="t" x="32" y="214">Collateral</text><text class="s" x="32" y="231">LTV · property type · location</text>
+        <rect class="box" x="20" y="262" width="210" height="50" rx="8"/><text class="t" x="32" y="282">Fraud signals</text><text class="s" x="32" y="299">identity · documents · graph</text>
+        <line class="ln" x1="230" y1="44" x2="255" y2="44"/>
+        <line class="ln" x1="230" y1="102" x2="255" y2="102"/>
+        <line class="ln" x1="230" y1="160" x2="255" y2="160"/>
+        <line class="ln" x1="230" y1="218" x2="255" y2="218"/>
+        <line class="ln" x1="255" y1="44" x2="255" y2="218"/>
+        <line class="ln" x1="255" y1="75" x2="277" y2="75" marker-end="url(#f4a)"/>
+        <line class="ln" x1="255" y1="165" x2="277" y2="165" marker-end="url(#f4a)"/>
+        <rect class="box box-core" x="280" y="40" width="200" height="70" rx="8"/>
+        <text class="t c" x="380" y="64">Scorecard (live)</text><text class="s c" x="380" y="84">logistic regression, points</text><text class="s c" x="380" y="100">every point readable</text>
+        <rect class="box dashed" x="280" y="130" width="200" height="70" rx="8"/>
+        <text class="t c" x="380" y="154">GBM challenger</text><text class="s c" x="380" y="174">monotonic · SHAP reasons</text><text class="s c" x="380" y="190">runs in shadow, compared</text>
+        <line class="ln" x1="481" y1="75" x2="527" y2="75" marker-end="url(#f4a)"/>
+        <line class="ln dash" x1="481" y1="165" x2="527" y2="104" marker-end="url(#f4a)"/>
+        <rect class="box" x="530" y="40" width="140" height="70" rx="8"/>
+        <text class="t c" x="600" y="64">Calibrate</text><text class="s c" x="600" y="84">points → chance of</text><text class="s c" x="600" y="100">default (PD)</text>
+        <line class="ln" x1="671" y1="75" x2="717" y2="75" marker-end="url(#f4a)"/>
+        <rect class="box box-core" x="720" y="40" width="140" height="70" rx="8"/>
+        <text class="t c" x="790" y="64">Score &amp; grade</text><text class="s c" x="790" y="84">738 → grade B</text><text class="s c" x="790" y="100">bands A to E</text>
+        <line class="ln" x1="861" y1="75" x2="897" y2="40" marker-end="url(#f4a)"/>
+        <line class="ln" x1="861" y1="75" x2="897" y2="100" marker-end="url(#f4a)"/>
+        <line class="ln" x1="861" y1="75" x2="897" y2="160" marker-end="url(#f4a)"/>
+        <rect class="box" x="900" y="20" width="120" height="40" rx="8"/><text class="t c" x="960" y="45">Reason codes</text>
+        <rect class="box" x="900" y="80" width="120" height="40" rx="8"/><text class="t c" x="960" y="105">Price spread</text>
+        <rect class="box" x="900" y="140" width="120" height="40" rx="8"/><text class="t c" x="960" y="165">Decision band</text>
+        <line class="ln" x1="231" y1="287" x2="277" y2="287" marker-end="url(#f4a)"/>
+        <rect class="box box-ai" x="280" y="262" width="200" height="50" rx="8"/>
+        <text class="t c" x="380" y="283">Fraud model</text><text class="s c" x="380" y="300">kept apart from credit risk</text>
+        <line class="ln" x1="481" y1="287" x2="527" y2="287" marker-end="url(#f4a)"/>
+        <rect class="box box-core" x="530" y="262" width="140" height="50" rx="8"/>
+        <text class="t c" x="600" y="283">Fraud gate</text><text class="s c" x="600" y="300">can force Refer/Reject</text>
+        <path class="ln" d="M671 287 H960 V182" marker-end="url(#f4a)"/>
+        <text class="s c" x="815" y="280">fraud overrides the grade</text>
+      </svg>
+    </div>
+    <figcaption>The live score comes from a scorecard where every point can be read and explained. The boosted-tree model runs in shadow as a challenger. Fraud is scored separately so that a strong credit profile can never hide a fraud signal.</figcaption>
+  </figure>
+
+  <h3>How the score is produced</h3>
+  <ol class="steps">
+    <li><b>Features:</b> the feature store gives about 40 inputs in four groups: repayment history, affordability, stability and collateral.</li>
+    <li><b>Points:</b> the scorecard gives each input points. For Ravi: base 650, repayment history +33, no missed payments +10, affordability +10, collateral +15, salaried stability +20.</li>
+    <li><b>Total and calibration:</b> points add up to 738. Calibration on past loans maps each score to a probability of default.</li>
+    <li><b>Grade:</b> 738 falls in grade B. The grade sets the decision band and the price spread under Hero's board-approved interest-rate policy.</li>
+    <li><b>Reasons:</b> the factors that lost the most points become the reason codes. In the challenger, SHAP values play the same role.</li>
+  </ol>
+  <div class="tbl-wrap"><table class="w-mid">
+    <thead><tr><th>Grade</th><th class="num">Score</th><th>Decision</th><th>Price spread (illustrative)</th></tr></thead>
+    <tbody>
+      <tr><td><span class="chip chip-ok">A</span></td><td class="num">760–900</td><td>Approve</td><td>Base rate</td></tr>
+      <tr><td><span class="chip chip-ok">B</span></td><td class="num">700–759</td><td>Approve</td><td>Base + 0.25%</td></tr>
+      <tr><td><span class="chip chip-warn">C</span></td><td class="num">650–699</td><td>Refer</td><td>Set by the officer within policy</td></tr>
+      <tr><td><span class="chip chip-bad">D</span></td><td class="num">600–649</td><td>Reject</td><td>None</td></tr>
+      <tr><td><span class="chip chip-bad">E</span></td><td class="num">300–599</td><td>Reject</td><td>None</td></tr>
+    </tbody>
+  </table></div>
+  <p><b>Why a scorecard first.</b> A scorecard can be read line by line by a credit officer, an auditor and a supervisor. The boosted-tree challenger usually ranks risk a little better; it replaces the scorecard only after validation shows a real gain and its explanations hold up.</p>
+</section>
+
+<!-- ============ R5 ============ -->
+<section id="r5">
+  <p class="req-tag"><span class="n">5</span>Requirement 5 of 8</p>
+  <h2>Documents and property</h2>
+  <p class="ask"><b>Asked:</b> verify documents digitally and assess the property within the same flow.</p>
+
+  <h3>Document AI pipeline</h3>
+  <ol class="steps">
+    <li><b>Capture:</b> in-app camera with edge detection, or PDF upload; DigiLocker documents come in already signed by the issuer.</li>
+    <li><b>Quality check:</b> blur, glare and cropping are caught on the phone before upload.</li>
+    <li><b>Classify:</b> the model tells a salary slip from a Form 16, a sale deed from an allotment letter.</li>
+    <li><b>Extract:</b> fields such as name, PAN, employer, gross and net pay, survey number and owner are read, each with a confidence.</li>
+    <li><b>Verify:</b> each field is checked against a source, as in the table below.</li>
+    <li><b>Tamper check:</b> file metadata, font consistency, pixel patterns and QR codes are checked for edits.</li>
+    <li><b>Store:</b> the file goes to the encrypted vault with a SHA-256 hash that the decision record references.</li>
+  </ol>
+  <div class="tbl-wrap"><table class="w-mid">
+    <thead><tr><th>Document</th><th>Checked against</th></tr></thead>
+    <tbody>
+      <tr><td>PAN card</td><td>PAN verification API</td></tr>
+      <tr><td>Aadhaar</td><td>UIDAI eKYC, offline XML signature or DigiLocker</td></tr>
+      <tr><td>Salary slips</td><td>Bank salary credits (AA) and EPFO contributions</td></tr>
+      <tr><td>Form 16 or ITR</td><td>AIS / Form 26AS</td></tr>
+      <tr><td>Bank statement PDF</td><td>AA data where possible; balance continuity otherwise</td></tr>
+      <tr><td>GST returns</td><td>GSTN</td></tr>
+      <tr><td>Sale agreement, allotment letter</td><td>RERA record and builder data</td></tr>
+      <tr><td>Title deed, mother deeds</td><td>State land records, encumbrance certificate, CERSAI</td></tr>
+      <tr><td>Approved plan, occupancy certificate</td><td>Municipal records where online</td></tr>
+      <tr><td>Property tax receipt</td><td>Municipal tax portal</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>Property assessment in the same flow</h3>
+  <dl class="dl">
+    <dt>Identify</dt><dd>Address, survey or CTS number and map pin; for flats, the RERA project ID, tower and unit. If the project is pre-approved, most checks below are already done.</dd>
+    <dt>Ownership</dt><dd>The owner in state land records must match the seller (HL) or the applicant (LAP). Mutation status is checked.</dd>
+    <dt>Encumbrance</dt><dd>Encumbrance certificate from the state registration department, CERSAI search for an existing mortgage, and e-Courts search for cases.</dd>
+    <dt>Legal reading</dt><dd>The LLM deed reader pulls parties, survey numbers, dates and each transfer in the ownership chain, in English or regional languages. Every fact must point to text in the deed. Gaps or conflicts become flags.</dd>
+    <dt>Valuation</dt><dd>The AVM gives a value range from registered prices, circle rates, listings, building age and location. The circle rate acts as a floor check. If the declared price is far above the AVM, the case is flagged.</dd>
+    <dt>Inspection</dt><dd>For low-value or pre-approved cases, the customer records geo-tagged, time-stamped photos and a short video in the app. Otherwise an empanelled valuer does it through the vendor app. Photos are checked against satellite images and for reuse.</dd>
+    <dt>Technical</dt><dd>Approved plan, occupancy or completion certificate, building age, and flood or hazard zone from public maps.</dd>
+    <dt>Output</dt><dd>Market value, the value used for LTV (the lower of AVM and valuer value), and a legal status: <span class="chip chip-ok">clear</span> <span class="chip chip-warn">needs review</span> <span class="chip chip-bad">defective</span>.</dd>
+  </dl>
+  <div class="note"><p><b>Where this stops being instant.</b> Land records are digitised unevenly across states. Where a record is not machine-readable, the engine refers the title to an empanelled lawyer through the vendor portal. The rest of the file stays digital and the SLA is tracked.</p></div>
+</section>
+
+<!-- ============ R6 ============ -->
+<section id="r6">
+  <p class="req-tag"><span class="n">6</span>Requirement 6 of 8</p>
+  <h2>Compliance checks</h2>
+  <p class="ask"><b>Asked:</b> show how NHB regulations, the Fair Practices Code and audit standards are built into the engine.</p>
+  <p>Each regulation becomes a <b>compliance rule</b> with an ID, the source clause, a version and an effective date. The compliance gate runs every rule before a decision leaves the engine. If a rule fails, the decision is blocked, the case goes to Refer, and the failure is logged. Each rule also lists the evidence it saves, so the audit trail fills itself.</p>
+  <div class="tbl-wrap"><table class="w-wide">
+    <thead><tr><th>Requirement</th><th>Source</th><th>How the engine enforces it</th><th>Evidence saved</th></tr></thead>
+    <tbody>
+      <tr><td>LTV caps on individual housing loans (90% / 80% / 75%)</td><td>RBI HFC Directions</td><td>Hard rule; the loan amount is capped automatically</td><td>LTV maths, valuation ID</td></tr>
+      <tr><td>Customer due diligence: identity, address, CKYCR, V-CIP, risk category, periodic updates</td><td>RBI KYC Directions, 2025</td><td>No decision unless KYC status is verified</td><td>KYC artefacts, CKYC number, face and liveness scores</td></tr>
+      <tr><td>Enhanced checks and senior approval for politically exposed persons</td><td>RBI KYC Directions</td><td>Always Refer</td><td>Screening result, approver ID</td></tr>
+      <tr><td>Sanctions screening before onboarding; records kept 5 years after the relationship ends; suspicious transaction reports; no tipping-off</td><td>PMLA 2002, PML Rules 2005</td><td>Screening at onboarding and on list updates; retention tags; STR draft for the Principal Officer; neutral customer messages</td><td>Screening log with list version</td></tr>
+      <tr><td>Acknowledge each application; decide within a stated time; give rejection reasons in writing; terms in a language the borrower understands</td><td>Fair Practices Code (RBI HFC Directions, Chapter X)</td><td>Auto-acknowledgement with application ID; SLA timer; rejection letter built from reason codes; letters in the customer's language</td><td>Message log, timestamps</td></tr>
+      <tr><td>Share the reasons when a credit request is rejected</td><td>RBI rules on credit information (2023)</td><td>Reason codes always mapped to customer text</td><td>Letter copy</td></tr>
+      <tr><td>Key Facts Statement with all-in cost (APR) before the agreement</td><td>RBI KFS rules (2024); Digital Lending Directions, 2025</td><td>eSign is blocked until the KFS is shown and accepted</td><td>KFS PDF hash, acceptance time</td></tr>
+      <tr><td>Digital lending: need-based data with consent, cooling-off period, disbursal only to permitted accounts, grievance officer shown, app reported to RBI</td><td>RBI Digital Lending Directions, 2025</td><td>Consent manager; cooling-off flag on the loan; disbursal account check; grievance details in app; app listed on RBI's CIMS portal</td><td>Consent artefacts, disbursal account match</td></tr>
+      <tr><td>Penal charges instead of penal interest, with no capitalisation</td><td>RBI fair lending rules (2023)</td><td>Pricing engine has no penal-interest field; penal charges shown in the KFS</td><td>Pricing version</td></tr>
+      <tr><td>No foreclosure charges on floating-rate loans to individuals</td><td>RBI / NHB rules</td><td>Pricing rule</td><td>Pricing version</td></tr>
+      <tr><td>Interest rate by a board-approved model that grades risk</td><td>Fair Practices Code</td><td>Price spread comes from the risk grade table</td><td>Grade, rate table version</td></tr>
+      <tr><td>Register the mortgage with CERSAI within 30 days of creation</td><td>SARFAESI Act, 2002</td><td>Post-sanction task created with a due date</td><td>CERSAI filing ID</td></tr>
+      <tr><td>Return property documents within 30 days of full repayment</td><td>RBI rules on release of property documents (2023)</td><td>Closure task with a due date in the loan system</td><td>Release date</td></tr>
+      <tr><td>Consent, purpose limits, data minimisation, erasure when the purpose ends</td><td>DPDP Act 2023, DPDP Rules 2025</td><td>Consent ledger; retention engine; masking</td><td>Consent records, deletion log</td></tr>
+      <tr><td>IT governance, logs kept 180 days, cyber incidents reported within 6 hours</td><td>RBI IT Governance Directions (2023); CERT-In Directions (2022)</td><td>Central logging with retention; incident runbook</td><td>Log archive, incident tickets</td></tr>
+      <tr><td>Early warning signals and red-flagging for fraud</td><td>RBI Fraud Risk Management Directions (2024)</td><td>Fraud engine raises early warning signals; fraud register</td><td>Alert history</td></tr>
+      <tr><td>Responsible AI: board-approved policy, human oversight, explainability, audits</td><td>RBI FREE-AI framework (2025, advisory)</td><td>Model inventory, Refer path, reason codes, kill switch</td><td>Model cards, validation reports</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>Audit standards built in</h3>
+  <ul>
+    <li><b>Maker-checker</b> on every rule, model and template change, with both names stored.</li>
+    <li><b>Tamper-evident trail:</b> each decision record includes the hash of the one before it, so a changed or deleted record breaks the chain. Records are kept on write-once storage.</li>
+    <li><b>Read-only audit portal</b> for internal audit, statutory auditors and NHB inspection teams, with replay of any decision.</li>
+    <li><b>Risk-based internal audit:</b> the audit portal gives the sample selection and exception reports that RBI's risk-based internal audit rules expect of larger HFCs.</li>
+    <li><b>Regulatory returns</b> are generated from the same data, so reported numbers match the engine.</li>
+    <li><b>Regulation changes</b> are handled in the policy studio: update the rule, cite the new clause, test on past cases, approve, then switch on at the effective date.</li>
+  </ul>
+</section>
+
+<!-- ============ R7 ============ -->
+<section id="r7">
+  <p class="req-tag"><span class="n">7</span>Requirement 7 of 8</p>
+  <h2>Instant decisioning</h2>
+  <p class="ask"><b>Asked:</b> deliver a humanless credit decision instantly, with a clear approve, reject or refer outcome.</p>
+  <figure>
+    <div class="fig-scroll">
+      <svg class="dg" viewBox="0 0 1040 280" role="img" aria-label="Eight decision gates in a row: identity, AML, fraud and documents, policy rules, property, affordability, risk grade, authority limit, then approve. Gates can send a case up to Refer or down to Reject.">
+        <defs>
+          <marker id="f5a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="ah" d="M0,0 L10,5 L0,10 z"/></marker>
+          <marker id="f5w" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="ah-warn" d="M0,0 L10,5 L0,10 z"/></marker>
+          <marker id="f5b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="ah-bad" d="M0,0 L10,5 L0,10 z"/></marker>
+        </defs>
+        <rect class="band-warn" x="0" y="10" width="1040" height="44" rx="8"/>
+        <text class="k k-warn" x="20" y="37">REFER → CREDIT OFFICER QUEUE, WITH A PRE-FILLED FILE</text>
+        <rect class="band-bad" x="0" y="226" width="1040" height="44" rx="8"/>
+        <text class="k k-bad" x="20" y="253">REJECT → WRITTEN REASONS IN THE CUSTOMER'S LANGUAGE, AND HOW TO APPEAL</text>
+        <rect class="box" x="12" y="100" width="96" height="64" rx="8"/><text class="k c" x="60" y="118">GATE 1</text><text class="t c" x="60" y="137">Identity</text><text class="s c" x="60" y="154">KYC verified?</text>
+        <rect class="box" x="127" y="100" width="96" height="64" rx="8"/><text class="k c" x="175" y="118">GATE 2</text><text class="t c" x="175" y="137">AML</text><text class="s c" x="175" y="154">list matches?</text>
+        <rect class="box" x="242" y="100" width="96" height="64" rx="8"/><text class="k c" x="290" y="118">GATE 3</text><text class="t c" x="290" y="137">Fraud &amp; docs</text><text class="s c" x="290" y="154">docs genuine?</text>
+        <rect class="box" x="357" y="100" width="96" height="64" rx="8"/><text class="k c" x="405" y="118">GATE 4</text><text class="t c" x="405" y="137">Policy rules</text><text class="s c" x="405" y="154">age, score, DPD</text>
+        <rect class="box" x="472" y="100" width="96" height="64" rx="8"/><text class="k c" x="520" y="118">GATE 5</text><text class="t c" x="520" y="137">Property</text><text class="s c" x="520" y="154">title · charge</text>
+        <rect class="box" x="587" y="100" width="96" height="64" rx="8"/><text class="k c" x="635" y="118">GATE 6</text><text class="t c" x="635" y="137">Affordability</text><text class="s c" x="635" y="154">FOIR · LTV</text>
+        <rect class="box" x="702" y="100" width="96" height="64" rx="8"/><text class="k c" x="750" y="118">GATE 7</text><text class="t c" x="750" y="137">Risk grade</text><text class="s c" x="750" y="154">A–B · C · D–E</text>
+        <rect class="box" x="817" y="100" width="96" height="64" rx="8"/><text class="k c" x="865" y="118">GATE 8</text><text class="t c" x="865" y="137">Authority</text><text class="s c" x="865" y="154">≤ ₹1 crore?</text>
+        <rect class="box box-ok" x="932" y="100" width="96" height="64" rx="8"/><text class="k c" x="980" y="118">ALL PASS</text><text class="t c" x="980" y="137">Approve</text><text class="s c" x="980" y="154">offer + KFS</text>
+        <line class="ln" x1="109" y1="132" x2="125" y2="132" marker-end="url(#f5a)"/>
+        <line class="ln" x1="224" y1="132" x2="240" y2="132" marker-end="url(#f5a)"/>
+        <line class="ln" x1="339" y1="132" x2="355" y2="132" marker-end="url(#f5a)"/>
+        <line class="ln" x1="454" y1="132" x2="470" y2="132" marker-end="url(#f5a)"/>
+        <line class="ln" x1="569" y1="132" x2="585" y2="132" marker-end="url(#f5a)"/>
+        <line class="ln" x1="684" y1="132" x2="700" y2="132" marker-end="url(#f5a)"/>
+        <line class="ln" x1="799" y1="132" x2="815" y2="132" marker-end="url(#f5a)"/>
+        <line class="ln" x1="914" y1="132" x2="930" y2="132" marker-end="url(#f5a)"/>
+        <line class="ln-warn" x1="60" y1="99" x2="60" y2="57" marker-end="url(#f5w)"/>
+        <line class="ln-warn" x1="175" y1="99" x2="175" y2="57" marker-end="url(#f5w)"/>
+        <line class="ln-warn" x1="290" y1="99" x2="290" y2="57" marker-end="url(#f5w)"/>
+        <line class="ln-warn" x1="405" y1="99" x2="405" y2="57" marker-end="url(#f5w)"/>
+        <line class="ln-warn" x1="520" y1="99" x2="520" y2="57" marker-end="url(#f5w)"/>
+        <line class="ln-warn" x1="750" y1="99" x2="750" y2="57" marker-end="url(#f5w)"/>
+        <line class="ln-warn" x1="865" y1="99" x2="865" y2="57" marker-end="url(#f5w)"/>
+        <line class="ln-bad" x1="175" y1="165" x2="175" y2="223" marker-end="url(#f5b)"/>
+        <line class="ln-bad" x1="290" y1="165" x2="290" y2="223" marker-end="url(#f5b)"/>
+        <line class="ln-bad" x1="405" y1="165" x2="405" y2="223" marker-end="url(#f5b)"/>
+        <line class="ln-bad" x1="520" y1="165" x2="520" y2="223" marker-end="url(#f5b)"/>
+        <line class="ln-bad" x1="635" y1="165" x2="635" y2="223" marker-end="url(#f5b)"/>
+        <line class="ln-bad" x1="750" y1="165" x2="750" y2="223" marker-end="url(#f5b)"/>
+      </svg>
+    </div>
+    <figcaption>Every gate always runs, so every reason is recorded, not only the first. The outcome is the most severe result across the gates: any Reject means Reject, otherwise any Refer means Refer, otherwise Approve.</figcaption>
+  </figure>
+  <div class="tbl-wrap"><table class="w-wide">
+    <thead><tr><th>Gate</th><th>Refer when</th><th>Reject when</th></tr></thead>
+    <tbody>
+      <tr><td>1 Identity</td><td>Face match or KYC data fails; video KYC offered</td><td>None</td></tr>
+      <tr><td>2 AML</td><td>Possible watch-list match; politically exposed person</td><td>Confirmed sanctions-list match</td></tr>
+      <tr><td>3 Fraud and documents</td><td>Income on documents over 30% above bank data; suspicious links</td><td>Issuer confirms a document was altered</td></tr>
+      <tr><td>4 Policy rules</td><td>Score 650–699; a 30+ day late payment; no credit history</td><td>Under 21; loan runs past maximum age; score below 650; a 90+ day late payment</td></tr>
+      <tr><td>5 Property</td><td>Title needs a lawyer</td><td>Undisclosed charge, or the seller is not the owner</td></tr>
+      <tr><td>6 Affordability</td><td>None; a smaller amount becomes a <b>counter-offer</b></td><td>No room for an EMI, or eligible amount below half of the amount asked</td></tr>
+      <tr><td>7 Risk grade</td><td>Grade C</td><td>Grade D or E</td></tr>
+      <tr><td>8 Authority limit</td><td>Amount above ₹1 crore</td><td>None</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>What each outcome does</h3>
+  <div class="two">
+    <div class="card"><h4><span class="chip chip-ok">Approve</span></h4><p>In-principle or final sanction letter with the KFS, the rate and EMI options, then eSign and the repayment mandate. A <b>counter-offer</b> is an approval for a lower amount or a different tenure, with the reason shown.</p></div>
+    <div class="card"><h4><span class="chip chip-warn">Refer</span></h4><p>The case lands in the credit console with a file note, evidence links and the engine's draft offer. The officer must record a reason. Their decision is saved to the decision record and becomes a training label.</p></div>
+    <div class="card"><h4><span class="chip chip-bad">Reject</span></h4><p>A written letter in the customer's language with the reasons (AML reasons excepted), what they can do next, such as adding a co-applicant, and how to ask for a review or raise a grievance.</p></div>
+  </div>
+  <h3>Speed budget for one decision</h3>
+  <div class="tbl-wrap"><table class="w-mid">
+    <thead><tr><th>Step</th><th class="num">Target (p95)</th></tr></thead>
+    <tbody>
+      <tr><td>Read features from the feature store</td><td class="num">50 ms</td></tr>
+      <tr><td>Run policy and compliance rules</td><td class="num">100 ms</td></tr>
+      <tr><td>Score models (credit, fraud)</td><td class="num">150 ms</td></tr>
+      <tr><td>Build reasons and the decision record; write to the ledger</td><td class="num">200 ms</td></tr>
+      <tr><td>Generate the letter and KFS</td><td class="num">1,000 ms</td></tr>
+      <tr><td><b>Total</b></td><td class="num"><b>about 1.5 s</b></td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<!-- ============ R8 ============ -->
+<section id="r8">
+  <p class="req-tag"><span class="n">8</span>Requirement 8 of 8</p>
+  <h2>Explainability and governance</h2>
+  <p class="ask"><b>Asked:</b> every decision must be explainable, traceable and audit-ready.</p>
+
+  <h3>Three audiences, three views of the same decision</h3>
+  <div class="two">
+    <div class="card"><h4>Customer</h4><p>Plain reasons in their language, what they can do next, and how to appeal. AML reasons are never shown.</p></div>
+    <div class="card"><h4>Credit officer and auditor</h4><p>Every gate's result, the rule that fired with its source clause, the points per factor, and links to the raw evidence.</p></div>
+    <div class="card"><h4>Supervisor and model validator</h4><p>Replay of any decision with the original inputs and the rule and model versions of that day, plus model cards and validation reports.</p></div>
+  </div>
+
+  <h3>Reason codes</h3>
+  <p>Every refer or reject reason has a code. Each code has an internal meaning and an approved customer message in each language.</p>
+  <div class="tbl-wrap"><table class="w-wide">
+    <thead><tr><th>Code</th><th>Internal meaning</th><th>What the customer is told</th></tr></thead>
+    <tbody>
+      <tr><td class="mono">R-AFF-01</td><td>Existing EMIs use the full FOIR limit</td><td>Your current EMIs already use the maximum share of income we can lend against.</td></tr>
+      <tr><td class="mono">R-BUR-02</td><td>30+ days past due in the last 12 months</td><td>Your credit report shows a payment more than 30 days late in the last year.</td></tr>
+      <tr><td class="mono">R-PRP-01</td><td>Title needs legal review</td><td>Our lawyer needs to review the property title.</td></tr>
+      <tr><td class="mono">R-FRD-02</td><td>Document income does not match bank credits</td><td>The income on your salary slip does not match your bank credits. Please share your latest Form 16, or let us fetch it with your consent.</td></tr>
+      <tr><td class="mono">R-AML-01</td><td>Possible watch-list match</td><td>Your application needs some more review. We will contact you within one working day.</td></tr>
+      <tr><td class="mono">R-AUT-01</td><td>Above the auto-sanction limit</td><td>Loans of this size get a final check by a senior officer.</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>The decision record</h3>
+  <p>Every decision writes one record to the audit ledger. It holds the inputs (or their evidence hashes), the version of every rule set and model used, each gate's result, the score with its points, the reason codes, the outcome, any officer action, and the hash of the previous record. Feeding the same inputs into the same versions gives the same output, so any decision can be replayed exactly. The <a href="#simulator">simulator</a> below builds a sample record live.</p>
+
+  <h3>Governance</h3>
+  <ul>
+    <li><b>Board-approved policies</b> for credit, model risk and AI, with named owners.</li>
+    <li><b>AI and model risk committee</b> that approves every model and every material rule change.</li>
+    <li><b>Model inventory</b> with a model card for each model: purpose, data, limits, performance, fairness results, owner.</li>
+    <li><b>Independent validation</b> before go-live and at least once a year.</li>
+    <li><b>Monitoring:</b> drift, performance on matured loans, approval and refer rates by segment, and how often officers overturn the engine.</li>
+    <li><b>Fairness:</b> no protected attributes; proxy tests; approval-rate gaps reviewed by the committee.</li>
+    <li><b>Kill switch:</b> one action routes every new case to Refer.</li>
+  </ul>
+
+  <h3>Mapped to RBI's FREE-AI framework</h3>
+  <p>RBI published the FREE-AI committee report on 13 August 2025, with seven guiding principles (“sutras”), six pillars and 26 recommendations. The recommendations are advisory until RBI issues directions, but they show what supervisors will look for.</p>
+  <div class="tbl-wrap"><table class="w-mid">
+    <thead><tr><th>Sutra</th><th>How Nirnay meets it</th></tr></thead>
+    <tbody>
+      <tr><td>Trust is the foundation</td><td>Tamper-evident records, replay, evidence kept for every input</td></tr>
+      <tr><td>People first</td><td>Refer path, appeal route, plain-language reasons, help in Indian languages</td></tr>
+      <tr><td>Innovation over restraint</td><td>Challenger models in shadow, safe canary releases</td></tr>
+      <tr><td>Fairness and equity</td><td>No protected attributes, proxy tests, segment monitoring</td></tr>
+      <tr><td>Accountability</td><td>Named owners, maker-checker, committee approvals, officer reasons logged</td></tr>
+      <tr><td>Understandable by design</td><td>Scorecard as the live model, reason codes, SHAP for the challenger</td></tr>
+      <tr><td>Safety, resilience and sustainability</td><td>Guardrails, confidence thresholds, kill switch, DR site, drift monitors</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<!-- ============ SIMULATOR ============ -->
+<section id="simulator">
+  <h2>Try it: decision simulator</h2>
+  <p>This runs the decision logic from this report with the illustrative policy values in <a href="#r2">Requirement 2</a>. Change any input and the outcome, the gate results, the score and the decision record update. It runs in your browser and sends nothing anywhere.</p>
+  <div class="sim">
+    <form class="sim-form" id="sim-form" autocomplete="off">
+      <div class="presets" role="group" aria-label="Example cases">
+        <button type="button" data-preset="ravi" aria-pressed="true">Ravi · HL, clean</button>
+        <button type="button" data-preset="meena" aria-pressed="false">Meena · LAP, title gap</button>
+        <button type="button" data-preset="arjun" aria-pressed="false">Arjun · forged slip</button>
+        <button type="button" data-preset="big" aria-pressed="false">₹1.2 crore loan</button>
+      </div>
+      <div class="fields">
+        <label>Product<select id="sim-product"><option value="HL">Home Loan</option><option value="LAP">Loan Against Property</option></select></label>
+        <label>Employment<select id="sim-emp"><option value="salaried">Salaried</option><option value="self">Self-employed</option></select></label>
+        <label>Age (years)<input id="sim-age" type="number" min="18" max="75" step="1" value="32"></label>
+        <label>Net monthly income (₹)<input id="sim-income" type="number" min="1000" step="1000" value="100000"></label>
+        <label>Existing EMIs (₹ a month)<input id="sim-emi" type="number" min="0" step="500" value="10000"></label>
+        <label>Bureau score<input id="sim-bureau" type="number" min="300" max="900" step="1" value="765"></label>
+        <label class="check full"><input id="sim-ntc" type="checkbox">No credit history (new to credit)</label>
+        <label class="full">Late payments in last 12 months<select id="sim-dpd"><option value="0">None</option><option value="30">30+ days late</option><option value="90">90+ days late</option></select></label>
+        <label>Property value (₹)<input id="sim-pv" type="number" min="100000" step="100000" value="6000000"></label>
+        <label>Loan asked (₹)<input id="sim-ask" type="number" min="100000" step="100000" value="4500000"></label>
+        <label>Tenure (years)<input id="sim-tenure" type="number" min="1" max="30" step="1" value="20"></label>
+        <label>Interest rate (% a year)<input id="sim-rate" type="number" min="1" max="20" step="0.05" value="8.75"></label>
+        <fieldset>
+          <legend>Check results from other services</legend>
+          <label>KYC and face match<select id="sim-kyc"><option value="ok">Verified</option><option value="fail">Face match failed</option></select></label>
+          <label>AML screening<select id="sim-aml"><option value="clear">Clear</option><option value="possible">Possible match</option><option value="pep">PEP</option><option value="confirmed">Confirmed sanctions match</option></select></label>
+          <label>Documents<select id="sim-docs"><option value="clean">Genuine, consistent</option><option value="mismatch">Income mismatch</option><option value="forged">Altered document</option></select></label>
+          <label>Property title<select id="sim-title"><option value="clear">Clear</option><option value="review">Needs legal review</option><option value="defective">Undisclosed charge</option></select></label>
+        </fieldset>
+      </div>
+    </form>
+    <div class="sim-out" aria-live="polite">
+      <div id="out-banner" class="banner ok"><p class="word">Approve</p><p>Working out the decision…</p></div>
+      <div id="out-metrics" class="metrics"></div>
+      <div class="panel"><h4>Gate by gate</h4><ol id="out-gates" class="gates"></ol></div>
+      <div class="panel"><h4>How the score was built (points from base 650)</h4><div id="out-bars" class="bars"></div></div>
+      <div class="panel"><h4>What the customer sees</h4><ul id="out-cust" class="cust"></ul></div>
+      <div class="panel"><h4>Decision record (sample)</h4><pre id="out-record" class="record"></pre></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ BUILD ============ -->
+<section id="build">
+  <h2>Hackathon build plan and team roles</h2>
+  <p>The prototype should prove the whole flow end to end, with real logic and clearly labelled mock data where real access needs licences.</p>
+  <h3>What we build</h3>
+  <div class="tbl-wrap"><table class="w-wide">
+    <thead><tr><th>Piece</th><th>In the prototype</th><th>Real or mocked</th></tr></thead>
+    <tbody>
+      <tr><td>Mobile app</td><td>Flutter: sign-in, consent, selfie, document upload, property photos, decision screen in English and Hindi</td><td><span class="chip chip-ok">Real</span></td></tr>
+      <tr><td>Web portal</td><td>React: credit console with Refer queue, decision replay, policy studio with maker-checker</td><td><span class="chip chip-ok">Real</span></td></tr>
+      <tr><td>Orchestrator and rules</td><td>FastAPI services, state machine, decision tables for HL and LAP</td><td><span class="chip chip-ok">Real</span></td></tr>
+      <tr><td>Outside data</td><td>Bureau, AA, PAN, CKYCR, land records, CERSAI with realistic sample responses; AA sandbox if access is granted</td><td><span class="chip chip-warn">Mocked</span></td></tr>
+      <tr><td>Document AI</td><td>OCR plus field rules and tamper checks on sample documents</td><td><span class="chip chip-ok">Real</span></td></tr>
+      <tr><td>Risk model</td><td>Scorecard and LightGBM with SHAP, trained on the public Home Credit dataset</td><td><span class="chip chip-ok">Real</span>, demo data</td></tr>
+      <tr><td>Fraud and AML</td><td>Rules, a small link graph, and name matching on a sample list</td><td><span class="chip chip-ok">Real</span>, synthetic data</td></tr>
+      <tr><td>LLM deed reader</td><td>Reads three sample deeds; each fact must point to its source text</td><td><span class="chip chip-ok">Real</span></td></tr>
+      <tr><td>Decision record</td><td>Hash-chained ledger and replay</td><td><span class="chip chip-ok">Real</span></td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>Who does what</h3>
+  <p>Teams can have one to four members. With fewer than four, merge roles 1 and 3, then 2 and 4.</p>
+  <div class="tbl-wrap"><table class="w-wide">
+    <thead><tr><th>Role</th><th>Owns</th><th>Delivers for the demo</th></tr></thead>
+    <tbody>
+      <tr><td><b>1 · Product and compliance lead</b></td><td>Policy rules, compliance table, KFS and letter templates, reason codes, the pitch</td><td>Rule tables, compliance matrix, demo script, slides</td></tr>
+      <tr><td><b>2 · App and portal</b></td><td>Flutter app, React portal, Hindi strings, accessibility</td><td>Six app screens, three portal screens</td></tr>
+      <tr><td><b>3 · Backend and integrations</b></td><td>Orchestrator, gateway, mock connectors, decision record, ledger</td><td>APIs, mocks, replay</td></tr>
+      <tr><td><b>4 · AI and ML</b></td><td>Document AI, risk model, fraud graph, AML matching, deed reader</td><td>Models with SHAP and short evaluation notes</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>Build order</h3>
+  <ol class="steps">
+    <li>Agree the data model, the eight gates and the reason codes as a team. This report is the starting point.</li>
+    <li>Build mock connectors and the rules engine; use the simulator's cases as the first tests.</li>
+    <li>Plug the AI pieces in behind the same service interfaces.</li>
+    <li>Build the app and portal on top of the APIs.</li>
+    <li>Add the decision record, replay and the audit portal.</li>
+    <li>Run the three demo cases end to end and rehearse.</li>
+  </ol>
+
+  <h3>Demo story</h3>
+  <div class="tbl-wrap"><table class="w-wide">
+    <thead><tr><th>Case</th><th>Setup</th><th>Expected outcome</th><th>What it shows</th></tr></thead>
+    <tbody>
+      <tr><td>Ravi, 32, salaried</td><td>HL ₹45 lakh on a ₹60 lakh flat in a pre-approved project</td><td><span class="chip chip-ok">Approve</span> in both stages within minutes</td><td>Straight-through processing, KFS, eSign</td></tr>
+      <tr><td>Meena, 45, runs a garment shop</td><td>LAP ₹60 lakh on a ₹1.2 crore property; deed has a gap in the ownership chain</td><td><span class="chip chip-warn">Refer</span> to legal via the vendor portal</td><td>Deed reader, Refer queue, officer decision logged</td></tr>
+      <tr><td>Arjun, 29, salaried</td><td>HL ₹30 lakh; salary slip was edited</td><td><span class="chip chip-bad">Reject</span> with reason and fraud flag</td><td>Tamper check, explainable rejection</td></tr>
+    </tbody>
+  </table></div>
+  <p class="small muted">The people in these cases are fictional.</p>
+</section>
+
+<!-- ============ RISKS ============ -->
+<section id="risks">
+  <h2>Risks and limits</h2>
+  <div class="tbl-wrap"><table class="w-wide">
+    <thead><tr><th>Risk</th><th>What we do about it</th></tr></thead>
+    <tbody>
+      <tr><td>Real API access needs agreements and licences (Aadhaar KUA, bureau membership, AA registration)</td><td>Prototype uses mocks and sandboxes, clearly labelled; production goes through licensed partners</td></tr>
+      <tr><td>Land records are digitised unevenly across states</td><td>Refer to an empanelled lawyer through the vendor portal; pre-approved projects reduce the load</td></tr>
+      <tr><td>Model bias or hidden proxies</td><td>Excluded attributes, proxy tests, segment monitoring, committee review</td></tr>
+      <tr><td>LLM makes up facts</td><td>Every fact must point to source text; the LLM never decides; letters come from approved templates</td></tr>
+      <tr><td>No Hero training data in the hackathon</td><td>Public dataset plus expert scorecard, stated openly; retrain on Hero's book later</td></tr>
+      <tr><td>Rules change (RBI consolidated directions in November 2025 and has amended them since)</td><td>Each rule cites its clause and has an effective date; the compliance owner updates it in the policy studio</td></tr>
+      <tr><td>An outside source goes down</td><td>Circuit breakers and fallbacks; the step waits rather than guessing</td></tr>
+      <tr><td>Too much automation for edge cases</td><td>Authority limits, Refer path, override monitoring, kill switch</td></tr>
+      <tr><td>Data breach</td><td>Encryption, tokenised Aadhaar, least privilege, CERT-In reporting, DPDP breach process</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<!-- ============ GLOSSARY ============ -->
+<section id="glossary">
+  <h2>Glossary</h2>
+  <dl class="dl">
+    <dt>AA</dt><dd>Account Aggregator: RBI-licensed network that moves financial data with the customer's consent.</dd>
+    <dt>APR</dt><dd>Annual Percentage Rate: the all-in yearly cost of a loan, shown in the KFS.</dd>
+    <dt>AVM</dt><dd>Automated Valuation Model: estimates property value from data.</dd>
+    <dt>CERSAI</dt><dd>Central Registry of Securitisation Asset Reconstruction and Security Interest of India: records mortgages and runs the CKYC Registry.</dd>
+    <dt>CKYCR</dt><dd>Central KYC Records Registry: one KYC record reused across lenders.</dd>
+    <dt>DPD</dt><dd>Days Past Due: how late a payment was.</dd>
+    <dt>DSA</dt><dd>Direct Selling Agent: a partner who brings loan customers.</dd>
+    <dt>EC</dt><dd>Encumbrance Certificate: shows registered transactions and charges on a property.</dd>
+    <dt>FOIR</dt><dd>Fixed Obligation to Income Ratio: total EMIs as a share of income.</dd>
+    <dt>FPC</dt><dd>Fair Practices Code: conduct rules for how lenders treat borrowers.</dd>
+    <dt>GBM</dt><dd>Gradient-Boosted Machine: a strong tree-based ML model.</dd>
+    <dt>HFC</dt><dd>Housing Finance Company.</dd>
+    <dt>KFS</dt><dd>Key Facts Statement: a standard one-page summary of the loan's cost and terms.</dd>
+    <dt>LAP</dt><dd>Loan Against Property.</dd>
+    <dt>LTV</dt><dd>Loan-to-Value: loan amount as a share of property value.</dd>
+    <dt>PD</dt><dd>Probability of Default.</dd>
+    <dt>PEP</dt><dd>Politically Exposed Person.</dd>
+    <dt>RERA</dt><dd>Real Estate Regulatory Authority: registers real-estate projects in each state.</dd>
+    <dt>SHAP</dt><dd>A method that shows how much each input pushed a model's score up or down.</dd>
+    <dt>STR</dt><dd>Suspicious Transaction Report, filed with FIU-IND.</dd>
+    <dt>V-CIP</dt><dd>Video-based Customer Identification Process (video KYC).</dd>
+    <dt>WoE</dt><dd>Weight of Evidence: a way to turn input ranges into scorecard points.</dd>
+  </dl>
+</section>
+
+<!-- ============ SOURCES ============ -->
+<section id="sources">
+  <h2>Sources</h2>
+  <p>The challenge rules ask us to cite any data or source we use. Regulatory points are summarised as of November 2026. RBI folded many 2023–2024 circulars into consolidated directions on 28 November 2025, so check the current text before submission.</p>
+  <ol class="src">
+    <li>RBI, Reserve Bank of India (Housing Finance Companies) Directions, 2025, RBI/DoR/2025-26/365, 28 Nov 2025. <a href="https://website.rbi.org.in/documents/d/rbi/housing-finance-companies_directions" target="_blank" rel="noopener">rbi.org.in</a></li>
+    <li>RBI, Master Direction – Non-Banking Financial Company – Housing Finance Company (Reserve Bank) Directions, 2021, updated 17 Jul 2025: LTV tiers and the stamp-duty rule. <a href="https://website.rbi.org.in/documents/d/rbi/mdhfcupdatedason17072025" target="_blank" rel="noopener">rbi.org.in</a></li>
+    <li>RBI, Reserve Bank of India (Digital Lending) Directions, 2025, 8 May 2025. <a href="https://www.rbi.org.in/Scripts/BS_CircularIndexDisplay.aspx?Id=12848" target="_blank" rel="noopener">rbi.org.in</a></li>
+    <li>RBI KYC Directions, 2025, which replaced the 2016 KYC Master Direction on 28 Nov 2025. Summary: <a href="https://www.jsalaw.com/wp-content/uploads/2025/12/JSA-Prism-FinTech-December-2025-KYC-Master-Directions.Final_.pdf" target="_blank" rel="noopener">JSA Prism, Dec 2025</a></li>
+    <li>RBI, Report of the Committee on the Framework for Responsible and Ethical Enablement of AI (FREE-AI), 13 Aug 2025. Summary: <a href="https://kpmg.com/in/en/insights/2025/08/rbi-free-ai-committee-report-on-framework-for-responsible-and-ethical-enablement-of-artificial-intelligence.html" target="_blank" rel="noopener">KPMG India</a></li>
+    <li>Digital Personal Data Protection Act, 2023 and DPDP Rules, 2025 (notified November 2025, phased to May 2027). <a href="https://www.azbpartners.com/bank/indias-digital-personal-data-protection-act-phased-rollout-and-key-compliance-milestones/" target="_blank" rel="noopener">AZB &amp; Partners</a>, <a href="https://www.tribuneindia.com/news/business/govt-notifies-digital-personal-data-protection-rules-rollout-in-phases-specified-obligations-for-data-fiduciaries" target="_blank" rel="noopener">The Tribune</a></li>
+    <li>Prevention of Money-laundering Act, 2002 and PML (Maintenance of Records) Rules, 2005; Financial Intelligence Unit – India. <a href="https://fiuindia.gov.in" target="_blank" rel="noopener">fiuindia.gov.in</a></li>
+    <li>RBI circulars on Key Facts Statement for loans (15 Apr 2024), fair lending and penal charges (18 Aug 2023), release of property documents (13 Sep 2023), customer service by credit institutions and credit information companies (26 Oct 2023), Fraud Risk Management Directions (15 Jul 2024), IT Governance, Risk, Controls and Assurance Practices (7 Nov 2023), and risk-based internal audit (3 Feb 2021). <a href="https://www.rbi.org.in" target="_blank" rel="noopener">rbi.org.in</a></li>
+    <li>CERT-In Directions under section 70B(6) of the IT Act, 28 Apr 2022. <a href="https://www.cert-in.org.in" target="_blank" rel="noopener">cert-in.org.in</a></li>
+    <li>SARFAESI Act, 2002 and CERSAI. <a href="https://www.cersai.org.in" target="_blank" rel="noopener">cersai.org.in</a></li>
+    <li>National Housing Bank. <a href="https://nhb.org.in" target="_blank" rel="noopener">nhb.org.in</a></li>
+    <li>Sahamati, the Account Aggregator ecosystem body. <a href="https://sahamati.org.in" target="_blank" rel="noopener">sahamati.org.in</a></li>
+    <li>Unique Identification Authority of India. <a href="https://uidai.gov.in" target="_blank" rel="noopener">uidai.gov.in</a></li>
+    <li>Bhashini, the national language translation platform, for Indian-language support. <a href="https://bhashini.gov.in" target="_blank" rel="noopener">bhashini.gov.in</a></li>
+    <li>Home Credit Default Risk dataset (public), used to train the demo risk model. <a href="https://www.kaggle.com/c/home-credit-default-risk" target="_blank" rel="noopener">kaggle.com</a></li>
+  </ol>
+  <p class="small muted">Policy values marked “illustrative” are our assumptions, not Hero Housing Finance's real credit policy. Timings are design targets, not measured results.</p>
+</section>
+
+      <footer>Nirnay · team solution report for Problem Statement 2, Hero Housing Fintech Challenge · Version 1.0, 5 November 2026</footer>
+    </main>
+  </div>
+</div>
+
+<script>
+(function(){
+  var $ = function(id){ return document.getElementById(id); };
+  function inr(n){ return '₹' + Math.round(n).toLocaleString('en-IN'); }
+  function amt(n){
+    if (n >= 1e7) return '₹' + (n/1e7).toFixed(2).replace(/\.?0+$/,'') + ' crore';
+    return '₹' + (n/1e5).toFixed(2).replace(/\.?0+$/,'') + ' lakh';
+  }
+  function pct(x){ return (x*100).toFixed(1) + '%'; }
+  function pvFactor(rate, months){ var r = rate/1200; return r === 0 ? months : (1 - Math.pow(1+r, -months))/r; }
+  function foirCap(inc){ return inc <= 50000 ? 0.45 : inc <= 150000 ? 0.50 : 0.60; }
+  function hlByProperty(pv){
+    var best = Math.min(0.9*pv, 3e6);
+    if (0.8*pv > 3e6) best = Math.max(best, Math.min(0.8*pv, 7.5e6));
+    if (0.75*pv > 7.5e6) best = Math.max(best, 0.75*pv);
+    return best;
+  }
+  function hlTier(loan){ return loan <= 3e6 ? 0.9 : loan <= 7.5e6 ? 0.8 : 0.75; }
+  var POLICY = {
+    HL:  { label:'Home Loan', maxTenure:30, autoLimit:1e7, byProperty:hlByProperty, ltvLimit:hlTier, version:'HL-POL-2026.11-v1' },
+    LAP: { label:'Loan Against Property', maxTenure:15, autoLimit:1e7, byProperty:function(pv){ return 0.6*pv; }, ltvLimit:function(){ return 0.6; }, version:'LAP-POL-2026.11-v1' }
+  };
+  var MAX_AGE = { salaried:65, self:70 };
+  var GATES = ['Identity','AML','Fraud & documents','Policy rules','Property','Affordability','Risk grade','Authority limit'];
+  var CUSTOMER = {
+    'R-KYC-01':'We could not confirm your identity from the photo. Please complete a short video KYC call.',
+    'R-AML-01':'Your application needs some more review. We will contact you within one working day.',
+    'R-AML-02':'Your application needs some more review. We will contact you within one working day.',
+    'R-AML-03':'We are unable to proceed with your application.',
+    'R-FRD-02':'The income on your salary slip does not match your bank credits. Please share your latest Form 16, or let us fetch it with your consent.',
+    'R-FRD-03':'One of your documents failed verification with the issuing authority.',
+    'R-POL-01':'Applicants must be at least 21 years old.',
+    'R-POL-02':'The loan would run past the maximum age we allow. Adding a younger co-applicant can help.',
+    'R-BUR-01':'Your credit score is below our minimum of 650.',
+    'R-BUR-02':'Your credit report shows a payment more than 30 days late in the last year.',
+    'R-BUR-03':'Your credit report shows a payment more than 90 days late in the last year.',
+    'R-BUR-04':'You do not have a credit history yet, so an officer will review your bank records.',
+    'R-BUR-05':'Your credit score needs a closer look by an officer.',
+    'R-PRP-01':'Our lawyer needs to review the property title.',
+    'R-PRP-02':'The property already has a loan registered against it that was not shared with us.',
+    'R-AFF-01':'Your current EMIs already use the maximum share of income we can lend against.',
+    'R-AFF-02':'Based on your income and property value, the loan you can get is much lower than the amount requested.',
+    'R-RSK-01':'An officer will review your application to finalise the offer.',
+    'R-RSK-02':'Based on your credit profile, we cannot offer this loan right now.',
+    'R-AUT-01':'Loans of this size get a final check by a senior officer.'
+  };
+  var PRESETS = {
+    ravi:  {product:'HL', emp:'salaried', age:32, income:100000, emi:10000, bureau:765, ntc:false, dpd:'0', pv:6000000, ask:4500000, tenure:20, rate:8.75, kyc:'ok', aml:'clear', docs:'clean', title:'clear'},
+    meena: {product:'LAP', emp:'self', age:45, income:150000, emi:0, bureau:740, ntc:false, dpd:'0', pv:12000000, ask:6000000, tenure:15, rate:10.5, kyc:'ok', aml:'clear', docs:'clean', title:'review'},
+    arjun: {product:'HL', emp:'salaried', age:29, income:60000, emi:5000, bureau:712, ntc:false, dpd:'0', pv:4000000, ask:3000000, tenure:25, rate:8.75, kyc:'ok', aml:'clear', docs:'forged', title:'clear'},
+    big:   {product:'HL', emp:'salaried', age:38, income:350000, emi:20000, bureau:790, ntc:false, dpd:'0', pv:16000000, ask:12000000, tenure:20, rate:8.6, kyc:'ok', aml:'clear', docs:'clean', title:'clear'}
+  };
+  var FIELDS = ['product','emp','age','income','emi','bureau','ntc','dpd','pv','ask','tenure','rate','kyc','aml','docs','title'];
+
+  function num(id, min){ var v = parseFloat($(id).value); if (!isFinite(v)) v = 0; return Math.max(min, v); }
+  function read(){
+    return {
+      product:$('sim-product').value, emp:$('sim-emp').value,
+      age:num('sim-age',0), income:num('sim-income',1000), emi:num('sim-emi',0),
+      bureau:Math.min(900, num('sim-bureau',300)), ntc:$('sim-ntc').checked, dpd:$('sim-dpd').value,
+      pv:num('sim-pv',100000), ask:num('sim-ask',0), tenure:Math.min(40, num('sim-tenure',1)), rate:Math.min(30, num('sim-rate',0)),
+      kyc:$('sim-kyc').value, aml:$('sim-aml').value, docs:$('sim-docs').value, title:$('sim-title').value
+    };
+  }
+
+  function evaluate(i){
+    var P = POLICY[i.product];
+    var g = {}, notes = {};
+    GATES.forEach(function(n){ g[n] = []; notes[n] = []; });
+    function flag(gate, status, text, code){ g[gate].push({status:status, text:text, code:code}); }
+
+    if (i.kyc !== 'ok') flag('Identity','refer','Face match is below the threshold. Customer is offered video KYC.','R-KYC-01');
+
+    if (i.aml === 'possible') flag('AML','refer','Possible match on a watch-list; secondary IDs do not clear it.','R-AML-01');
+    if (i.aml === 'pep') flag('AML','refer','Politically exposed person: enhanced checks and senior approval required.','R-AML-02');
+    if (i.aml === 'confirmed') flag('AML','reject','Confirmed sanctions-list match. Case goes to the Principal Officer.','R-AML-03');
+
+    if (i.docs === 'mismatch') flag('Fraud & documents','refer','Salary-slip income is over 30% above salary credits in the bank.','R-FRD-02');
+    if (i.docs === 'forged') flag('Fraud & documents','reject','Issuer check shows a document was altered.','R-FRD-03');
+
+    var maxAge = MAX_AGE[i.emp];
+    var tenure = Math.floor(Math.min(i.tenure, P.maxTenure, maxAge - i.age));
+    if (i.age < 21) flag('Policy rules','reject','Applicant is under 21.','R-POL-01');
+    if (tenure < 5) flag('Policy rules','reject','Loan would end after age ' + maxAge + ', leaving under 5 years of tenure.','R-POL-02');
+    else if (tenure < i.tenure) notes['Policy rules'].push('Tenure shortened to ' + tenure + ' years (product maximum ' + P.maxTenure + '; loan must end by age ' + maxAge + ').');
+    if (i.dpd === '90') flag('Policy rules','reject','A payment was 90+ days late in the last 12 months.','R-BUR-03');
+    if (i.dpd === '30') flag('Policy rules','refer','A payment was 30+ days late in the last 12 months.','R-BUR-02');
+    if (i.ntc) flag('Policy rules','refer','No credit history. Needs a cash-flow based review.','R-BUR-04');
+    else if (i.bureau < 650) flag('Policy rules','reject','Bureau score ' + i.bureau + ' is below the 650 floor.','R-BUR-01');
+    else if (i.bureau < 700) flag('Policy rules','refer','Bureau score ' + i.bureau + ' is in the 650–699 review band.','R-BUR-05');
+
+    if (i.title === 'review') flag('Property','refer','Title needs a lawyer: a link in the ownership chain is not online.','R-PRP-01');
+    if (i.title === 'defective') flag('Property','reject','CERSAI shows an existing charge that was not disclosed.','R-PRP-02');
+
+    var t = Math.max(tenure, 1);
+    var cap = foirCap(i.income);
+    var maxEmi = i.income*cap - i.emi;
+    var pvf = pvFactor(i.rate, t*12);
+    var byIncome = Math.max(0, maxEmi*pvf);
+    var byProperty = P.byProperty(i.pv);
+    var eligible = Math.floor(Math.min(byIncome, byProperty, i.ask)/1000)*1000;
+    var limitedBy = eligible >= i.ask ? 'the amount asked' : (byIncome <= byProperty ? 'income (FOIR)' : 'property value (LTV)');
+    var counter = false;
+    if (maxEmi <= 0) { flag('Affordability','reject','Existing EMIs already use the full income limit of ' + pct(cap) + '.','R-AFF-01'); eligible = 0; }
+    else if (eligible < i.ask) {
+      if (eligible >= 0.5*i.ask && eligible >= 5e5) { counter = true; notes['Affordability'].push('Counter-offer: ' + amt(eligible) + ' instead of ' + amt(i.ask) + ', limited by ' + limitedBy + '.'); }
+      else flag('Affordability','reject','Eligible amount ' + amt(eligible) + ' is under half of the ' + amt(i.ask) + ' asked, limited by ' + limitedBy + '.','R-AFF-02');
+    }
+    var emi = eligible > 0 ? eligible/pvf : 0;
+    var foirUsed = (emi + i.emi)/i.income;
+    var ltv = eligible/i.pv;
+    var ltvLimit = P.ltvLimit(eligible);
+
+    var c = [];
+    c.push({k:'Repayment history', v: i.ntc ? -20 : Math.round((i.bureau-700)*0.5), why: i.ntc ? 'no bureau history' : 'bureau score ' + i.bureau + ' against a 700 reference'});
+    c.push({k:'Recent late payments', v: i.dpd === '0' ? 10 : i.dpd === '30' ? -60 : -150, why: i.dpd === '0' ? 'none in 12 months' : i.dpd + '+ days late in 12 months'});
+    c.push({k:'Affordability', v: foirUsed <= 0.35 ? 30 : foirUsed <= 0.5 ? 10 : foirUsed <= 0.6 ? -15 : -40, why: 'EMIs take ' + pct(foirUsed) + ' of income'});
+    c.push({k:'Collateral', v: ltv <= 0.6 ? 30 : ltv <= 0.75 ? 15 : ltv <= 0.85 ? 0 : -15, why: 'loan is ' + pct(ltv) + ' of property value'});
+    c.push({k:'Stability', v: i.emp === 'salaried' ? 20 : 0, why: i.emp === 'salaried' ? 'salaried income' : 'self-employed income'});
+    c.push({k:'Product', v: i.product === 'LAP' ? -10 : 0, why: i.product === 'LAP' ? 'LAP carries more risk' : 'home purchase'});
+    var score = Math.max(300, Math.min(900, 650 + c.reduce(function(s,x){ return s + x.v; }, 0)));
+    var grade = score >= 760 ? 'A' : score >= 700 ? 'B' : score >= 650 ? 'C' : score >= 600 ? 'D' : 'E';
+    if (grade === 'C') flag('Risk grade','refer','Score ' + score + ' is grade C (650–699), which needs an officer.','R-RSK-01');
+    if (grade === 'D' || grade === 'E') flag('Risk grade','reject','Score ' + score + ' is grade ' + grade + '; expected default risk is above appetite.','R-RSK-02');
+
+    if (eligible > P.autoLimit) flag('Authority limit','refer', amt(eligible) + ' is above the ₹1 crore auto-sanction limit.','R-AUT-01');
+
+    var all = [];
+    GATES.forEach(function(n){ g[n].forEach(function(x){ all.push({gate:n, status:x.status, text:x.text, code:x.code}); }); });
+    var outcome = all.some(function(x){ return x.status === 'reject'; }) ? 'Reject' : all.some(function(x){ return x.status === 'refer'; }) ? 'Refer' : 'Approve';
+    var passText = {
+      'Identity':'eKYC, PAN and face match verified.',
+      'AML':'No match on sanctions, UAPA or PEP lists.',
+      'Fraud & documents':'Documents match source data; no tamper signs.',
+      'Policy rules':'Age, tenure and bureau rules met' + (i.ntc ? '.' : ' (score ' + i.bureau + ').'),
+      'Property':'Title clear online; no existing charge in CERSAI or the EC.',
+      'Affordability':'EMI ' + inr(emi) + ' keeps total EMIs at ' + pct(foirUsed) + ' of income (limit ' + pct(cap) + '); loan is ' + pct(ltv) + ' of value (limit ' + pct(ltvLimit) + ').',
+      'Risk grade':'Score ' + score + ', grade ' + grade + '.',
+      'Authority limit':'Within the ₹1 crore auto-sanction limit.'
+    };
+    return {P:P, g:g, notes:notes, all:all, outcome:outcome, counter:counter, tenure:tenure, cap:cap, maxEmi:maxEmi,
+      byIncome:byIncome, byProperty:byProperty, eligible:eligible, emi:emi, foirUsed:foirUsed, ltv:ltv, ltvLimit:ltvLimit,
+      score:score, grade:grade, contrib:c, limitedBy:limitedBy, passText:passText};
+  }
+
+  function chip(status){
+    var map = {pass:['chip-ok','Pass'], refer:['chip-warn','Refer'], reject:['chip-bad','Reject']};
+    var m = map[status];
+    return '<span class="chip ' + m[0] + '">' + m[1] + '</span>';
+  }
+  function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+  function sha256(str){
+    try {
+      if (!window.crypto || !crypto.subtle || !window.TextEncoder) throw new Error('no subtle');
+      return crypto.subtle.digest('SHA-256', new TextEncoder().encode(str)).then(function(buf){
+        return 'sha256:' + Array.prototype.map.call(new Uint8Array(buf), function(b){ return ('0' + b.toString(16)).slice(-2); }).join('');
+      }).catch(function(){ return fnv(str); });
+    } catch (e) { return Promise.resolve(fnv(str)); }
+  }
+  function fnv(str){ var h = 0x811c9dc5; for (var k = 0; k < str.length; k++){ h ^= str.charCodeAt(k); h = Math.imul(h, 0x01000193) >>> 0; } return 'fnv1a:' + ('0000000' + h.toString(16)).slice(-8); }
+
+  var renderId = 0;
+  function render(){
+    var i = read(), r = evaluate(i), my = ++renderId;
+    var cls = r.outcome === 'Approve' ? 'ok' : r.outcome === 'Refer' ? 'warn' : 'bad';
+    var word = r.outcome === 'Approve' ? (r.counter ? 'Approve with counter-offer' : 'Approve') : r.outcome === 'Refer' ? 'Refer to a credit officer' : 'Reject';
+    var line;
+    if (r.outcome === 'Approve') line = amt(r.eligible) + ' for ' + r.tenure + ' years at ' + i.rate + '% · EMI ' + inr(r.emi) + ' · ' + r.P.label;
+    else if (r.outcome === 'Refer') line = 'Engine’s draft offer: ' + (r.eligible > 0 ? amt(r.eligible) : 'none') + '. An officer decides, with the file pre-filled.';
+    else line = r.all.filter(function(x){ return x.status === 'reject'; }).length + ' reason(s) sent to the customer in writing.';
+    var b = $('out-banner');
+    b.className = 'banner ' + cls;
+    b.innerHTML = '<p class="word">' + word + '</p><p>' + esc(line) + '</p>';
+
+    $('out-metrics').innerHTML =
+      '<div><span>Eligible amount</span><b>' + (r.eligible > 0 ? amt(r.eligible) : '₹0') + '</b><small>limited by ' + esc(r.limitedBy) + '</small></div>' +
+      '<div><span>EMI</span><b>' + inr(r.emi) + '</b><small>' + r.tenure + ' years at ' + i.rate + '%</small></div>' +
+      '<div><span>Total EMIs / income</span><b>' + pct(r.foirUsed) + '</b><small>limit ' + pct(r.cap) + '</small></div>' +
+      '<div><span>Loan to value</span><b>' + pct(r.ltv) + '</b><small>limit ' + pct(r.ltvLimit) + '</small></div>' +
+      '<div><span>Risk score</span><b>' + r.score + ' · ' + r.grade + '</b><small>base 650</small></div>';
+
+    $('out-gates').innerHTML = GATES.map(function(n, idx){
+      var f = r.g[n];
+      var status = f.some(function(x){ return x.status === 'reject'; }) ? 'reject' : f.some(function(x){ return x.status === 'refer'; }) ? 'refer' : 'pass';
+      var lines = f.length ? f.map(function(x){ return '<p>' + esc(x.text) + ' <span class="mono muted">' + x.code + '</span></p>'; }).join('') : '<p>' + esc(r.passText[n]) + '</p>';
+      lines += r.notes[n].map(function(t){ return '<p class="muted">' + esc(t) + '</p>'; }).join('');
+      return '<li><div class="g">' + (idx+1) + ' ' + esc(n) + ' ' + chip(status) + '</div><div class="d">' + lines + '</div></li>';
+    }).join('');
+
+    $('out-bars').innerHTML = r.contrib.map(function(x){
+      var w = Math.min(50, Math.abs(x.v)/150*50);
+      var fill = x.v === 0 ? '' : '<span class="fill ' + (x.v > 0 ? 'pos' : 'neg') + '" style="width:' + w.toFixed(1) + '%"></span>';
+      return '<div class="bar-row"><span>' + esc(x.k) + '</span><span class="track">' + fill + '</span><span class="v">' + (x.v > 0 ? '+' : '') + x.v + '</span><span class="why">' + esc(x.why) + '</span></div>';
+    }).join('') + '<div class="bar-row"><span><b>Total</b></span><span class="muted small">650 + points, kept between 300 and 900</span><span class="v">' + r.score + '</span></div>';
+
+    var codes = [];
+    r.all.forEach(function(x){ if (codes.indexOf(x.code) < 0) codes.push(x.code); });
+    var msgs = [];
+    if (r.outcome === 'Approve') {
+      msgs.push((r.counter ? 'We can offer you ' : 'Your loan is approved in principle for ') + amt(r.eligible) + ' with an EMI of ' + inr(r.emi) + ' for ' + r.tenure + ' years.');
+      msgs.push('Next: review the Key Facts Statement, then sign digitally.');
+    } else {
+      codes.forEach(function(cd){ var m = CUSTOMER[cd]; if (m && msgs.indexOf(m) < 0) msgs.push(m); });
+      if (r.outcome === 'Reject') msgs.push('You can ask for a review or raise a grievance from the Help screen.');
+    }
+    $('out-cust').innerHTML = msgs.map(function(m){ return '<li>' + esc(m) + '</li>'; }).join('');
+
+    var points = {}; r.contrib.forEach(function(x){ points[x.k] = x.v; });
+    var record = {
+      record_id: 'DR-DEMO-' + ('000' + my).slice(-4),
+      created_at: new Date().toISOString(),
+      product: i.product,
+      outcome: r.outcome.toUpperCase() + (r.counter && r.outcome === 'Approve' ? '_WITH_COUNTER_OFFER' : ''),
+      amount: r.eligible,
+      emi: Math.round(r.emi),
+      tenure_years: r.tenure,
+      rate_pct: i.rate,
+      policy_version: r.P.version,
+      model_version: 'RISK-SCORECARD-1.0-demo',
+      risk: { score: r.score, grade: r.grade, base: 650, points: points },
+      gates: GATES.map(function(n){ var f = r.g[n]; return { gate: n, status: f.some(function(x){ return x.status === 'reject'; }) ? 'reject' : f.some(function(x){ return x.status === 'refer'; }) ? 'refer' : 'pass' }; }),
+      reason_codes: codes,
+      inputs: i,
+      prev_record_hash: '(hash of the previous record in the ledger)'
+    };
+    var body = JSON.stringify(record, null, 2);
+    $('out-record').textContent = body.replace(/\n}$/, ',\n  "record_hash": "computing…"\n}');
+    sha256(body).then(function(h){
+      if (my !== renderId) return;
+      $('out-record').textContent = body.replace(/\n}$/, ',\n  "record_hash": "' + h + '"\n}');
+    });
+  }
+
+  function applyPreset(name){
+    var p = PRESETS[name]; if (!p) return;
+    FIELDS.forEach(function(f){ var el = $('sim-' + f); if (!el) return; if (el.type === 'checkbox') el.checked = !!p[f]; else el.value = p[f]; });
+    document.querySelectorAll('.presets button').forEach(function(btn){ btn.setAttribute('aria-pressed', btn.getAttribute('data-preset') === name ? 'true' : 'false'); });
+    render();
+  }
+
+  var form = $('sim-form');
+  form.addEventListener('submit', function(e){ e.preventDefault(); });
+  form.addEventListener('input', function(){
+    document.querySelectorAll('.presets button').forEach(function(btn){ btn.setAttribute('aria-pressed','false'); });
+    render();
+  });
+  form.addEventListener('change', render);
+  document.querySelectorAll('.presets button').forEach(function(btn){
+    btn.addEventListener('click', function(){ applyPreset(btn.getAttribute('data-preset')); });
+  });
+  render();
+})();
+</script>
+<style>
+@page { size: A4 portrait; margin: 14mm 13mm 15mm; }
+@page fig { size: A4 landscape; margin: 11mm 12mm; }
+@media print {
+  * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  html { scroll-behavior: auto; }
+  body { margin: 0; font-size: 10.5pt; line-height: 1.5; background: #FFFFFF; }
+  .wrap { max-width: none; padding: 0; }
+  .hero { padding-block: 0 14px; }
+  h1 { font-size: 26pt; }
+  .layout { display: block; }
+  .toc { position: static; max-height: none; overflow: visible; border: 1px solid var(--line); border-radius: 10px; padding: 10px 14px; margin: 0 0 6px; background: var(--surface); break-inside: avoid; }
+  .toc ol { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); column-gap: 14px; }
+  .toc a { padding: 1px 4px; }
+  .toc .req a { padding-left: 4px; }
+  .content { max-width: none; }
+  section { padding-block: 20px 4px; }
+  h2, h3, .req-tag, .ask { break-after: avoid; }
+  figure:has(.dg) { page: fig; margin: 0; }
+  section > :has(~ figure .dg) { page: fig; }
+  .req-tag { display: flex; width: fit-content; }
+  section > p:has(~ figure .dg) { max-width: none; }
+  section:has(> figure .dg) { padding-top: 8px; }
+  .fig-scroll { overflow: visible; border: 0; padding: 0; background: transparent; }
+  .dg { min-width: 0 !important; max-height: 125mm; }
+  .tbl-wrap { overflow: visible; }
+  .w-wide, .w-mid { min-width: 0 !important; }
+  table { font-size: 9pt; }
+  tr, .card, .note, .choices > div, .phone, .portal, .banner, .panel, .metrics, .formula, .facts, .dl dt, .dl dd, ol.steps li { break-inside: avoid; }
+  .mocks { grid-template-columns: 290px minmax(0, 1fr); }
+  .presets { display: none; }
+  .sim { grid-template-columns: minmax(0, 1fr); }
+  .fields { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .fields fieldset { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  pre.record { max-height: none; overflow: visible; white-space: pre-wrap; word-break: break-all; font-size: 7.5pt; }
+  #simulator > p:first-of-type::after { content: " In this PDF the simulator shows the Ravi example. Open the online report to try other inputs."; }
+  .src a::after { content: " (" attr(href) ")"; font-size: 8pt; color: var(--ink-2); word-break: break-all; }
+}
+</style>
+
+</html>

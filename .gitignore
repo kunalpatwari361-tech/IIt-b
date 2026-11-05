@@ -1,0 +1,32 @@
+# Secrets: never commit API keys or tokens
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# Real or private data stays local (DPDP Act)
+data/private/
+data/raw/
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.ipynb_checkpoints/
+mlruns/
+
+# Node
+node_modules/
+dist/
+build/
+.next/
+
+# Logs and editor / OS files
+*.log
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+desktop.ini
