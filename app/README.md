@@ -49,7 +49,7 @@ Reasons use the report's reason codes, worded for the customer in both languages
 
 ## Run it
 
-Flutter 3.47.9 (stable) is installed at `K:\tools\flutter-stable\flutter`. Add `K:\tools\flutter-stable\flutter\bin` to your PATH, or use the full path.
+You need Flutter 3.47 (stable). On the build PC it's Flutter 3.47.8 at `K:\tools\flutter`, with `K:\tools\flutter\bin` on the PATH.
 
 ```bash
 cd app
@@ -90,7 +90,7 @@ flutter build apk --debug
 | `lib/screens/` | The eight screens |
 | `test/` | Policy, photo-check and full-flow tests |
 
-**Windows note:** `android/gradle.properties` turns off Kotlin's incremental compiling. Flutter's package cache is on C: and this project is on K:, and the Kotlin compiler can't keep its caches across drives.
+**Windows note:** `android/gradle.properties` turns off Kotlin's incremental compiling. Flutter's package cache defaults to C:, and the Kotlin compiler fails when that cache and the project are on different drives. To keep everything on one drive, set the `PUB_CACHE` environment variable to a folder on the project's drive. On the build PC it's `K:\tools\pub-cache`.
 
 ## Next steps
 
