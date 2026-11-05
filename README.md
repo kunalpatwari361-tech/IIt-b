@@ -41,12 +41,13 @@ The report covers:
 |---|---|---|---|
 | 1 | Credit scorecard (live) | [models/credit_scorecard](models/credit_scorecard/README.md) | Trained on L&T Indian loan data. Test AUC 0.595. |
 | 2 | Credit challenger (shadow) | [models/credit_challenger](models/credit_challenger/README.md) | Trained on L&T Indian loan data. Test AUC 0.621, beats model 1 by +0.026. |
+| 3 | Fraud classifier | [models/fraud_classifier](models/fraud_classifier/README.md) | Trained on BAF (no Indian labelled data is public). Catches 53% of fraud at 5% false alarms. |
 
 To set up Python and run all the tests:
 
 ```bash
 py -3.11 -m venv .venv
-.venv\Scripts\python -m pip install -r models/credit_challenger/requirements.txt
+.venv\Scripts\python -m pip install -r models/fraud_classifier/requirements.txt
 .venv\Scripts\python -m pytest
 ```
 

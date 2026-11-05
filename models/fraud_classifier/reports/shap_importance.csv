@@ -1,0 +1,29 @@
+input,label,india_check,mean_abs_shap,monotone
+device_os,Device operating system,App / browser device,0.41326,0
+housing_status,Housing status,Owned / rented / family home,0.34307,0
+prev_address_months_count,Months at previous address,Previous address tenure,0.32819,0
+phone_home_valid,Home phone valid,Alternate number verified,0.3249,-1
+current_address_months_count,Months at current address,Address tenure (Aadhaar / utility bill),0.268,0
+has_other_cards,Has other cards,Other cards in bureau report,0.25952,0
+keep_alive_session,Stayed logged in,Session kept alive,0.24734,0
+name_email_similarity,Name matches email,PAN name vs email ID,0.23785,-1
+income,Income (percentile),Declared income,0.20707,0
+email_is_free,Free email address,Gmail/Yahoo etc. vs company email,0.20085,0
+employment_status,Employment status,Salaried / self-employed etc.,0.15216,0
+bank_branch_count_8w,Applications at same branch (8 weeks),Branch / DSA application burst,0.12809,0
+bank_months_count,Months with previous bank,Age of salary account (Account Aggregator),0.12198,0
+velocity_4w,"Applications per hour, last 4 weeks",Platform-wide application rate,0.12174,0
+credit_risk_score,Internal risk score,Bureau-based risk score,0.12103,0
+intended_balcon_amount,Initial amount transferred,Own contribution / processing fee paid,0.10333,0
+velocity_24h,"Applications per hour, last 24 hours",Platform-wide application rate,0.09643,0
+zip_count_4w,Applications from same pincode (4 weeks),Pincode application burst,0.09376,0
+days_since_request,Days since request,Days since the application started,0.08704,0
+session_length_in_minutes,Session length (minutes),Time spent filling the application,0.05271,0
+proposed_credit_limit,Amount applied for,Loan amount asked,0.04847,0
+velocity_6h,"Applications per hour, last 6 hours",Platform-wide application rate,0.04234,0
+device_distinct_emails_8w,Emails used on same device (8 weeks),Device shared across applicants,0.03957,1
+phone_mobile_valid,Mobile number valid,Mobile OTP verified,0.03364,-1
+foreign_request,Request from abroad,Non-Indian IP address,0.01356,1
+payment_type,Payment plan,EMI plan chosen,0.01183,0
+source,Channel,App/portal vs telecaller/DSA,0.00054,0
+date_of_birth_distinct_emails_4w,Emails used with same date of birth (4 weeks),Same DOB + PAN seen with other emails,0.00026,1

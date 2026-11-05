@@ -113,8 +113,9 @@ def paired_auc_gap(y, p_new, p_old, rounds: int = 200, seed: int = 0) -> dict:
             "challenger_better": bool(low > 0)}
 
 
-def monotone_violations(challenger: Challenger, X: pd.DataFrame, constraints: dict[str, int],
-                        profiles: int = 50, steps: int = 30, seed: int = 0) -> dict[str, int]:
+def monotone_violations(challenger, X: pd.DataFrame, constraints: dict[str, int],
+                        profiles: int = 50, steps: int = 30, seed: int = 0,
+                        column: str = "probability_of_default") -> dict[str, int]:
     """Sweep each constrained input across real applicant profiles; count wrong-way moves in risk."""
     rng = np.random.default_rng(seed)
     base = X.iloc[rng.integers(0, len(X), profiles)]
@@ -123,12 +124,14 @@ def monotone_violations(challenger: Challenger, X: pd.DataFrame, constraints: di
         lo, hi = np.nanpercentile(X[name].astype(float), [1, 99])
         grid = np.linspace(lo, hi, steps)
         rows = pd.DataFrame([{**b, name: v} for b in base.to_dict("records") for v in grid])
-        pd_ = challenger.score_frame(rows)["probability_of_default"].to_numpy().reshape(profiles, steps)
+        pd_ = challenger.score_frame(rows)[column].to_numpy().reshape(profiles, steps)
         found[name] = int(((np.diff(pd_, axis=1) * direction) < -1e-12).sum())
     return found
 
 
-def shap_chart(challenger: Challenger, X: pd.DataFrame, path: Path, sample: int = 5000, seed: int = 0) -> None:
+def shap_chart(challenger, X: pd.DataFrame, path: Path, sample: int = 5000, seed: int = 0,
+               title: str = "What pushes default risk up (right) or down (left)",
+               xlabel: str = "SHAP value (change in log-odds of default)", max_display: int | None = None) -> None:
     import matplotlib
     matplotlib.use("Agg")
     import matplotlib.pyplot as plt
@@ -141,9 +144,9 @@ def shap_chart(challenger: Challenger, X: pd.DataFrame, path: Path, sample: int 
         if isinstance(display[name].dtype, pd.CategoricalDtype):
             display[name] = display[name].cat.codes.replace(-1, np.nan)
     labels = [challenger.inputs[n]["label"] for n in Xs.columns]
-    shap.summary_plot(values, display, feature_names=labels, show=False, max_display=len(labels))
-    plt.title("What pushes default risk up (right) or down (left)", fontsize=12)
-    plt.xlabel("SHAP value (change in log-odds of default)")
+    shap.summary_plot(values, display, feature_names=labels, show=False, max_display=max_display or len(labels))
+    plt.title(title, fontsize=12)
+    plt.xlabel(xlabel)
     plt.tight_layout()
     plt.savefig(path, dpi=120)
     plt.close()

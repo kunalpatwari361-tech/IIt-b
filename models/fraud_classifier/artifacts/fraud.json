@@ -1,0 +1,300 @@
+{
+  "model": "fraud_classifier",
+  "version": "fraud-v1",
+  "dataset": "baf",
+  "trained_on": "Bank Account Fraud (BAF) Base, months 0-4 (675,666 applications)",
+  "trained_at": "2026-11-05",
+  "trees": 170,
+  "thresholds": {
+    "review": 0.029379896457130395,
+    "high": 0.10082219511961428
+  },
+  "target_false_alarm_rate": {
+    "review": 0.05,
+    "high": 0.01
+  },
+  "params": {
+    "objective": "binary",
+    "metric": "auc",
+    "learning_rate": 0.05,
+    "num_leaves": 63,
+    "min_data_in_leaf": 500,
+    "feature_fraction": 0.8,
+    "bagging_fraction": 0.8,
+    "bagging_freq": 1,
+    "lambda_l2": 1.0,
+    "monotone_constraints_method": "basic",
+    "verbose": -1,
+    "seed": 42
+  },
+  "features": [
+    "name_email_similarity",
+    "email_is_free",
+    "phone_mobile_valid",
+    "phone_home_valid",
+    "current_address_months_count",
+    "prev_address_months_count",
+    "bank_months_count",
+    "date_of_birth_distinct_emails_4w",
+    "zip_count_4w",
+    "velocity_6h",
+    "velocity_24h",
+    "velocity_4w",
+    "bank_branch_count_8w",
+    "device_distinct_emails_8w",
+    "device_os",
+    "session_length_in_minutes",
+    "keep_alive_session",
+    "foreign_request",
+    "source",
+    "income",
+    "employment_status",
+    "housing_status",
+    "credit_risk_score",
+    "has_other_cards",
+    "proposed_credit_limit",
+    "intended_balcon_amount",
+    "payment_type",
+    "days_since_request"
+  ],
+  "inputs": {
+    "name_email_similarity": {
+      "group": "Identity and contact",
+      "label": "Name matches email",
+      "india": "PAN name vs email ID",
+      "type": "numerical",
+      "monotone": -1
+    },
+    "email_is_free": {
+      "group": "Identity and contact",
+      "label": "Free email address",
+      "india": "Gmail/Yahoo etc. vs company email",
+      "type": "numerical",
+      "monotone": 0
+    },
+    "phone_mobile_valid": {
+      "group": "Identity and contact",
+      "label": "Mobile number valid",
+      "india": "Mobile OTP verified",
+      "type": "numerical",
+      "monotone": -1
+    },
+    "phone_home_valid": {
+      "group": "Identity and contact",
+      "label": "Home phone valid",
+      "india": "Alternate number verified",
+      "type": "numerical",
+      "monotone": -1
+    },
+    "current_address_months_count": {
+      "group": "Identity and contact",
+      "label": "Months at current address",
+      "india": "Address tenure (Aadhaar / utility bill)",
+      "type": "numerical",
+      "missing_if_negative": true,
+      "monotone": 0
+    },
+    "prev_address_months_count": {
+      "group": "Identity and contact",
+      "label": "Months at previous address",
+      "india": "Previous address tenure",
+      "type": "numerical",
+      "missing_if_negative": true,
+      "monotone": 0
+    },
+    "bank_months_count": {
+      "group": "Identity and contact",
+      "label": "Months with previous bank",
+      "india": "Age of salary account (Account Aggregator)",
+      "type": "numerical",
+      "missing_if_negative": true,
+      "monotone": 0
+    },
+    "date_of_birth_distinct_emails_4w": {
+      "group": "Application bursts",
+      "label": "Emails used with same date of birth (4 weeks)",
+      "india": "Same DOB + PAN seen with other emails",
+      "type": "numerical",
+      "monotone": 1
+    },
+    "zip_count_4w": {
+      "group": "Application bursts",
+      "label": "Applications from same pincode (4 weeks)",
+      "india": "Pincode application burst",
+      "type": "numerical",
+      "monotone": 0
+    },
+    "velocity_6h": {
+      "group": "Application bursts",
+      "label": "Applications per hour, last 6 hours",
+      "india": "Platform-wide application rate",
+      "type": "numerical",
+      "monotone": 0
+    },
+    "velocity_24h": {
+      "group": "Application bursts",
+      "label": "Applications per hour, last 24 hours",
+      "india": "Platform-wide application rate",
+      "type": "numerical",
+      "monotone": 0
+    },
+    "velocity_4w": {
+      "group": "Application bursts",
+      "label": "Applications per hour, last 4 weeks",
+      "india": "Platform-wide application rate",
+      "type": "numerical",
+      "monotone": 0
+    },
+    "bank_branch_count_8w": {
+      "group": "Application bursts",
+      "label": "Applications at same branch (8 weeks)",
+      "india": "Branch / DSA application burst",
+      "type": "numerical",
+      "monotone": 0
+    },
+    "device_distinct_emails_8w": {
+      "group": "Device and session",
+      "label": "Emails used on same device (8 weeks)",
+      "india": "Device shared across applicants",
+      "type": "numerical",
+      "missing_if_negative": true,
+      "monotone": 1
+    },
+    "device_os": {
+      "group": "Device and session",
+      "label": "Device operating system",
+      "india": "App / browser device",
+      "type": "categorical",
+      "categories": [
+        "linux",
+        "macintosh",
+        "other",
+        "windows",
+        "x11"
+      ],
+      "monotone": 0
+    },
+    "session_length_in_minutes": {
+      "group": "Device and session",
+      "label": "Session length (minutes)",
+      "india": "Time spent filling the application",
+      "type": "numerical",
+      "missing_if_negative": true,
+      "monotone": 0
+    },
+    "keep_alive_session": {
+      "group": "Device and session",
+      "label": "Stayed logged in",
+      "india": "Session kept alive",
+      "type": "numerical",
+      "monotone": 0
+    },
+    "foreign_request": {
+      "group": "Device and session",
+      "label": "Request from abroad",
+      "india": "Non-Indian IP address",
+      "type": "numerical",
+      "monotone": 1
+    },
+    "source": {
+      "group": "Device and session",
+      "label": "Channel",
+      "india": "App/portal vs telecaller/DSA",
+      "type": "categorical",
+      "categories": [
+        "INTERNET",
+        "TELEAPP"
+      ],
+      "monotone": 0
+    },
+    "income": {
+      "group": "Applicant profile",
+      "label": "Income (percentile)",
+      "india": "Declared income",
+      "type": "numerical",
+      "monotone": 0
+    },
+    "employment_status": {
+      "group": "Applicant profile",
+      "label": "Employment status",
+      "india": "Salaried / self-employed etc.",
+      "type": "categorical",
+      "categories": [
+        "CA",
+        "CB",
+        "CC",
+        "CD",
+        "CE",
+        "CF",
+        "CG"
+      ],
+      "monotone": 0
+    },
+    "housing_status": {
+      "group": "Applicant profile",
+      "label": "Housing status",
+      "india": "Owned / rented / family home",
+      "type": "categorical",
+      "categories": [
+        "BA",
+        "BB",
+        "BC",
+        "BD",
+        "BE",
+        "BF",
+        "BG"
+      ],
+      "monotone": 0
+    },
+    "credit_risk_score": {
+      "group": "Applicant profile",
+      "label": "Internal risk score",
+      "india": "Bureau-based risk score",
+      "type": "numerical",
+      "monotone": 0
+    },
+    "has_other_cards": {
+      "group": "Applicant profile",
+      "label": "Has other cards",
+      "india": "Other cards in bureau report",
+      "type": "numerical",
+      "monotone": 0
+    },
+    "proposed_credit_limit": {
+      "group": "Applicant profile",
+      "label": "Amount applied for",
+      "india": "Loan amount asked",
+      "type": "numerical",
+      "monotone": 0
+    },
+    "intended_balcon_amount": {
+      "group": "Applicant profile",
+      "label": "Initial amount transferred",
+      "india": "Own contribution / processing fee paid",
+      "type": "numerical",
+      "missing_if_negative": true,
+      "monotone": 0
+    },
+    "payment_type": {
+      "group": "Applicant profile",
+      "label": "Payment plan",
+      "india": "EMI plan chosen",
+      "type": "categorical",
+      "categories": [
+        "AA",
+        "AB",
+        "AC",
+        "AD",
+        "AE"
+      ],
+      "monotone": 0
+    },
+    "days_since_request": {
+      "group": "Applicant profile",
+      "label": "Days since request",
+      "india": "Days since the application started",
+      "type": "numerical",
+      "monotone": 0
+    }
+  }
+}

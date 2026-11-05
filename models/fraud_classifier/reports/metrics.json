@@ -1,0 +1,55 @@
+{
+  "model": "fraud_classifier",
+  "version": "fraud-v1",
+  "dataset": "Bank Account Fraud (BAF) Base, NeurIPS 2022",
+  "source": "https://www.kaggle.com/datasets/sgpjesus/bank-account-fraud-dataset-neurips-2022",
+  "trained_at": "2026-11-05",
+  "split": "train months [0, 1, 2, 3, 4], thresholds and trees on month 5, test months [6, 7]",
+  "rows": {
+    "train": 675666,
+    "valid": 119323,
+    "test": 205011,
+    "fraud_rate_test": 0.014
+  },
+  "trees": 170,
+  "auc_test": 0.8898,
+  "auc_train": 0.9369,
+  "benchmark_on_test": {
+    "fraud_caught_at_5pct_false_alarms": 0.5334,
+    "fraud_caught_at_1pct_false_alarms": 0.238
+  },
+  "review_alert_on_test": {
+    "set_for_false_alarms": 0.05,
+    "threshold": 0.02938,
+    "flagged_share": 0.0667,
+    "fraud_caught": 0.5681,
+    "false_alarm_rate": 0.0596,
+    "fraud_share_of_flagged": 0.1195,
+    "frauds": 2878.0,
+    "frauds_caught": 1635.0,
+    "honest_flagged": 12045.0
+  },
+  "thresholds": {
+    "review": 0.029379896457130395,
+    "high": 0.10082219511961428
+  },
+  "monotone_violations": {
+    "name_email_similarity": 0,
+    "phone_mobile_valid": 0,
+    "phone_home_valid": 0,
+    "date_of_birth_distinct_emails_4w": 0,
+    "device_distinct_emails_8w": 0,
+    "foreign_request": 0
+  },
+  "left_out_on_purpose": {
+    "device_fraud_count": "Always 0 in BAF, so it carries no information.",
+    "month": "Used only to split the data by time.",
+    "customer_age": "Age. With it, 13.6% of honest applicants aged 50+ were flagged (vs 10.2% without) for only 0.8 points more fraud caught at 5% false alarms."
+  },
+  "fairness_checks_flagged": [
+    "age_group",
+    "employment_status",
+    "income"
+  ],
+  "export_matches_model": true
+}
