@@ -1,0 +1,33 @@
+{
+  "model": "document_classifier",
+  "version": "doc-classifier-v1",
+  "trained_at": "2026-11-05",
+  "sklearn_version": "1.9.1",
+  "document_types": {
+    "pan_card": "PAN card or e-PAN (KYC)",
+    "aadhaar_card": "Aadhaar card or e-Aadhaar letter, masked (KYC)",
+    "salary_slip": "Monthly salary slip or pay advice (income)",
+    "form_16": "Form 16 TDS certificate from the employer (income)",
+    "itr": "Income tax return, ITR-V acknowledgement or computation of income (income)",
+    "bank_statement": "Bank statement or passbook (income and banking)",
+    "gst_certificate": "GST registration certificate or GSTIN details (self-employed)",
+    "sale_deed": "Sale deed or conveyance deed (property title)",
+    "allotment_letter": "Allotment letter from a builder or development authority (property)",
+    "encumbrance_certificate": "Encumbrance certificate (property charges)",
+    "property_tax_receipt": "Property tax receipt or bill (property)",
+    "utility_bill": "Electricity, gas, water or phone bill (address proof)",
+    "other": "Anything else: rent agreement, credit card statement, offer letter, invoice, policy"
+  },
+  "review_below": 0.5,
+  "min_readable_chars": 60,
+  "training_documents": {
+    "generated_main": 480,
+    "generated_bad_photos": 130,
+    "agami_scans": 54
+  },
+  "sources": {
+    "nirnay_generator": "models/document_classifier/generator.py",
+    "agami_bank_statement": "https://huggingface.co/datasets/AgamiAI/Indian-Bank-Statements",
+    "agami_itr": "https://huggingface.co/datasets/AgamiAI/Indian-Income-Tax-Returns"
+  }
+}

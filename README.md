@@ -44,12 +44,13 @@ The report covers:
 | 3 | Fraud classifier | [models/fraud_classifier](models/fraud_classifier/README.md) | Trained on BAF (no Indian labelled data is public). Catches 53% of fraud at 5% false alarms. |
 | 4 | Anomaly detector | [models/anomaly_detector](models/anomaly_detector/README.md) | IsolationForest plus integrity rules, trained on L&T Indian data without labels. Catches 84% of planted odd applications; flags 1.2% of real ones. |
 | 5 | Bank transaction tagger | [models/transaction_tagger](models/transaction_tagger/README.md) | TF-IDF + logistic regression on Indian bank narrations (our generator + a Hugging Face set). Macro F1 0.83 on unseen formats, 0.65 on a different source. |
+| 6 | Document classifier | [models/document_classifier](models/document_classifier/README.md) | TF-IDF + logistic regression on the OCR text of 480 fake Indian lending documents in 13 types. 88% accuracy on unseen layouts, 100% on outside scans; no wrong type accepted. |
 
 To set up Python and run all the tests:
 
 ```bash
 py -3.11 -m venv .venv
-.venv\Scripts\python -m pip install -r models/anomaly_detector/requirements.txt
+.venv\Scripts\python -m pip install -r models/document_classifier/requirements.txt
 .venv\Scripts\python -m pytest
 ```
 

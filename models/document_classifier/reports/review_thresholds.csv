@@ -1,0 +1,16 @@
+check,review_below,accepted_share,accuracy_when_accepted,accepted_but_wrong
+unseen_layouts,0.3,0.844,0.958,17
+unseen_layouts,0.4,0.731,0.9943,2
+unseen_layouts,0.5,0.65,1.0,0
+unseen_layouts,0.6,0.554,1.0,0
+unseen_layouts,0.7,0.404,1.0,0
+unseen_layouts_bad_photos,0.3,0.723,0.9574,4
+unseen_layouts_bad_photos,0.4,0.577,1.0,0
+unseen_layouts_bad_photos,0.5,0.477,1.0,0
+unseen_layouts_bad_photos,0.6,0.377,1.0,0
+unseen_layouts_bad_photos,0.7,0.338,1.0,0
+unseen_layouts_clean_text,0.3,0.863,0.9565,18
+unseen_layouts_clean_text,0.4,0.783,0.9867,5
+unseen_layouts_clean_text,0.5,0.675,1.0,0
+unseen_layouts_clean_text,0.6,0.66,1.0,0
+unseen_layouts_clean_text,0.7,0.54,1.0,0

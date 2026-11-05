@@ -1,0 +1,14 @@
+category,hard,main
+aadhaar_card,10,36
+allotment_letter,10,36
+bank_statement,10,36
+encumbrance_certificate,10,36
+form_16,10,36
+gst_certificate,10,36
+itr,10,36
+other,10,48
+pan_card,10,36
+property_tax_receipt,10,36
+salary_slip,10,36
+sale_deed,10,36
+utility_bill,10,36

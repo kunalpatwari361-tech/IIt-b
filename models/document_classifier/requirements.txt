@@ -1,0 +1,5 @@
+-r ../anomaly_detector/requirements.txt
+Pillow>=10.1
+# Only needed to rebuild the training data (build_data.py) and for one test:
+rapidocr-onnxruntime>=1.4
+pypdfium2>=4.30

@@ -1,0 +1,75 @@
+{
+  "model": "document_classifier",
+  "version": "doc-classifier-v1",
+  "trained_at": "2026-11-05",
+  "training_documents": {
+    "generated_main": 480,
+    "generated_bad_photos": 130,
+    "agami_scans": 54
+  },
+  "review_below": 0.5,
+  "checks": {
+    "unseen_layouts": {
+      "accuracy": 0.8833,
+      "macro_f1": 0.875,
+      "documents": 480,
+      "accepted_share": 0.65,
+      "accuracy_when_accepted": 1.0,
+      "accepted_but_wrong_share": 0.0,
+      "sent_for_review_share": 0.35,
+      "unreadable_share": 0.0042
+    },
+    "unseen_layouts_bad_photos": {
+      "accuracy": 0.7846,
+      "macro_f1": 0.7753,
+      "documents": 130,
+      "accepted_share": 0.4769,
+      "accuracy_when_accepted": 1.0,
+      "accepted_but_wrong_share": 0.0,
+      "sent_for_review_share": 0.5231,
+      "unreadable_share": 0.0846
+    },
+    "unseen_layouts_clean_text": {
+      "accuracy": 0.875,
+      "macro_f1": 0.8613,
+      "documents": 480,
+      "accepted_share": 0.675,
+      "accuracy_when_accepted": 1.0,
+      "accepted_but_wrong_share": 0.0,
+      "sent_for_review_share": 0.325,
+      "unreadable_share": 0.0167
+    },
+    "outside_source_agami": {
+      "accuracy": 1.0,
+      "macro_f1": 1.0,
+      "documents": 54,
+      "accepted_share": 1.0,
+      "accuracy_when_accepted": 1.0,
+      "accepted_but_wrong_share": 0.0,
+      "sent_for_review_share": 0.0,
+      "unreadable_share": 0.0
+    },
+    "outside_source_agami_bank_type1": {
+      "accuracy": 1.0,
+      "documents": 12,
+      "predicted_as": {
+        "bank_statement": 12
+      }
+    },
+    "outside_source_agami_bank_type2": {
+      "accuracy": 1.0,
+      "documents": 12,
+      "predicted_as": {
+        "bank_statement": 12
+      }
+    },
+    "outside_source_agami_itr": {
+      "accuracy": 1.0,
+      "documents": 30,
+      "predicted_as": {
+        "itr": 30
+      }
+    }
+  },
+  "export_matches_model": true
+}

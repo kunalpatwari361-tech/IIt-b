@@ -1,0 +1,14 @@
+,pan_card,aadhaar_card,salary_slip,form_16,itr,bank_statement,gst_certificate,sale_deed,allotment_letter,encumbrance_certificate,property_tax_receipt,utility_bill,other
+pan_card,36,0,0,0,0,0,0,0,0,0,0,0,0
+aadhaar_card,0,36,0,0,0,0,0,0,0,0,0,0,0
+salary_slip,0,0,36,0,0,0,0,0,0,0,0,0,0
+form_16,0,0,0,36,0,0,0,0,0,0,0,0,0
+itr,0,0,0,0,36,0,0,0,0,0,0,0,0
+bank_statement,0,0,0,0,0,36,0,0,0,0,0,0,0
+gst_certificate,0,0,0,0,0,0,36,0,0,0,0,0,0
+sale_deed,0,0,0,0,0,0,0,29,0,7,0,0,0
+allotment_letter,0,0,0,0,0,0,0,0,36,0,0,0,0
+encumbrance_certificate,0,0,0,0,0,0,0,0,0,36,0,0,0
+property_tax_receipt,0,0,0,0,0,0,0,0,0,0,36,0,0
+utility_bill,0,0,0,0,0,0,0,0,0,0,0,29,7
+other,0,6,0,0,0,10,0,1,13,0,6,6,6
