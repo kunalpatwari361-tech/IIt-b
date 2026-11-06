@@ -266,13 +266,22 @@ def train(raw: pd.DataFrame, dataset: Dataset = LT, out_dir: Path = HERE,
     }
 
     (out_dir / "artifacts").mkdir(parents=True, exist_ok=True)
-    (out_dir / "reports").mkdir(parents=True, exist_ok=True)
-    (out_dir / "artifacts" / "scorecard.json").write_text(json.dumps(spec, indent=2, ensure_ascii=False),
-                                                          encoding="utf-8")
-    (out_dir / "reports" / "metrics.json").write_text(json.dumps(metrics, indent=2, ensure_ascii=False),
+    reports_dir = out_dir / ("reports" if dataset.key == "lt" else f"reports_{dataset.key}")
+    reports_dir.mkdir(parents=True, exist_ok=True)
+    model_filename = (
+        "scorecard_home_credit.json"
+        if dataset.key == "home_credit"
+        else "scorecard.json"
+    )
+
+    (out_dir / "artifacts" / model_filename).write_text(
+        json.dumps(spec, indent=2, ensure_ascii=False),
+        encoding="utf-8"
+    )
+    (reports_dir / "metrics.json").write_text(json.dumps(metrics, indent=2, ensure_ascii=False),
                                                       encoding="utf-8")
-    grades.to_csv(out_dir / "reports" / "grades.csv", index=False)
-    fairness.to_csv(out_dir / "reports" / "fairness.csv", index=False)
+    grades.to_csv(reports_dir / "grades.csv", index=False)
+    fairness.to_csv(reports_dir / "fairness.csv", index=False)
     points_rows = []
     for name, s in spec["inputs"].items():
         for label, pts, rate in zip(s["bins"], s["points"], s["event_rate"]):
@@ -282,7 +291,7 @@ def train(raw: pd.DataFrame, dataset: Dataset = LT, out_dir: Path = HERE,
         points_rows.append({"input": name, "group": s["group"], "bin": "missing",
                             "points": s["missing_points"],
                             "default_rate": None if rate is None else round(rate, 4)})
-    pd.DataFrame(points_rows).to_csv(out_dir / "reports" / "points_table.csv", index=False)
+    pd.DataFrame(points_rows).to_csv(reports_dir / "points_table.csv", index=False)
     return {"metrics": metrics, "grades": grades, "fairness": fairness, "spec": spec}
 
 

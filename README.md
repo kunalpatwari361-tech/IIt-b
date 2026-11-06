@@ -1,79 +1,238 @@
-# Nirnay: Automated Mortgage Underwriting Engine
+# NIRNAY AI – Intelligent Mortgage Underwriting Platform
 
-Our team's entry for the **Hero Housing Fintech Challenge, Problem Statement 2**: *Digitally Automated Mortgage Underwriting Engine, a fully automated, regulator-compliant lending platform.*
+**Hero Housing Fintech Challenge | Problem Statement 2**
 
-Nirnay underwrites Home Loans and Loan Against Property (LAP) without a person reviewing each file. It works through both a **mobile app** for customers and a **web portal** for staff and partners. Every application ends in one of three outcomes: **approve**, **reject** or **refer**. Each decision comes with its reasons and a tamper-evident record.
+NIRNAY AI is an AI-assisted mortgage underwriting prototype designed to support Home Loan and Loan Against Property (LAP) assessment.
 
-## Read the report
+The platform combines a React web dashboard, FastAPI backend, machine learning models, configurable eligibility rules, fraud risk checks, explainable decisions, and application audit logging.
 
-| File | What it is |
-|---|---|
-| [Nirnay-Underwriting-Report.pdf](Nirnay-Underwriting-Report.pdf) | The full report as a 40-page PDF to download or print |
-| [docs/nirnay-report.html](docs/nirnay-report.html) | The same report as a web page, with a working decision simulator. Download it and open it in Chrome or Edge. |
+**NIRNAY AI aims to make mortgage underwriting more transparent, efficient, and explainable.**
 
-The report covers:
+> **Important:** This is a hackathon prototype. Its decisions are based on demo rules and model inputs. It is not a production lending platform, actual loan sanction, verified KYC system, or regulatory compliance certification.
 
-- the problem
-- the features for the app and portal
-- the solution architecture (SA) and AI solution architecture (AI SA)
-- how we meet each of the 8 challenge requirements
-- a build plan for the team
-- sources
+## Project Highlights
 
-## How it meets the 8 requirements
+- AI-assisted credit risk assessment
+- Loan eligibility evaluation using configured demo rules
+- Fraud risk assessment and review flags
+- Demo document verification inputs
+- Explainable underwriting decisions
+- Risk factors and decision reasons
+- Application audit logging
+- Web-based underwriting dashboard
+- Flutter mobile application project
 
-| # | Requirement | How Nirnay handles it |
-|---|---|---|
-| 1 | Integrate data sources | An integration hub with consent manager: KYC, credit bureau, Account Aggregator, GST/ITR, property records |
-| 2 | Eligibility & policy | Policy written as versioned rule tables (FOIR, LTV tiers, age, tenure), changed under maker-checker |
-| 3 | Fraud / KYC / AML | Face match, liveness, document tamper checks, a fraud model and sanctions/PEP screening, with no manual review |
-| 4 | Risk scoring | An explainable credit scorecard (300–900 scale, grades A–E), plus a gradient-boosted challenger model run in shadow |
-| 5 | Documents & property | OCR and document classification, an LLM title-deed reader, an automated valuation model |
-| 6 | Compliance | Compliance-as-code gate covering RBI/NHB HFC Directions, KYC, Digital Lending (KFS, cooling-off), PMLA and DPDP, with a full audit trail |
-| 7 | Instant decisioning | An in-principle offer in minutes, then final sanction. Eight gates run in order, and the most severe result wins. |
-| 8 | Explainability & governance | Reason codes for every decision, SHAP for models, model cards, and replayable hash-chained decision records, in line with RBI FREE-AI |
+## Project Architecture
 
-**AI is never the final judge.** The LLM only reads documents and drafts text. Rules and validated models set every outcome.
-
-## Models
-
-| # | Model | Folder | Status |
-|---|---|---|---|
-| 1 | Credit scorecard (live) | [models/credit_scorecard](models/credit_scorecard/README.md) | Trained on L&T Indian loan data. Test AUC 0.595. |
-| 2 | Credit challenger (shadow) | [models/credit_challenger](models/credit_challenger/README.md) | Trained on L&T Indian loan data. Test AUC 0.621, beats model 1 by +0.026. |
-| 3 | Fraud classifier | [models/fraud_classifier](models/fraud_classifier/README.md) | Trained on BAF (no Indian labelled data is public). Catches 53% of fraud at 5% false alarms. |
-| 4 | Anomaly detector | [models/anomaly_detector](models/anomaly_detector/README.md) | IsolationForest plus integrity rules, trained on L&T Indian data without labels. Catches 84% of planted odd applications; flags 1.2% of real ones. |
-| 5 | Bank transaction tagger | [models/transaction_tagger](models/transaction_tagger/README.md) | TF-IDF + logistic regression on Indian bank narrations (our generator + a Hugging Face set). Macro F1 0.83 on unseen formats, 0.65 on a different source. |
-| 6 | Document classifier | [models/document_classifier](models/document_classifier/README.md) | TF-IDF + logistic regression on the OCR text of 480 fake Indian lending documents in 13 types. 88% accuracy on unseen layouts, 100% on outside scans; no wrong type accepted. |
-| 7 | Property valuation (AVM) | [models/property_avm](models/property_avm/README.md) | LightGBM (P10/P50/P90) on 64,756 Indian flat listings plus Delhi and Gurugram circle rates. Typical error 12.9% (18.2% in unseen localities); the range holds 79–81% of prices. |
-
-To set up Python and run all the tests:
-
-```bash
-py -3.11 -m venv .venv
-.venv\Scripts\python -m pip install -r models/property_avm/requirements.txt
-.venv\Scripts\python -m pytest
+```text
+NIRNAY-AI/
+│
+├── api/                         # FastAPI backend
+│   ├── main.py
+│   └── document.py
+│
+├── frontend/                    # React + Vite dashboard
+│
+├── app/                         # Flutter mobile application
+│
+├── models/
+│   ├── credit_scorecard/
+│   ├── credit_challenger/
+│   ├── eligibility/
+│   ├── fraud_detection/
+│   ├── fraud_classifier/
+│   ├── anomaly_detector/
+│   ├── document_classifier/
+│   ├── transaction_tagger/
+│   ├── property_avm/
+│   ├── explainability/
+│   ├── underwriting/
+│   └── audit/
+│
+├── docs/                        # Project documentation
+├── INTEGRATION.md
+├── requirements-api.txt
+├── pytest.ini
+├── Nirnay-Underwriting-Report.pdf
+└── README.md
 ```
 
-## Apps
+## Technology Stack
 
-| App | Folder | Status |
+| Component | Technology |
+|---|---|
+| Web Frontend | React, Vite, Tailwind CSS |
+| Backend | Python, FastAPI, Uvicorn |
+| Machine Learning | Scikit-learn, LightGBM |
+| Data Processing | Pandas, NumPy |
+| Explainability | Scorecard and rule-based explanations |
+| Mobile Application | Flutter |
+| Audit Logging | Python-based audit module |
+
+## Core Underwriting Workflow
+
+1. Enter applicant information.
+2. Provide financial and loan details.
+3. Select the available credit assessment model.
+4. Provide demo document verification inputs.
+5. Submit the application to the FastAPI backend.
+6. Evaluate credit risk, eligibility, and fraud rules.
+7. Generate the final underwriting decision.
+8. Display decision explanations, risk factors, and audit information.
+
+Possible outcomes include:
+
+- **APPROVE:** Application passes the configured demo rules.
+- **REFER:** Application requires further review.
+- **REJECT:** Application fails configured decision rules.
+
+## Backend API Endpoints
+
+The FastAPI backend currently exposes the following endpoints:
+
+| Method | Endpoint | Description |
 |---|---|---|
-| Customer app (Flutter, Android/iOS/web, English and Hindi) | [app](app/README.md) | All screens built: sign-in, consent, eligibility, selfie, documents, decision with reasons and KFS, property photos. Runs against a sample engine with the report's three demo cases (Ravi approved, Meena referred, Arjun rejected). |
-| Staff portal (React + Next.js) | – | Not started |
-| Decision engine (FastAPI) | – | Not started; the app's `lib/services/api.dart` defines the calls it must answer |
+| GET | `/` | Backend health check |
+| GET | `/api/v1/models` | List available models |
+| POST | `/api/v1/credit-score` | Credit assessment |
+| POST | `/api/v1/eligibility/check` | Loan eligibility assessment |
+| POST | `/api/v1/underwriting/evaluate` | Combined underwriting evaluation |
+| GET | `/api/v1/audit` | Retrieve audit records |
+| GET | `/api/v1/audit/verify` | Audit integrity verification |
 
-## Updating the PDF
+Interactive API documentation:
 
-If you edit `docs/nirnay-report.html`, rebuild the PDF:
+`http://127.0.0.1:8001/docs`
 
-1. Open the HTML file in Chrome.
-2. Press **Ctrl+P**.
-3. Choose **Save as PDF**.
-4. Under **More settings**, turn on **Background graphics**.
+## Machine Learning and AI Modules
 
-The page already includes the print layout: A4, with diagrams on landscape pages.
+The repository contains the following model and processing modules:
 
-## Data rule
+| Module | Purpose |
+|---|---|
+| Credit Scorecard | Credit risk scoring |
+| Credit Challenger | Alternative credit model |
+| Eligibility Engine | Configurable loan eligibility rules |
+| Fraud Detection Engine | Fraud risk flags and checks |
+| Fraud Classifier | Machine learning-based fraud classification |
+| Anomaly Detector | Anomalous application detection |
+| Document Classifier | Document text classification |
+| Transaction Tagger | Bank transaction categorization |
+| Property AVM | Automated property valuation model |
+| Explainability Engine | Decision explanations |
+| Underwriting Engine | Combined underwriting decision logic |
+| Audit Module | Application audit logging |
 
-Use **synthetic or public datasets only**. Never commit real customer documents or personal data, under the DPDP Act 2023. Keep any local test data in `data/private/`. Git already ignores that folder.
+**Integration note:** The credit scorecard, eligibility engine, fraud detection, explainability, and underwriting components are used in the tested demo workflow. Other model modules are present in the repository but should be treated as separate or experimental components until their integration and end-to-end performance are verified.
+
+## Running the Project Locally
+
+### Prerequisites
+
+- Python 3.10 or compatible version
+- Node.js and npm
+- Flutter SDK (for mobile application development)
+- Git
+
+### 1. Clone the Repository
+
+```bash
+git clone YOUR_GITHUB_REPOSITORY_URL
+cd IIt-b
+```
+
+Replace the repository URL with the actual GitHub repository URL.
+
+### 2. Backend Setup
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+
+python -m pip install --upgrade pip
+pip install -r requirements-api.txt
+pip install -r models/credit_scorecard/requirements.txt
+```
+
+Start the backend:
+
+```bash
+uvicorn api.main:app --reload --host 127.0.0.1 --port 8001
+```
+
+Backend URL:
+
+`http://127.0.0.1:8001`
+
+### 3. Frontend Setup
+
+Open another terminal:
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+Frontend URL:
+
+`http://localhost:5173`
+
+### 4. Production Build
+
+```bash
+cd frontend
+npm run build
+```
+
+## Testing
+
+Run the backend test suite from the project root:
+
+```bash
+source .venv/bin/activate
+python -m pytest
+```
+
+The project test suite was previously verified with 140 passed and 2 skipped tests. Re-run the suite on the final submission version to confirm the latest status.
+
+## Reports and Documentation
+
+- `Nirnay-Underwriting-Report.pdf` – Project report
+- `docs/nirnay-report.html` – HTML report
+- `INTEGRATION.md` – Backend and frontend integration notes
+- `app/README.md` – Mobile application documentation
+
+## Current Prototype Limitations
+
+- The tested credit scorecard uses L&T vehicle-loan training data. It is not a mortgage-specific validated model.
+- Home Credit data represents consumer lending, not mortgage-specific lending.
+- Document verification checkboxes are manually supplied demo inputs. They do not perform actual document authentication or KYC.
+- Fraud detection is a prototype assessment, not a production AML or sanctions screening solution.
+- External credit bureau, KYC, Account Aggregator, GST/ITR, and property-record integrations are not confirmed.
+- The configured eligibility rules are demonstration rules, not official Hero Housing Finance lending policies.
+- Separate AI modules require further integration, testing, and validation before production use.
+- Regulatory compliance and production-grade governance require additional implementation and independent review.
+
+## Security and Privacy
+
+- Never commit API keys, passwords, or access tokens.
+- Keep `.env` files local.
+- Do not upload real customer documents or personal information.
+- Keep generated audit records local.
+- Use synthetic or public datasets for demonstrations.
+- Review `.gitignore` before publishing the repository.
+
+## Future Scope
+
+- External credit bureau integration
+- Digital KYC and document authentication
+- Bank statement and Account Aggregator integration
+- Automated property verification and valuation
+- Stronger fraud and AML screening
+- Versioned lending policies and maker-checker workflows
+- Production-grade security, governance, and regulatory validation
+
+## Disclaimer
+
+NIRNAY AI is a hackathon prototype developed for demonstration and evaluation. Its underwriting outputs are not actual loan approvals, verified KYC decisions, or financial advice. All lending decisions require appropriate institutional validation and authorization.

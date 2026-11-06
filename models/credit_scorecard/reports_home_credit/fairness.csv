@@ -1,0 +1,7 @@
+attribute,group,applicants,approval_rate,refer_rate,default_rate,default_rate_if_approved,ratio_to_best,four_fifths_rule
+gender,F,40561,0.3834,0.2978,0.0699,0.0255,1.0,ok
+gender,M,20940,0.2906,0.2988,0.1017,0.0283,0.758,check
+age_band,30-44,24744,0.3113,0.3094,0.0883,0.0232,0.581,check
+age_band,45-59,20663,0.4385,0.304,0.0685,0.0286,0.818,ok
+age_band,60+,7191,0.5362,0.298,0.0496,0.0259,1.0,ok
+age_band,under 30,8905,0.1145,0.2532,0.113,0.0304,0.214,check

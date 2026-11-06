@@ -1,0 +1,73 @@
+{
+  "model": "credit_scorecard",
+  "version": "scorecard-v1",
+  "dataset": "home_credit",
+  "dataset_title": "Home Credit Default Risk",
+  "source": "https://www.kaggle.com/competitions/home-credit-default-risk/data",
+  "trained_at": "2026-11-06",
+  "split": "random 20% of applications, kept aside",
+  "rows": {
+    "train": 246008,
+    "test": 61503,
+    "default_rate_train": 0.0807,
+    "default_rate_test": 0.0807
+  },
+  "train": {
+    "auc": 0.7349,
+    "gini": 0.4699,
+    "ks": 0.3511
+  },
+  "test": {
+    "auc": 0.735,
+    "gini": 0.4699,
+    "ks": 0.3484
+  },
+  "test_using_rounded_score": {
+    "auc": 0.735,
+    "gini": 0.4701,
+    "ks": 0.3477
+  },
+  "inputs_used": [
+    "bureau_score_1",
+    "bureau_score_2",
+    "bureau_score_3",
+    "loan_to_price",
+    "years_employed",
+    "employment_type"
+  ],
+  "information_value": {
+    "bureau_score_1": 0.148,
+    "bureau_score_2": 0.319,
+    "bureau_score_3": 0.3353,
+    "payment_to_income": 0.0073,
+    "loan_to_income": 0.0046,
+    "loan_to_price": 0.0734,
+    "owns_property": 0.0005,
+    "years_employed": 0.1154,
+    "age_years": 0.0903,
+    "employment_type": 0.0403
+  },
+  "dropped_low_iv": [
+    "payment_to_income",
+    "loan_to_income",
+    "owns_property"
+  ],
+  "dropped_flipped_sign": [
+    "age_years"
+  ],
+  "excluded_on_purpose": {
+    "CODE_GENDER": "Gender. Lending decisions must not depend on it. Used only for the fairness check.",
+    "NAME_FAMILY_STATUS, CNT_CHILDREN, CNT_FAM_MEMBERS": "Marital status and family size. Can stand in for gender.",
+    "NAME_EDUCATION_TYPE": "Education. Can stand in for social background.",
+    "REGION_* and *_CITY flags": "Where someone lives. Can stand in for community or caste.",
+    "Raw income and loan amounts": "Not in rupees, so we use ratios that carry over."
+  },
+  "grades_monotonic": true,
+  "approval_rate_test": 0.3518,
+  "fairness_checks_flagged": [
+    "gender M",
+    "age_band 30-44",
+    "age_band under 30"
+  ],
+  "export_matches_model": true
+}

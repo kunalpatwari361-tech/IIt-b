@@ -31,3 +31,12 @@ build/
 Thumbs.db
 desktop.ini
 .pytest_cache/
+
+# Generated audit records - keep local
+models/audit/logs/*.jsonl
+
+# Local frontend backups and unused starter assets
+frontend/src/App.backup*.jsx
+frontend/src/App.before-dashboard.jsx
+frontend/src/assets/react.svg
+frontend/src/assets/vite.svg

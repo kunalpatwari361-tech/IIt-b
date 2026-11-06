@@ -31,18 +31,22 @@ PROFILES = {
 }
 
 
+ARTIFACT = {"lt": "scorecard.json", "home_credit": "scorecard_home_credit.json"}
+
+
 @pytest.fixture(scope="module", params=sorted(PROFILES))
 def trained(request, tmp_path_factory):
     key = request.param
     out = tmp_path_factory.mktemp(f"scorecard-{key}")
     result = train(PROFILES[key]["make"](), dataset=DATASETS[key], out_dir=out)
-    return key, result, Scorecard.load(out / "artifacts" / "scorecard.json"), out
+    return key, result, Scorecard.load(out / "artifacts" / ARTIFACT[key]), out
 
 
 def test_training_writes_every_output(trained):
-    *_, out = trained
-    for path in ["artifacts/scorecard.json", "reports/metrics.json", "reports/grades.csv",
-                 "reports/fairness.csv", "reports/points_table.csv"]:
+    key, *_, out = trained
+    rep = "reports" if key == "lt" else f"reports_{key}"
+    for path in [f"artifacts/{ARTIFACT[key]}", f"{rep}/metrics.json", f"{rep}/grades.csv",
+                 f"{rep}/fairness.csv", f"{rep}/points_table.csv"]:
         assert (out / path).exists(), path
 
 

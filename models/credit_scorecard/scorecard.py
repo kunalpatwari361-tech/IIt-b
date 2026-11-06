@@ -155,15 +155,32 @@ class Scorecard:
         }, index=X.index)
 
 
-_loaded: Scorecard | None = None
+_loaded_models: dict[str, Scorecard] = {}
 
 
-def predict(application: dict) -> dict:
-    """What the decision engine calls. Loads the scorecard once, then scores."""
-    global _loaded
-    if _loaded is None:
-        _loaded = Scorecard.load()
-    return _loaded.score(application)
+def get_scorecard(model_type: str = "lt") -> Scorecard:
+    """Load and cache the selected scorecard."""
+    model_paths = {
+        "lt": DEFAULT_PATH,
+        "home_credit": DEFAULT_PATH.parent / "scorecard_home_credit.json",
+    }
+
+    if model_type not in model_paths:
+        raise ValueError(
+            f"Unknown model_type: {model_type}. Choose 'lt' or 'home_credit'."
+        )
+
+    if model_type not in _loaded_models:
+        _loaded_models[model_type] = Scorecard.load(model_paths[model_type])
+
+    return _loaded_models[model_type]
+
+
+def predict(application: dict, model_type: str = "lt") -> dict:
+    """Score an application using the selected model."""
+    result = get_scorecard(model_type).score(application)
+    result["model_type"] = model_type
+    return result
 
 
 if __name__ == "__main__":
