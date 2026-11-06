@@ -26,6 +26,17 @@ def evaluate_underwriting(application: Dict[str, Any]) -> Dict[str, Any]:
     )
 
     extracted_fields = document_result.get("extracted_fields", {})
+        # Derive status only when document verification data is supplied
+    verification_flags = [
+        "identity_verified",
+        "address_verified",
+        "income_verified",
+        "property_verified"
+    ]
+
+    if document_result and "verification_status" not in verification_data:
+        if all(verification_data.get(flag) is True for flag in verification_flags):
+            verification_data["verification_status"] = "matched"
 
     # 4. Automatic fraud detection
     fraud_data = {
