@@ -27,9 +27,11 @@ The platform combines a React web dashboard, FastAPI backend, machine learning m
 ```text
 NIRNAY-AI/
 │
-├── api/                         # FastAPI backend
+├── api/                         # FastAPI backend for the React dashboard
 │   ├── main.py
 │   └── document.py
+│
+├── backend/                     # FastAPI decision engine with all 12 models (for the Flutter app)
 │
 ├── frontend/                    # React + Vite dashboard
 │
@@ -45,6 +47,11 @@ NIRNAY-AI/
 │   ├── document_classifier/
 │   ├── transaction_tagger/
 │   ├── property_avm/
+│   ├── ocr/                     # model 8 (ready-made)
+│   ├── face_match/              # model 9 (ready-made)
+│   ├── liveness/                # model 10 (ready-made)
+│   ├── llm/                     # model 11 (ready-made)
+│   ├── translation/             # model 12 (ready-made)
 │   ├── explainability/
 │   ├── underwriting/
 │   └── audit/
@@ -104,6 +111,31 @@ Interactive API documentation:
 
 `http://127.0.0.1:8001/docs`
 
+## Decision engine with all 12 models (`backend/`)
+
+A second FastAPI service, built for the Flutter customer app, runs **all 12 models**. It covers what `INTEGRATION.md` lists as still open: document AI, models 3–7 in the decision, KYC and AML, a compliance gate with clause tags, and replayable records. Details: [backend/README.md](backend/README.md).
+
+| # | Model | Used for |
+|---|---|---|
+| 1, 2 | Credit scorecard (live), challenger (shadow) | Risk grade gate; the challenger is recorded but never sets the outcome |
+| 3, 4 | Fraud classifier, anomaly detector | Fraud & documents gate |
+| 5 | Transaction tagger | Salary, EMI and bounce totals from the Account Aggregator statement |
+| 6, 8 | Document classifier, OCR (English + Hindi) | Every upload: type check and field reading |
+| 7 | Property AVM | Property gate; LTV uses the lower of price and estimate |
+| 9, 10 | [Face match](models/face_match/README.md) (98.7% on LFW pairs, no false accepts), [liveness](models/liveness/README.md) | Identity gate |
+| 11 | [LLM](models/llm/README.md) (Claude Sonnet 5.5) | Deed reader (every fact must quote the deed), officer file notes, letters, help assistant; offline rules without an API key |
+| 12 | [Translation](models/translation/README.md) | Letters and assistant answers in 22 Indian languages |
+
+Plus AML name screening against the UN list, fraud-ring and reused-file checks, PDF/photo tamper checks, eight gates and a compliance gate (8 coded rules, each with its regulation), the Key Facts Statement, and hash-chained decision records that can be replayed.
+
+```bash
+pip install -r backend/requirements.txt
+python -m backend.fetch
+uvicorn backend.app:app --host 127.0.0.1 --port 8000
+```
+
+Run the app against it: `flutter run -d chrome --dart-define=NIRNAY_API_URL=http://127.0.0.1:8000` from `app/`. The report's three demo cases come out as designed: Ravi approved, Meena referred at the property, Arjun rejected.
+
 ## Machine Learning and AI Modules
 
 The repository contains the following model and processing modules:
@@ -123,7 +155,7 @@ The repository contains the following model and processing modules:
 | Underwriting Engine | Combined underwriting decision logic |
 | Audit Module | Application audit logging |
 
-**Integration note:** The credit scorecard, eligibility engine, fraud detection, explainability, and underwriting components are used in the tested demo workflow. Other model modules are present in the repository but should be treated as separate or experimental components until their integration and end-to-end performance are verified.
+**Integration note:** The credit scorecard, eligibility engine, fraud detection, explainability, and underwriting components are used in the tested demo workflow of `api/`. Other model modules are present in the repository but should be treated as separate or experimental components until their integration and end-to-end performance are verified. The `backend/` engine (above) wires in all 12 models and tests them end to end on the three demo cases.
 
 ## Running the Project Locally
 
@@ -194,7 +226,7 @@ source .venv/bin/activate
 python -m pytest
 ```
 
-The project test suite was previously verified with 140 passed and 2 skipped tests. Re-run the suite on the final submission version to confirm the latest status.
+The project test suite was previously verified with 140 passed and 2 skipped tests. Re-run the suite on the final submission version to confirm the latest status. `pytest.ini` now also runs `backend/` (the decision engine's API and gate tests; run `python -m backend.fetch` first so the face and OCR weights are there).
 
 ## Reports and Documentation
 

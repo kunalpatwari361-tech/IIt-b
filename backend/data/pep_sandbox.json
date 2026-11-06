@@ -1,0 +1,8 @@
+{
+  "source": "Nirnay sandbox PEP list. Fictional people, for testing the AML gate only.",
+  "entries": [
+    {"ref": "PEP-SBX-001", "list": "PEP (sandbox)", "pep": true, "names": ["Rajendra Prasad Varma"], "dobs": ["1961-04-12"], "years": []},
+    {"ref": "PEP-SBX-002", "list": "PEP (sandbox)", "pep": true, "names": ["Sunanda Rao Deshpande"], "dobs": ["1968-09-30"], "years": []},
+    {"ref": "PEP-SBX-003", "list": "PEP (sandbox)", "pep": true, "names": ["Vikram Singh Rathore"], "dobs": [], "years": [1959]}
+  ]
+}

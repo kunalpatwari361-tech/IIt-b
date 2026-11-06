@@ -40,3 +40,10 @@ frontend/src/App.backup*.jsx
 frontend/src/App.before-dashboard.jsx
 frontend/src/assets/react.svg
 frontend/src/assets/vite.svg
+
+# Nirnay engine: decision records stay local; big downloaded weights come from `python -m backend.fetch`
+backend/var/
+models/face_match/weights/*.onnx
+models/ocr/weights/*.onnx
+models/translation/weights/
+models/face_match/reports/*.npy
