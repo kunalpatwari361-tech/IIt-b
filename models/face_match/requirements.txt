@@ -1,0 +1,5 @@
+opencv-python>=4.8   # FaceDetectorYN and FaceRecognizerSF
+Pillow>=10.1
+numpy>=1.26
+# evaluate.py only:
+scikit-learn>=1.4

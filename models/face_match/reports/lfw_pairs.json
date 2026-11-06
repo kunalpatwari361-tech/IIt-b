@@ -1,0 +1,22 @@
+{
+  "model_version": "sface-2021dec+yunet-2023mar",
+  "threshold": 0.363,
+  "subsets": {
+    "train": {
+      "pairs": 2200,
+      "scored": 2200,
+      "no_face_found": 0,
+      "false_accept_rate": 0.0,
+      "false_reject_rate": 0.0164,
+      "accuracy": 0.9918
+    },
+    "test": {
+      "pairs": 1000,
+      "scored": 1000,
+      "no_face_found": 0,
+      "false_accept_rate": 0.0,
+      "false_reject_rate": 0.026,
+      "accuracy": 0.987
+    }
+  }
+}

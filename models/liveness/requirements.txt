@@ -1,0 +1,6 @@
+onnxruntime>=1.18
+opencv-python>=4.8
+numpy>=1.26
+# convert.py only (once, to rebuild the ONNX files):
+# torch>=2.2
+# onnx>=1.16

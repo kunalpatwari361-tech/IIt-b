@@ -1,0 +1,6 @@
+# Phrasebook and Bhashini need nothing extra (httpx comes with the engine).
+# For IndicTrans2 on this machine:
+# torch>=2.2
+# transformers>=4.40,<5
+# sentencepiece
+# IndicTransToolkit
