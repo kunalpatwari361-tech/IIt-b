@@ -5,8 +5,29 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:intl/intl.dart' as intl;
 
+import 'app_localizations_as.dart';
+import 'app_localizations_bn.dart';
+import 'app_localizations_brx.dart';
+import 'app_localizations_doi.dart';
 import 'app_localizations_en.dart';
+import 'app_localizations_gu.dart';
 import 'app_localizations_hi.dart';
+import 'app_localizations_kn.dart';
+import 'app_localizations_kok.dart';
+import 'app_localizations_ks.dart';
+import 'app_localizations_mai.dart';
+import 'app_localizations_ml.dart';
+import 'app_localizations_mni.dart';
+import 'app_localizations_mr.dart';
+import 'app_localizations_ne.dart';
+import 'app_localizations_or.dart';
+import 'app_localizations_pa.dart';
+import 'app_localizations_sa.dart';
+import 'app_localizations_sat.dart';
+import 'app_localizations_sd.dart';
+import 'app_localizations_ta.dart';
+import 'app_localizations_te.dart';
+import 'app_localizations_ur.dart';
 
 // ignore_for_file: type=lint
 
@@ -94,8 +115,29 @@ abstract class AppLocalizations {
 
   /// A list of this localizations delegate's supported locales.
   static const List<Locale> supportedLocales = <Locale>[
+    Locale('as'),
+    Locale('bn'),
+    Locale('brx'),
+    Locale('doi'),
     Locale('en'),
+    Locale('gu'),
     Locale('hi'),
+    Locale('kn'),
+    Locale('kok'),
+    Locale('ks'),
+    Locale('mai'),
+    Locale('ml'),
+    Locale('mni'),
+    Locale('mr'),
+    Locale('ne'),
+    Locale('or'),
+    Locale('pa'),
+    Locale('sa'),
+    Locale('sat'),
+    Locale('sd'),
+    Locale('ta'),
+    Locale('te'),
+    Locale('ur'),
   ];
 
   /// No description provided for @appTitle.
@@ -1111,6 +1153,810 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Your complaint is registered. Reference {ref}.'**
   String complaintSent(String ref);
+
+  /// No description provided for @stageSignIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in'**
+  String get stageSignIn;
+
+  /// No description provided for @stageDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'Details'**
+  String get stageDetails;
+
+  /// No description provided for @stageKyc.
+  ///
+  /// In en, this message translates to:
+  /// **'KYC'**
+  String get stageKyc;
+
+  /// No description provided for @stageOffer.
+  ///
+  /// In en, this message translates to:
+  /// **'Offer'**
+  String get stageOffer;
+
+  /// No description provided for @stageProperty.
+  ///
+  /// In en, this message translates to:
+  /// **'Property'**
+  String get stageProperty;
+
+  /// No description provided for @homeSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Home Loan · Loan Against Property'**
+  String get homeSubtitle;
+
+  /// No description provided for @heroPill.
+  ///
+  /// In en, this message translates to:
+  /// **'DECISION IN MINUTES'**
+  String get heroPill;
+
+  /// No description provided for @heroFacts.
+  ///
+  /// In en, this message translates to:
+  /// **'From {rate}% a year · up to {years} years'**
+  String heroFacts(String rate, String years);
+
+  /// No description provided for @resumeBody.
+  ///
+  /// In en, this message translates to:
+  /// **'{pct}% done · pick up where you left off'**
+  String resumeBody(String pct);
+
+  /// No description provided for @resume.
+  ///
+  /// In en, this message translates to:
+  /// **'Resume'**
+  String get resume;
+
+  /// No description provided for @calculators.
+  ///
+  /// In en, this message translates to:
+  /// **'Calculators'**
+  String get calculators;
+
+  /// No description provided for @calcEmi.
+  ///
+  /// In en, this message translates to:
+  /// **'EMI'**
+  String get calcEmi;
+
+  /// No description provided for @calcEmiSub.
+  ///
+  /// In en, this message translates to:
+  /// **'Monthly payment'**
+  String get calcEmiSub;
+
+  /// No description provided for @calcEligibility.
+  ///
+  /// In en, this message translates to:
+  /// **'Eligibility'**
+  String get calcEligibility;
+
+  /// No description provided for @calcEligibilitySub.
+  ///
+  /// In en, this message translates to:
+  /// **'How much you can get'**
+  String get calcEligibilitySub;
+
+  /// No description provided for @emiCalcTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'EMI calculator'**
+  String get emiCalcTitle;
+
+  /// No description provided for @eligibilityCalcTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Eligibility calculator'**
+  String get eligibilityCalcTitle;
+
+  /// No description provided for @totalInterest.
+  ///
+  /// In en, this message translates to:
+  /// **'Total interest {amount}'**
+  String totalInterest(String amount);
+
+  /// No description provided for @calcIncomeOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'Based on income only. The property\'s value can lower it.'**
+  String get calcIncomeOnly;
+
+  /// No description provided for @verified.
+  ///
+  /// In en, this message translates to:
+  /// **'Verified'**
+  String get verified;
+
+  /// No description provided for @yourLoan.
+  ///
+  /// In en, this message translates to:
+  /// **'Your loan'**
+  String get yourLoan;
+
+  /// No description provided for @docsProgress.
+  ///
+  /// In en, this message translates to:
+  /// **'{done} of {total} verified'**
+  String docsProgress(String done, String total);
+
+  /// No description provided for @docNeeded.
+  ///
+  /// In en, this message translates to:
+  /// **'Needed'**
+  String get docNeeded;
+
+  /// No description provided for @docTryAgain.
+  ///
+  /// In en, this message translates to:
+  /// **'Try again'**
+  String get docTryAgain;
+
+  /// No description provided for @fetched.
+  ///
+  /// In en, this message translates to:
+  /// **'Fetched'**
+  String get fetched;
+
+  /// No description provided for @statusApproved.
+  ///
+  /// In en, this message translates to:
+  /// **'Approved'**
+  String get statusApproved;
+
+  /// No description provided for @statusSanctioned.
+  ///
+  /// In en, this message translates to:
+  /// **'Sanctioned'**
+  String get statusSanctioned;
+
+  /// No description provided for @statusInReview.
+  ///
+  /// In en, this message translates to:
+  /// **'In review'**
+  String get statusInReview;
+
+  /// No description provided for @statusDeclined.
+  ///
+  /// In en, this message translates to:
+  /// **'Declined'**
+  String get statusDeclined;
+
+  /// No description provided for @trackTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Track your application'**
+  String get trackTitle;
+
+  /// No description provided for @tlSubmitted.
+  ///
+  /// In en, this message translates to:
+  /// **'Application submitted'**
+  String get tlSubmitted;
+
+  /// No description provided for @tlVerified.
+  ///
+  /// In en, this message translates to:
+  /// **'KYC and documents verified'**
+  String get tlVerified;
+
+  /// No description provided for @tlInPrinciple.
+  ///
+  /// In en, this message translates to:
+  /// **'In-principle approval'**
+  String get tlInPrinciple;
+
+  /// No description provided for @tlProperty.
+  ///
+  /// In en, this message translates to:
+  /// **'Property details and valuation'**
+  String get tlProperty;
+
+  /// No description provided for @tlPropertyNext.
+  ///
+  /// In en, this message translates to:
+  /// **'Add your property\'s details and photos'**
+  String get tlPropertyNext;
+
+  /// No description provided for @tlOfficer.
+  ///
+  /// In en, this message translates to:
+  /// **'Officer review'**
+  String get tlOfficer;
+
+  /// No description provided for @tlOfficerNext.
+  ///
+  /// In en, this message translates to:
+  /// **'Within one working day'**
+  String get tlOfficerNext;
+
+  /// No description provided for @tlLegal.
+  ///
+  /// In en, this message translates to:
+  /// **'Legal and title check'**
+  String get tlLegal;
+
+  /// No description provided for @tlSanction.
+  ///
+  /// In en, this message translates to:
+  /// **'Final sanction and eSign'**
+  String get tlSanction;
+
+  /// No description provided for @tlSanctionNext.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign your sanction letter online'**
+  String get tlSanctionNext;
+
+  /// No description provided for @tlDisbursement.
+  ///
+  /// In en, this message translates to:
+  /// **'Disbursement'**
+  String get tlDisbursement;
+
+  /// No description provided for @helpTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Need help?'**
+  String get helpTitle;
+
+  /// No description provided for @propertyType.
+  ///
+  /// In en, this message translates to:
+  /// **'New or resale'**
+  String get propertyType;
+
+  /// No description provided for @greetMorning.
+  ///
+  /// In en, this message translates to:
+  /// **'Good morning'**
+  String get greetMorning;
+
+  /// No description provided for @greetAfternoon.
+  ///
+  /// In en, this message translates to:
+  /// **'Good afternoon'**
+  String get greetAfternoon;
+
+  /// No description provided for @greetEvening.
+  ///
+  /// In en, this message translates to:
+  /// **'Good evening'**
+  String get greetEvening;
+
+  /// No description provided for @nearlyThere.
+  ///
+  /// In en, this message translates to:
+  /// **'{name}, you\'re nearly there'**
+  String nearlyThere(String name);
+
+  /// No description provided for @chooseLanguage.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose your language'**
+  String get chooseLanguage;
+
+  /// No description provided for @languageNote.
+  ///
+  /// In en, this message translates to:
+  /// **'You can change this at any time.'**
+  String get languageNote;
+
+  /// No description provided for @liveChecks.
+  ///
+  /// In en, this message translates to:
+  /// **'Live checks'**
+  String get liveChecks;
+
+  /// No description provided for @checkBureau.
+  ///
+  /// In en, this message translates to:
+  /// **'Credit bureau'**
+  String get checkBureau;
+
+  /// No description provided for @checkScore.
+  ///
+  /// In en, this message translates to:
+  /// **'Score {score}'**
+  String checkScore(String score);
+
+  /// No description provided for @checkNoHistory.
+  ///
+  /// In en, this message translates to:
+  /// **'No history yet'**
+  String get checkNoHistory;
+
+  /// No description provided for @checkBank.
+  ///
+  /// In en, this message translates to:
+  /// **'Bank via AA'**
+  String get checkBank;
+
+  /// No description provided for @checkBankRead.
+  ///
+  /// In en, this message translates to:
+  /// **'12 months read'**
+  String get checkBankRead;
+
+  /// No description provided for @checkKyc.
+  ///
+  /// In en, this message translates to:
+  /// **'eKYC and selfie'**
+  String get checkKyc;
+
+  /// No description provided for @checkPending.
+  ///
+  /// In en, this message translates to:
+  /// **'Pending'**
+  String get checkPending;
+
+  /// No description provided for @checkDocs.
+  ///
+  /// In en, this message translates to:
+  /// **'Documents'**
+  String get checkDocs;
+
+  /// No description provided for @countOf.
+  ///
+  /// In en, this message translates to:
+  /// **'{done} of {total}'**
+  String countOf(String done, String total);
+
+  /// No description provided for @minutesLeft.
+  ///
+  /// In en, this message translates to:
+  /// **'about {n} min left'**
+  String minutesLeft(String n);
+
+  /// No description provided for @ratePa.
+  ///
+  /// In en, this message translates to:
+  /// **'{rate}% p.a.'**
+  String ratePa(String rate);
+
+  /// No description provided for @continueApplication.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue your application'**
+  String get continueApplication;
+
+  /// No description provided for @shapeOffer.
+  ///
+  /// In en, this message translates to:
+  /// **'Shape your offer'**
+  String get shapeOffer;
+
+  /// No description provided for @shapeOfferSub.
+  ///
+  /// In en, this message translates to:
+  /// **'Approved in principle · drag to adjust'**
+  String get shapeOfferSub;
+
+  /// No description provided for @withinLimits.
+  ///
+  /// In en, this message translates to:
+  /// **'Within your limits'**
+  String get withinLimits;
+
+  /// No description provided for @aboveLimits.
+  ///
+  /// In en, this message translates to:
+  /// **'Above a limit: lower the amount or add years'**
+  String get aboveLimits;
+
+  /// No description provided for @mostYouCan.
+  ///
+  /// In en, this message translates to:
+  /// **'Most you can borrow: {amount}'**
+  String mostYouCan(String amount);
+
+  /// No description provided for @useMax.
+  ///
+  /// In en, this message translates to:
+  /// **'Use max'**
+  String get useMax;
+
+  /// No description provided for @principal.
+  ///
+  /// In en, this message translates to:
+  /// **'Principal'**
+  String get principal;
+
+  /// No description provided for @interest.
+  ///
+  /// In en, this message translates to:
+  /// **'Interest'**
+  String get interest;
+
+  /// No description provided for @totalRepaid.
+  ///
+  /// In en, this message translates to:
+  /// **'Total repaid'**
+  String get totalRepaid;
+
+  /// No description provided for @emiShareIncome.
+  ///
+  /// In en, this message translates to:
+  /// **'EMIs as share of income'**
+  String get emiShareIncome;
+
+  /// No description provided for @loanShareProperty.
+  ///
+  /// In en, this message translates to:
+  /// **'Loan as share of the {value} property'**
+  String loanShareProperty(String value);
+
+  /// No description provided for @lockOffer.
+  ///
+  /// In en, this message translates to:
+  /// **'Lock this offer'**
+  String get lockOffer;
+
+  /// No description provided for @offerLocked.
+  ///
+  /// In en, this message translates to:
+  /// **'Your offer is locked.'**
+  String get offerLocked;
+
+  /// No description provided for @approvedUpTo.
+  ///
+  /// In en, this message translates to:
+  /// **'Approved up to {amount}'**
+  String approvedUpTo(String amount);
+
+  /// No description provided for @readingDoc.
+  ///
+  /// In en, this message translates to:
+  /// **'Reading your {doc}'**
+  String readingDoc(String doc);
+
+  /// No description provided for @documentAi.
+  ///
+  /// In en, this message translates to:
+  /// **'Document AI'**
+  String get documentAi;
+
+  /// No description provided for @sure.
+  ///
+  /// In en, this message translates to:
+  /// **'{pct}% sure'**
+  String sure(String pct);
+
+  /// No description provided for @readMatches.
+  ///
+  /// In en, this message translates to:
+  /// **'It\'s the document we asked for'**
+  String get readMatches;
+
+  /// No description provided for @readClear.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear photo, no blur or glare'**
+  String get readClear;
+
+  /// No description provided for @whatWeRead.
+  ///
+  /// In en, this message translates to:
+  /// **'What we read'**
+  String get whatWeRead;
+
+  /// No description provided for @looksRight.
+  ///
+  /// In en, this message translates to:
+  /// **'Looks right'**
+  String get looksRight;
+
+  /// No description provided for @fieldName.
+  ///
+  /// In en, this message translates to:
+  /// **'Name'**
+  String get fieldName;
+
+  /// No description provided for @fieldPan.
+  ///
+  /// In en, this message translates to:
+  /// **'PAN'**
+  String get fieldPan;
+
+  /// No description provided for @fieldAadhaar.
+  ///
+  /// In en, this message translates to:
+  /// **'Aadhaar'**
+  String get fieldAadhaar;
+
+  /// No description provided for @fieldEmployer.
+  ///
+  /// In en, this message translates to:
+  /// **'Employer'**
+  String get fieldEmployer;
+
+  /// No description provided for @fieldNetPay.
+  ///
+  /// In en, this message translates to:
+  /// **'Net pay'**
+  String get fieldNetPay;
+
+  /// No description provided for @fieldPeriod.
+  ///
+  /// In en, this message translates to:
+  /// **'Pay period'**
+  String get fieldPeriod;
+
+  /// No description provided for @fieldYear.
+  ///
+  /// In en, this message translates to:
+  /// **'Year'**
+  String get fieldYear;
+
+  /// No description provided for @fieldIncome.
+  ///
+  /// In en, this message translates to:
+  /// **'Income'**
+  String get fieldIncome;
+
+  /// No description provided for @fieldBusiness.
+  ///
+  /// In en, this message translates to:
+  /// **'Business'**
+  String get fieldBusiness;
+
+  /// No description provided for @fieldGstin.
+  ///
+  /// In en, this message translates to:
+  /// **'GSTIN'**
+  String get fieldGstin;
+
+  /// No description provided for @consentSectionRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Needed for your loan'**
+  String get consentSectionRequired;
+
+  /// No description provided for @consentSectionOptional.
+  ///
+  /// In en, this message translates to:
+  /// **'Optional: off unless you turn them on'**
+  String get consentSectionOptional;
+
+  /// No description provided for @advancedOptions.
+  ///
+  /// In en, this message translates to:
+  /// **'Options'**
+  String get advancedOptions;
+
+  /// No description provided for @consentValidUntil.
+  ///
+  /// In en, this message translates to:
+  /// **'Given {given} · valid until {until}'**
+  String consentValidUntil(String given, String until);
+
+  /// No description provided for @consentUntilWithdrawn.
+  ///
+  /// In en, this message translates to:
+  /// **'Given {given} · until you withdraw it'**
+  String consentUntilWithdrawn(String given);
+
+  /// No description provided for @recheckTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'One more check just before payout'**
+  String get recheckTitle;
+
+  /// No description provided for @recheckBody.
+  ///
+  /// In en, this message translates to:
+  /// **'We look at your credit report again just before paying out. If you say no, an officer may ask you then.'**
+  String get recheckBody;
+
+  /// No description provided for @aaMonthsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Months of statements to share'**
+  String get aaMonthsLabel;
+
+  /// No description provided for @monthsN.
+  ///
+  /// In en, this message translates to:
+  /// **'{n} months'**
+  String monthsN(String n);
+
+  /// No description provided for @aaAccountsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Accounts to share'**
+  String get aaAccountsLabel;
+
+  /// No description provided for @accountSavingsSalary.
+  ///
+  /// In en, this message translates to:
+  /// **'Savings ·· 0912 · salary credits'**
+  String get accountSavingsSalary;
+
+  /// No description provided for @accountSavings.
+  ///
+  /// In en, this message translates to:
+  /// **'Savings ·· 4821'**
+  String get accountSavings;
+
+  /// No description provided for @accountFd.
+  ///
+  /// In en, this message translates to:
+  /// **'Fixed deposit ·· 3307'**
+  String get accountFd;
+
+  /// No description provided for @aaAccountNeeded.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick at least one account to share.'**
+  String get aaAccountNeeded;
+
+  /// No description provided for @kycMethodLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'How to confirm your identity'**
+  String get kycMethodLabel;
+
+  /// No description provided for @kycAadhaarOtp.
+  ///
+  /// In en, this message translates to:
+  /// **'Aadhaar OTP'**
+  String get kycAadhaarOtp;
+
+  /// No description provided for @kycDigilocker.
+  ///
+  /// In en, this message translates to:
+  /// **'DigiLocker'**
+  String get kycDigilocker;
+
+  /// No description provided for @kycVideo.
+  ///
+  /// In en, this message translates to:
+  /// **'Video KYC call'**
+  String get kycVideo;
+
+  /// No description provided for @useCkycTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Use my existing CKYC record'**
+  String get useCkycTitle;
+
+  /// No description provided for @useCkycBody.
+  ///
+  /// In en, this message translates to:
+  /// **'If you\'ve done KYC with another bank or fund, we fetch that record instead of asking again.'**
+  String get useCkycBody;
+
+  /// No description provided for @optOffersTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Offers and new products'**
+  String get optOffersTitle;
+
+  /// No description provided for @optOffersBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose how you\'d like to hear about offers. You can turn these off at any time.'**
+  String get optOffersBody;
+
+  /// No description provided for @channelSms.
+  ///
+  /// In en, this message translates to:
+  /// **'SMS'**
+  String get channelSms;
+
+  /// No description provided for @channelEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'Email'**
+  String get channelEmail;
+
+  /// No description provided for @channelWhatsapp.
+  ///
+  /// In en, this message translates to:
+  /// **'WhatsApp'**
+  String get channelWhatsapp;
+
+  /// No description provided for @optUpdatesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Loan updates on WhatsApp'**
+  String get optUpdatesTitle;
+
+  /// No description provided for @optUpdatesBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Status updates and EMI reminders on WhatsApp, as well as SMS.'**
+  String get optUpdatesBody;
+
+  /// No description provided for @optInsuranceTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Home-loan protection quote'**
+  String get optInsuranceTitle;
+
+  /// No description provided for @optInsuranceBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Share your name, age and loan amount with our insurance partner for a quote. You never have to buy.'**
+  String get optInsuranceBody;
+
+  /// No description provided for @getQuote.
+  ///
+  /// In en, this message translates to:
+  /// **'Get a quote'**
+  String get getQuote;
+
+  /// No description provided for @manageConsents.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage consents'**
+  String get manageConsents;
+
+  /// No description provided for @manageConsentsBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Turn optional consents off at any time. Withdrawing a needed one stops your application, and we delete what we fetched for it.'**
+  String get manageConsentsBody;
+
+  /// No description provided for @withdraw.
+  ///
+  /// In en, this message translates to:
+  /// **'Withdraw'**
+  String get withdraw;
+
+  /// No description provided for @consentHistory.
+  ///
+  /// In en, this message translates to:
+  /// **'Consent history'**
+  String get consentHistory;
+
+  /// No description provided for @historyGiven.
+  ///
+  /// In en, this message translates to:
+  /// **'{item} given'**
+  String historyGiven(String item);
+
+  /// No description provided for @historyWithdrawn.
+  ///
+  /// In en, this message translates to:
+  /// **'{item} withdrawn'**
+  String historyWithdrawn(String item);
+
+  /// No description provided for @historyEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing yet.'**
+  String get historyEmpty;
+
+  /// No description provided for @consentOn.
+  ///
+  /// In en, this message translates to:
+  /// **'On'**
+  String get consentOn;
+
+  /// No description provided for @consentOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Off'**
+  String get consentOff;
+
+  /// No description provided for @withdrawnRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'You withdrew a consent we need, so your application is paused.'**
+  String get withdrawnRequired;
+
+  /// No description provided for @checkMatchPending.
+  ///
+  /// In en, this message translates to:
+  /// **'Photo match: done when you upload your Aadhaar or PAN card'**
+  String get checkMatchPending;
 }
 
 class _AppLocalizationsDelegate
@@ -1123,8 +1969,31 @@ class _AppLocalizationsDelegate
   }
 
   @override
-  bool isSupported(Locale locale) =>
-      <String>['en', 'hi'].contains(locale.languageCode);
+  bool isSupported(Locale locale) => <String>[
+    'as',
+    'bn',
+    'brx',
+    'doi',
+    'en',
+    'gu',
+    'hi',
+    'kn',
+    'kok',
+    'ks',
+    'mai',
+    'ml',
+    'mni',
+    'mr',
+    'ne',
+    'or',
+    'pa',
+    'sa',
+    'sat',
+    'sd',
+    'ta',
+    'te',
+    'ur',
+  ].contains(locale.languageCode);
 
   @override
   bool shouldReload(_AppLocalizationsDelegate old) => false;
@@ -1133,10 +2002,52 @@ class _AppLocalizationsDelegate
 AppLocalizations lookupAppLocalizations(Locale locale) {
   // Lookup logic when only language code is specified.
   switch (locale.languageCode) {
+    case 'as':
+      return AppLocalizationsAs();
+    case 'bn':
+      return AppLocalizationsBn();
+    case 'brx':
+      return AppLocalizationsBrx();
+    case 'doi':
+      return AppLocalizationsDoi();
     case 'en':
       return AppLocalizationsEn();
+    case 'gu':
+      return AppLocalizationsGu();
     case 'hi':
       return AppLocalizationsHi();
+    case 'kn':
+      return AppLocalizationsKn();
+    case 'kok':
+      return AppLocalizationsKok();
+    case 'ks':
+      return AppLocalizationsKs();
+    case 'mai':
+      return AppLocalizationsMai();
+    case 'ml':
+      return AppLocalizationsMl();
+    case 'mni':
+      return AppLocalizationsMni();
+    case 'mr':
+      return AppLocalizationsMr();
+    case 'ne':
+      return AppLocalizationsNe();
+    case 'or':
+      return AppLocalizationsOr();
+    case 'pa':
+      return AppLocalizationsPa();
+    case 'sa':
+      return AppLocalizationsSa();
+    case 'sat':
+      return AppLocalizationsSat();
+    case 'sd':
+      return AppLocalizationsSd();
+    case 'ta':
+      return AppLocalizationsTa();
+    case 'te':
+      return AppLocalizationsTe();
+    case 'ur':
+      return AppLocalizationsUr();
   }
 
   throw FlutterError(

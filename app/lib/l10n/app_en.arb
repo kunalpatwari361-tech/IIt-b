@@ -4,11 +4,19 @@
   "sandboxBanner": "Demo mode: sample data, no real checks",
   "continueLabel": "Continue",
   "stepOf": "Step {step} of {total}",
-  "@stepOf": {"placeholders": {"step": {"type": "String"}, "total": {"type": "String"}}},
+  "@stepOf": {
+    "placeholders": {
+      "step": {
+        "type": "String"
+      },
+      "total": {
+        "type": "String"
+      }
+    }
+  },
   "pleaseWait": "Please wait…",
   "errorGeneric": "Something went wrong. Please try again.",
   "close": "Close",
-
   "welcomeHeadline": "Your home loan decision in minutes",
   "welcomeBody": "Apply for a Home Loan or a Loan Against Property. We check everything online and always tell you why we decided.",
   "chooseProduct": "What do you need?",
@@ -22,20 +30,24 @@
   "personaRavi": "Ravi, 32, salaried, buying a flat",
   "personaMeena": "Meena, 45, runs a garment shop (LAP)",
   "personaArjun": "Arjun, 29, salaried, edited salary slip",
-
   "signInTitle": "Sign in",
   "mobileLabel": "Mobile number",
   "mobileHint": "10-digit mobile number",
   "invalidMobile": "Enter a valid 10-digit mobile number.",
   "sendOtp": "Send OTP",
   "otpSentTo": "We sent a 6-digit code to {phone}.",
-  "@otpSentTo": {"placeholders": {"phone": {"type": "String"}}},
+  "@otpSentTo": {
+    "placeholders": {
+      "phone": {
+        "type": "String"
+      }
+    }
+  },
   "otpLabel": "OTP",
   "verify": "Verify",
   "demoOtp": "Demo code: 123456",
   "wrongOtp": "That code is wrong. Please try again.",
   "deviceBound": "This phone is now linked to your account. Signing in on another phone will need a new OTP.",
-
   "consentTitle": "Your consent",
   "consentIntro": "We only use your data to decide on and run this loan. You can withdraw consent at any time.",
   "consentBureauTitle": "Credit report",
@@ -49,7 +61,6 @@
   "consentRequired": "Required",
   "consentNeeded": "Please agree to all the items to continue.",
   "agreeAndContinue": "Agree and continue",
-
   "detailsTitle": "Your details",
   "panLabel": "PAN",
   "panHint": "ABCDE1234F",
@@ -67,19 +78,48 @@
   "loanAmountLabel": "Loan amount",
   "tenureLabel": "Tenure",
   "yearsLabel": "{n} years",
-  "@yearsLabel": {"placeholders": {"n": {"type": "String"}}},
+  "@yearsLabel": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
   "eligibleTitle": "You can get up to",
   "emiPerMonth": "EMI {amount} a month",
-  "@emiPerMonth": {"placeholders": {"amount": {"type": "String"}}},
+  "@emiPerMonth": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
   "rateNote": "{rate}% a year, floating (illustrative)",
-  "@rateNote": {"placeholders": {"rate": {"type": "String"}}},
+  "@rateNote": {
+    "placeholders": {
+      "rate": {
+        "type": "String"
+      }
+    }
+  },
   "limitedByIncome": "Limited by income: all your EMIs can use up to {pct} of your income.",
-  "@limitedByIncome": {"placeholders": {"pct": {"type": "String"}}},
+  "@limitedByIncome": {
+    "placeholders": {
+      "pct": {
+        "type": "String"
+      }
+    }
+  },
   "limitedByProperty": "Limited by the property: a loan this size can be up to {pct} of its value.",
-  "@limitedByProperty": {"placeholders": {"pct": {"type": "String"}}},
+  "@limitedByProperty": {
+    "placeholders": {
+      "pct": {
+        "type": "String"
+      }
+    }
+  },
   "limitedByAsked": "This is the amount you asked for.",
   "eligibilityNote": "A quick check on your details. Your offer comes after our checks.",
-
   "selfieTitle": "Take a selfie",
   "selfieBody": "We match your face with your Aadhaar photo and check that it's really you, not a photo of a photo.",
   "selfieTips": "Good light, face the camera, no cap or sunglasses.",
@@ -90,7 +130,6 @@
   "checkMatch": "Matches your Aadhaar photo",
   "selfieFailed": "We couldn't confirm your face. Try again in good light, or book a video KYC call.",
   "videoKyc": "Book a video KYC call",
-
   "docsTitle": "Your documents",
   "docsBody": "Take a clear photo of each document, or pick one from your gallery.",
   "docPan": "PAN card",
@@ -108,20 +147,49 @@
   "tooMuchGlare": "Too much glare. Move away from the light and try again.",
   "tooDark": "Too dark. Find more light and try again.",
   "docAccepted": "Recognised: {type}",
-  "@docAccepted": {"placeholders": {"type": {"type": "String"}}},
+  "@docAccepted": {
+    "placeholders": {
+      "type": {
+        "type": "String"
+      }
+    }
+  },
   "docWrong": "This doesn't look like a {expected}. Please check and upload the right document.",
-  "@docWrong": {"placeholders": {"expected": {"type": "String"}}},
+  "@docWrong": {
+    "placeholders": {
+      "expected": {
+        "type": "String"
+      }
+    }
+  },
   "docUnreadable": "We couldn't read this document. Please take a clearer photo, or upload the original PDF.",
   "docsMissing": "{n} still needed",
-  "@docsMissing": {"placeholders": {"n": {"type": "String"}}},
+  "@docsMissing": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
   "getOffer": "Get my in-principle offer",
-
   "approvedInPrinciple": "Approved in principle",
   "sanctioned": "Loan sanctioned",
   "referredTitle": "We need a little more time",
   "rejectedTitle": "We can't offer this loan right now",
   "emiLine": "EMI {emi} · {years} years · {rate}% p.a. floating",
-  "@emiLine": {"placeholders": {"emi": {"type": "String"}, "years": {"type": "String"}, "rate": {"type": "String"}}},
+  "@emiLine": {
+    "placeholders": {
+      "emi": {
+        "type": "String"
+      },
+      "years": {
+        "type": "String"
+      },
+      "rate": {
+        "type": "String"
+      }
+    }
+  },
   "whyOffer": "Why you got this offer",
   "whyReferred": "What happens next",
   "whyRejected": "Why we decided this",
@@ -131,21 +199,67 @@
   "viewKfs": "View Key Facts Statement",
   "grievance": "Ask for a review or raise a complaint",
   "officerLine": "Grievance Officer: {name}, {email}",
-  "@officerLine": {"placeholders": {"name": {"type": "String"}, "email": {"type": "String"}}},
+  "@officerLine": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "email": {
+        "type": "String"
+      }
+    }
+  },
   "applicationNo": "Application {id}",
-  "@applicationNo": {"placeholders": {"id": {"type": "String"}}},
+  "@applicationNo": {
+    "placeholders": {
+      "id": {
+        "type": "String"
+      }
+    }
+  },
   "startOver": "Start a new application",
-
   "okScore": "Strong repayment history (score {score})",
-  "@okScore": {"placeholders": {"score": {"type": "String"}}},
+  "@okScore": {
+    "placeholders": {
+      "score": {
+        "type": "String"
+      }
+    }
+  },
   "okFoir": "EMIs use {pct} of income; our limit is {cap}",
-  "@okFoir": {"placeholders": {"pct": {"type": "String"}, "cap": {"type": "String"}}},
+  "@okFoir": {
+    "placeholders": {
+      "pct": {
+        "type": "String"
+      },
+      "cap": {
+        "type": "String"
+      }
+    }
+  },
   "okLtv": "Loan is {pct} of the property value; the limit is {cap}",
-  "@okLtv": {"placeholders": {"pct": {"type": "String"}, "cap": {"type": "String"}}},
+  "@okLtv": {
+    "placeholders": {
+      "pct": {
+        "type": "String"
+      },
+      "cap": {
+        "type": "String"
+      }
+    }
+  },
   "okValue": "Our valuation of the property: {low} to {high}",
-  "@okValue": {"placeholders": {"low": {"type": "String"}, "high": {"type": "String"}}},
+  "@okValue": {
+    "placeholders": {
+      "low": {
+        "type": "String"
+      },
+      "high": {
+        "type": "String"
+      }
+    }
+  },
   "okTitle": "Property title and papers checked",
-
   "reasonKyc01": "We could not confirm your identity from the photo. Please complete a short video KYC call.",
   "reasonFrd02": "The income on your salary slip does not match your bank credits. Please share your latest Form 16, or let us fetch it with your consent.",
   "reasonFrd03": "One of your documents failed verification with the issuing authority.",
@@ -161,7 +275,6 @@
   "reasonAut01": "Loans of this size get a final check by a senior officer.",
   "reasonRsk01": "An officer will review your application to finalise the offer.",
   "reasonRsk02": "Based on your credit profile, we cannot offer this loan right now.",
-
   "propertyTitle": "Your property",
   "cityLabel": "City",
   "localityLabel": "Locality",
@@ -177,11 +290,19 @@
   "photoInside": "Inside",
   "photoView": "View from the property",
   "geoTagged": "Location added ({lat}, {lng})",
-  "@geoTagged": {"placeholders": {"lat": {"type": "String"}, "lng": {"type": "String"}}},
+  "@geoTagged": {
+    "placeholders": {
+      "lat": {
+        "type": "String"
+      },
+      "lng": {
+        "type": "String"
+      }
+    }
+  },
   "noLocation": "Photo saved without a location. Turn on location for a geo-tag.",
   "submitProperty": "Get final sanction",
   "fillAll": "Please fill in every field.",
-
   "kfsTitle": "Key Facts Statement",
   "kfsLoan": "Loan amount",
   "kfsTenure": "Tenure",
@@ -194,10 +315,294 @@
   "kfsApr": "Annual Percentage Rate (APR)",
   "kfsCoolingOff": "Cooling-off period: you can exit within 3 days of signing by paying back only the principal and interest for those days, with no penalty.",
   "kfsNote": "Sample figures for the demo. Your real KFS comes with your sanction letter.",
-
   "useSample": "Sample",
   "videoKycDemo": "Demo: this would book a video KYC call with an officer.",
   "raiseComplaint": "Raise a complaint",
   "complaintSent": "Your complaint is registered. Reference {ref}.",
-  "@complaintSent": {"placeholders": {"ref": {"type": "String"}}}
+  "@complaintSent": {
+    "placeholders": {
+      "ref": {
+        "type": "String"
+      }
+    }
+  },
+  "stageSignIn": "Sign in",
+  "stageDetails": "Details",
+  "stageKyc": "KYC",
+  "stageOffer": "Offer",
+  "stageProperty": "Property",
+  "homeSubtitle": "Home Loan · Loan Against Property",
+  "heroPill": "DECISION IN MINUTES",
+  "heroFacts": "From {rate}% a year · up to {years} years",
+  "@heroFacts": {
+    "placeholders": {
+      "rate": {
+        "type": "String"
+      },
+      "years": {
+        "type": "String"
+      }
+    }
+  },
+  "resumeBody": "{pct}% done · pick up where you left off",
+  "@resumeBody": {
+    "placeholders": {
+      "pct": {
+        "type": "String"
+      }
+    }
+  },
+  "resume": "Resume",
+  "calculators": "Calculators",
+  "calcEmi": "EMI",
+  "calcEmiSub": "Monthly payment",
+  "calcEligibility": "Eligibility",
+  "calcEligibilitySub": "How much you can get",
+  "emiCalcTitle": "EMI calculator",
+  "eligibilityCalcTitle": "Eligibility calculator",
+  "totalInterest": "Total interest {amount}",
+  "@totalInterest": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "calcIncomeOnly": "Based on income only. The property's value can lower it.",
+  "verified": "Verified",
+  "yourLoan": "Your loan",
+  "docsProgress": "{done} of {total} verified",
+  "@docsProgress": {
+    "placeholders": {
+      "done": {
+        "type": "String"
+      },
+      "total": {
+        "type": "String"
+      }
+    }
+  },
+  "docNeeded": "Needed",
+  "docTryAgain": "Try again",
+  "fetched": "Fetched",
+  "statusApproved": "Approved",
+  "statusSanctioned": "Sanctioned",
+  "statusInReview": "In review",
+  "statusDeclined": "Declined",
+  "trackTitle": "Track your application",
+  "tlSubmitted": "Application submitted",
+  "tlVerified": "KYC and documents verified",
+  "tlInPrinciple": "In-principle approval",
+  "tlProperty": "Property details and valuation",
+  "tlPropertyNext": "Add your property's details and photos",
+  "tlOfficer": "Officer review",
+  "tlOfficerNext": "Within one working day",
+  "tlLegal": "Legal and title check",
+  "tlSanction": "Final sanction and eSign",
+  "tlSanctionNext": "Sign your sanction letter online",
+  "tlDisbursement": "Disbursement",
+  "helpTitle": "Need help?",
+  "propertyType": "New or resale",
+  "greetMorning": "Good morning",
+  "greetAfternoon": "Good afternoon",
+  "greetEvening": "Good evening",
+  "nearlyThere": "{name}, you're nearly there",
+  "@nearlyThere": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "chooseLanguage": "Choose your language",
+  "languageNote": "You can change this at any time.",
+  "liveChecks": "Live checks",
+  "checkBureau": "Credit bureau",
+  "checkScore": "Score {score}",
+  "@checkScore": {
+    "placeholders": {
+      "score": {
+        "type": "String"
+      }
+    }
+  },
+  "checkNoHistory": "No history yet",
+  "checkBank": "Bank via AA",
+  "checkBankRead": "12 months read",
+  "checkKyc": "eKYC and selfie",
+  "checkPending": "Pending",
+  "checkDocs": "Documents",
+  "countOf": "{done} of {total}",
+  "@countOf": {
+    "placeholders": {
+      "done": {
+        "type": "String"
+      },
+      "total": {
+        "type": "String"
+      }
+    }
+  },
+  "minutesLeft": "about {n} min left",
+  "@minutesLeft": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "ratePa": "{rate}% p.a.",
+  "@ratePa": {
+    "placeholders": {
+      "rate": {
+        "type": "String"
+      }
+    }
+  },
+  "continueApplication": "Continue your application",
+  "shapeOffer": "Shape your offer",
+  "shapeOfferSub": "Approved in principle · drag to adjust",
+  "withinLimits": "Within your limits",
+  "aboveLimits": "Above a limit: lower the amount or add years",
+  "mostYouCan": "Most you can borrow: {amount}",
+  "@mostYouCan": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "useMax": "Use max",
+  "principal": "Principal",
+  "interest": "Interest",
+  "totalRepaid": "Total repaid",
+  "emiShareIncome": "EMIs as share of income",
+  "loanShareProperty": "Loan as share of the {value} property",
+  "@loanShareProperty": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "lockOffer": "Lock this offer",
+  "offerLocked": "Your offer is locked.",
+  "approvedUpTo": "Approved up to {amount}",
+  "@approvedUpTo": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "readingDoc": "Reading your {doc}",
+  "@readingDoc": {
+    "placeholders": {
+      "doc": {
+        "type": "String"
+      }
+    }
+  },
+  "documentAi": "Document AI",
+  "sure": "{pct}% sure",
+  "@sure": {
+    "placeholders": {
+      "pct": {
+        "type": "String"
+      }
+    }
+  },
+  "readMatches": "It's the document we asked for",
+  "readClear": "Clear photo, no blur or glare",
+  "whatWeRead": "What we read",
+  "looksRight": "Looks right",
+  "fieldName": "Name",
+  "fieldPan": "PAN",
+  "fieldAadhaar": "Aadhaar",
+  "fieldEmployer": "Employer",
+  "fieldNetPay": "Net pay",
+  "fieldPeriod": "Pay period",
+  "fieldYear": "Year",
+  "fieldIncome": "Income",
+  "fieldBusiness": "Business",
+  "fieldGstin": "GSTIN",
+  "consentSectionRequired": "Needed for your loan",
+  "consentSectionOptional": "Optional: off unless you turn them on",
+  "advancedOptions": "Options",
+  "consentValidUntil": "Given {given} · valid until {until}",
+  "@consentValidUntil": {
+    "placeholders": {
+      "given": {
+        "type": "String"
+      },
+      "until": {
+        "type": "String"
+      }
+    }
+  },
+  "consentUntilWithdrawn": "Given {given} · until you withdraw it",
+  "@consentUntilWithdrawn": {
+    "placeholders": {
+      "given": {
+        "type": "String"
+      }
+    }
+  },
+  "recheckTitle": "One more check just before payout",
+  "recheckBody": "We look at your credit report again just before paying out. If you say no, an officer may ask you then.",
+  "aaMonthsLabel": "Months of statements to share",
+  "monthsN": "{n} months",
+  "@monthsN": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "aaAccountsLabel": "Accounts to share",
+  "accountSavingsSalary": "Savings ·· 0912 · salary credits",
+  "accountSavings": "Savings ·· 4821",
+  "accountFd": "Fixed deposit ·· 3307",
+  "aaAccountNeeded": "Pick at least one account to share.",
+  "kycMethodLabel": "How to confirm your identity",
+  "kycAadhaarOtp": "Aadhaar OTP",
+  "kycDigilocker": "DigiLocker",
+  "kycVideo": "Video KYC call",
+  "useCkycTitle": "Use my existing CKYC record",
+  "useCkycBody": "If you've done KYC with another bank or fund, we fetch that record instead of asking again.",
+  "optOffersTitle": "Offers and new products",
+  "optOffersBody": "Choose how you'd like to hear about offers. You can turn these off at any time.",
+  "channelSms": "SMS",
+  "channelEmail": "Email",
+  "channelWhatsapp": "WhatsApp",
+  "optUpdatesTitle": "Loan updates on WhatsApp",
+  "optUpdatesBody": "Status updates and EMI reminders on WhatsApp, as well as SMS.",
+  "optInsuranceTitle": "Home-loan protection quote",
+  "optInsuranceBody": "Share your name, age and loan amount with our insurance partner for a quote. You never have to buy.",
+  "getQuote": "Get a quote",
+  "manageConsents": "Manage consents",
+  "manageConsentsBody": "Turn optional consents off at any time. Withdrawing a needed one stops your application, and we delete what we fetched for it.",
+  "withdraw": "Withdraw",
+  "consentHistory": "Consent history",
+  "historyGiven": "{item} given",
+  "@historyGiven": {
+    "placeholders": {
+      "item": {
+        "type": "String"
+      }
+    }
+  },
+  "historyWithdrawn": "{item} withdrawn",
+  "@historyWithdrawn": {
+    "placeholders": {
+      "item": {
+        "type": "String"
+      }
+    }
+  },
+  "historyEmpty": "Nothing yet.",
+  "consentOn": "On",
+  "consentOff": "Off",
+  "withdrawnRequired": "You withdrew a consent we need, so your application is paused.",
+  "checkMatchPending": "Photo match: done when you upload your Aadhaar or PAN card"
 }

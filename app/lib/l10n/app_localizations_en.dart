@@ -586,4 +586,453 @@ class AppLocalizationsEn extends AppLocalizations {
   String complaintSent(String ref) {
     return 'Your complaint is registered. Reference $ref.';
   }
+
+  @override
+  String get stageSignIn => 'Sign in';
+
+  @override
+  String get stageDetails => 'Details';
+
+  @override
+  String get stageKyc => 'KYC';
+
+  @override
+  String get stageOffer => 'Offer';
+
+  @override
+  String get stageProperty => 'Property';
+
+  @override
+  String get homeSubtitle => 'Home Loan · Loan Against Property';
+
+  @override
+  String get heroPill => 'DECISION IN MINUTES';
+
+  @override
+  String heroFacts(String rate, String years) {
+    return 'From $rate% a year · up to $years years';
+  }
+
+  @override
+  String resumeBody(String pct) {
+    return '$pct% done · pick up where you left off';
+  }
+
+  @override
+  String get resume => 'Resume';
+
+  @override
+  String get calculators => 'Calculators';
+
+  @override
+  String get calcEmi => 'EMI';
+
+  @override
+  String get calcEmiSub => 'Monthly payment';
+
+  @override
+  String get calcEligibility => 'Eligibility';
+
+  @override
+  String get calcEligibilitySub => 'How much you can get';
+
+  @override
+  String get emiCalcTitle => 'EMI calculator';
+
+  @override
+  String get eligibilityCalcTitle => 'Eligibility calculator';
+
+  @override
+  String totalInterest(String amount) {
+    return 'Total interest $amount';
+  }
+
+  @override
+  String get calcIncomeOnly =>
+      'Based on income only. The property\'s value can lower it.';
+
+  @override
+  String get verified => 'Verified';
+
+  @override
+  String get yourLoan => 'Your loan';
+
+  @override
+  String docsProgress(String done, String total) {
+    return '$done of $total verified';
+  }
+
+  @override
+  String get docNeeded => 'Needed';
+
+  @override
+  String get docTryAgain => 'Try again';
+
+  @override
+  String get fetched => 'Fetched';
+
+  @override
+  String get statusApproved => 'Approved';
+
+  @override
+  String get statusSanctioned => 'Sanctioned';
+
+  @override
+  String get statusInReview => 'In review';
+
+  @override
+  String get statusDeclined => 'Declined';
+
+  @override
+  String get trackTitle => 'Track your application';
+
+  @override
+  String get tlSubmitted => 'Application submitted';
+
+  @override
+  String get tlVerified => 'KYC and documents verified';
+
+  @override
+  String get tlInPrinciple => 'In-principle approval';
+
+  @override
+  String get tlProperty => 'Property details and valuation';
+
+  @override
+  String get tlPropertyNext => 'Add your property\'s details and photos';
+
+  @override
+  String get tlOfficer => 'Officer review';
+
+  @override
+  String get tlOfficerNext => 'Within one working day';
+
+  @override
+  String get tlLegal => 'Legal and title check';
+
+  @override
+  String get tlSanction => 'Final sanction and eSign';
+
+  @override
+  String get tlSanctionNext => 'Sign your sanction letter online';
+
+  @override
+  String get tlDisbursement => 'Disbursement';
+
+  @override
+  String get helpTitle => 'Need help?';
+
+  @override
+  String get propertyType => 'New or resale';
+
+  @override
+  String get greetMorning => 'Good morning';
+
+  @override
+  String get greetAfternoon => 'Good afternoon';
+
+  @override
+  String get greetEvening => 'Good evening';
+
+  @override
+  String nearlyThere(String name) {
+    return '$name, you\'re nearly there';
+  }
+
+  @override
+  String get chooseLanguage => 'Choose your language';
+
+  @override
+  String get languageNote => 'You can change this at any time.';
+
+  @override
+  String get liveChecks => 'Live checks';
+
+  @override
+  String get checkBureau => 'Credit bureau';
+
+  @override
+  String checkScore(String score) {
+    return 'Score $score';
+  }
+
+  @override
+  String get checkNoHistory => 'No history yet';
+
+  @override
+  String get checkBank => 'Bank via AA';
+
+  @override
+  String get checkBankRead => '12 months read';
+
+  @override
+  String get checkKyc => 'eKYC and selfie';
+
+  @override
+  String get checkPending => 'Pending';
+
+  @override
+  String get checkDocs => 'Documents';
+
+  @override
+  String countOf(String done, String total) {
+    return '$done of $total';
+  }
+
+  @override
+  String minutesLeft(String n) {
+    return 'about $n min left';
+  }
+
+  @override
+  String ratePa(String rate) {
+    return '$rate% p.a.';
+  }
+
+  @override
+  String get continueApplication => 'Continue your application';
+
+  @override
+  String get shapeOffer => 'Shape your offer';
+
+  @override
+  String get shapeOfferSub => 'Approved in principle · drag to adjust';
+
+  @override
+  String get withinLimits => 'Within your limits';
+
+  @override
+  String get aboveLimits => 'Above a limit: lower the amount or add years';
+
+  @override
+  String mostYouCan(String amount) {
+    return 'Most you can borrow: $amount';
+  }
+
+  @override
+  String get useMax => 'Use max';
+
+  @override
+  String get principal => 'Principal';
+
+  @override
+  String get interest => 'Interest';
+
+  @override
+  String get totalRepaid => 'Total repaid';
+
+  @override
+  String get emiShareIncome => 'EMIs as share of income';
+
+  @override
+  String loanShareProperty(String value) {
+    return 'Loan as share of the $value property';
+  }
+
+  @override
+  String get lockOffer => 'Lock this offer';
+
+  @override
+  String get offerLocked => 'Your offer is locked.';
+
+  @override
+  String approvedUpTo(String amount) {
+    return 'Approved up to $amount';
+  }
+
+  @override
+  String readingDoc(String doc) {
+    return 'Reading your $doc';
+  }
+
+  @override
+  String get documentAi => 'Document AI';
+
+  @override
+  String sure(String pct) {
+    return '$pct% sure';
+  }
+
+  @override
+  String get readMatches => 'It\'s the document we asked for';
+
+  @override
+  String get readClear => 'Clear photo, no blur or glare';
+
+  @override
+  String get whatWeRead => 'What we read';
+
+  @override
+  String get looksRight => 'Looks right';
+
+  @override
+  String get fieldName => 'Name';
+
+  @override
+  String get fieldPan => 'PAN';
+
+  @override
+  String get fieldAadhaar => 'Aadhaar';
+
+  @override
+  String get fieldEmployer => 'Employer';
+
+  @override
+  String get fieldNetPay => 'Net pay';
+
+  @override
+  String get fieldPeriod => 'Pay period';
+
+  @override
+  String get fieldYear => 'Year';
+
+  @override
+  String get fieldIncome => 'Income';
+
+  @override
+  String get fieldBusiness => 'Business';
+
+  @override
+  String get fieldGstin => 'GSTIN';
+
+  @override
+  String get consentSectionRequired => 'Needed for your loan';
+
+  @override
+  String get consentSectionOptional => 'Optional: off unless you turn them on';
+
+  @override
+  String get advancedOptions => 'Options';
+
+  @override
+  String consentValidUntil(String given, String until) {
+    return 'Given $given · valid until $until';
+  }
+
+  @override
+  String consentUntilWithdrawn(String given) {
+    return 'Given $given · until you withdraw it';
+  }
+
+  @override
+  String get recheckTitle => 'One more check just before payout';
+
+  @override
+  String get recheckBody =>
+      'We look at your credit report again just before paying out. If you say no, an officer may ask you then.';
+
+  @override
+  String get aaMonthsLabel => 'Months of statements to share';
+
+  @override
+  String monthsN(String n) {
+    return '$n months';
+  }
+
+  @override
+  String get aaAccountsLabel => 'Accounts to share';
+
+  @override
+  String get accountSavingsSalary => 'Savings ·· 0912 · salary credits';
+
+  @override
+  String get accountSavings => 'Savings ·· 4821';
+
+  @override
+  String get accountFd => 'Fixed deposit ·· 3307';
+
+  @override
+  String get aaAccountNeeded => 'Pick at least one account to share.';
+
+  @override
+  String get kycMethodLabel => 'How to confirm your identity';
+
+  @override
+  String get kycAadhaarOtp => 'Aadhaar OTP';
+
+  @override
+  String get kycDigilocker => 'DigiLocker';
+
+  @override
+  String get kycVideo => 'Video KYC call';
+
+  @override
+  String get useCkycTitle => 'Use my existing CKYC record';
+
+  @override
+  String get useCkycBody =>
+      'If you\'ve done KYC with another bank or fund, we fetch that record instead of asking again.';
+
+  @override
+  String get optOffersTitle => 'Offers and new products';
+
+  @override
+  String get optOffersBody =>
+      'Choose how you\'d like to hear about offers. You can turn these off at any time.';
+
+  @override
+  String get channelSms => 'SMS';
+
+  @override
+  String get channelEmail => 'Email';
+
+  @override
+  String get channelWhatsapp => 'WhatsApp';
+
+  @override
+  String get optUpdatesTitle => 'Loan updates on WhatsApp';
+
+  @override
+  String get optUpdatesBody =>
+      'Status updates and EMI reminders on WhatsApp, as well as SMS.';
+
+  @override
+  String get optInsuranceTitle => 'Home-loan protection quote';
+
+  @override
+  String get optInsuranceBody =>
+      'Share your name, age and loan amount with our insurance partner for a quote. You never have to buy.';
+
+  @override
+  String get getQuote => 'Get a quote';
+
+  @override
+  String get manageConsents => 'Manage consents';
+
+  @override
+  String get manageConsentsBody =>
+      'Turn optional consents off at any time. Withdrawing a needed one stops your application, and we delete what we fetched for it.';
+
+  @override
+  String get withdraw => 'Withdraw';
+
+  @override
+  String get consentHistory => 'Consent history';
+
+  @override
+  String historyGiven(String item) {
+    return '$item given';
+  }
+
+  @override
+  String historyWithdrawn(String item) {
+    return '$item withdrawn';
+  }
+
+  @override
+  String get historyEmpty => 'Nothing yet.';
+
+  @override
+  String get consentOn => 'On';
+
+  @override
+  String get consentOff => 'Off';
+
+  @override
+  String get withdrawnRequired =>
+      'You withdrew a consent we need, so your application is paused.';
+
+  @override
+  String get checkMatchPending =>
+      'Photo match: done when you upload your Aadhaar or PAN card';
 }

@@ -12,6 +12,7 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   geolocator: ^14.1.2
+  http: ^1.6.0
   image: ^4.12.0
   image_picker: ^1.2.4
   intl: ^0.20.3
@@ -26,3 +27,78 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   generate: true
+  # Noto fonts (SIL Open Font License, assets/fonts/OFL.txt). Sans for the interface, Serif for
+  # headings and amounts, and the Noto font of each Indian script the app's languages use.
+  fonts:
+    - family: NotoSans
+      fonts:
+        - asset: assets/fonts/NotoSans-Regular.ttf
+        - asset: assets/fonts/NotoSans-SemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/NotoSans-Bold.ttf
+          weight: 700
+        - asset: assets/fonts/NotoSans-ExtraBold.ttf
+          weight: 800
+    - family: NotoSansDevanagari
+      fonts:
+        - asset: assets/fonts/NotoSansDevanagari-Regular.ttf
+        - asset: assets/fonts/NotoSansDevanagari-Bold.ttf
+          weight: 700
+    - family: NotoSansBengali
+      fonts:
+        - asset: assets/fonts/NotoSansBengali-Regular.ttf
+        - asset: assets/fonts/NotoSansBengali-Bold.ttf
+          weight: 700
+    - family: NotoSansGujarati
+      fonts:
+        - asset: assets/fonts/NotoSansGujarati-Regular.ttf
+        - asset: assets/fonts/NotoSansGujarati-Bold.ttf
+          weight: 700
+    - family: NotoSansGurmukhi
+      fonts:
+        - asset: assets/fonts/NotoSansGurmukhi-Regular.ttf
+        - asset: assets/fonts/NotoSansGurmukhi-Bold.ttf
+          weight: 700
+    - family: NotoSansKannada
+      fonts:
+        - asset: assets/fonts/NotoSansKannada-Regular.ttf
+        - asset: assets/fonts/NotoSansKannada-Bold.ttf
+          weight: 700
+    - family: NotoSansMalayalam
+      fonts:
+        - asset: assets/fonts/NotoSansMalayalam-Regular.ttf
+        - asset: assets/fonts/NotoSansMalayalam-Bold.ttf
+          weight: 700
+    - family: NotoSansOriya
+      fonts:
+        - asset: assets/fonts/NotoSansOriya-Regular.ttf
+        - asset: assets/fonts/NotoSansOriya-Bold.ttf
+          weight: 700
+    - family: NotoSansTamil
+      fonts:
+        - asset: assets/fonts/NotoSansTamil-Regular.ttf
+        - asset: assets/fonts/NotoSansTamil-Bold.ttf
+          weight: 700
+    - family: NotoSansTelugu
+      fonts:
+        - asset: assets/fonts/NotoSansTelugu-Regular.ttf
+        - asset: assets/fonts/NotoSansTelugu-Bold.ttf
+          weight: 700
+    - family: NotoSansOlChiki
+      fonts:
+        - asset: assets/fonts/NotoSansOlChiki-Regular.ttf
+        - asset: assets/fonts/NotoSansOlChiki-Bold.ttf
+          weight: 700
+    - family: NotoNaskhArabic
+      fonts:
+        - asset: assets/fonts/NotoNaskhArabic-Regular.ttf
+        - asset: assets/fonts/NotoNaskhArabic-Bold.ttf
+          weight: 700
+    - family: NotoSerif
+      fonts:
+        - asset: assets/fonts/NotoSerif-Bold.ttf
+          weight: 700
+    - family: NotoSerifDevanagari
+      fonts:
+        - asset: assets/fonts/NotoSerifDevanagari-Bold.ttf
+          weight: 700

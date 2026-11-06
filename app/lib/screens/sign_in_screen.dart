@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import '../l10n/app_localizations.dart';
 import '../services/api.dart';
 import '../state.dart';
+import '../theme.dart';
 import '../widgets/common.dart';
 
 class SignInScreen extends StatefulWidget {
@@ -67,30 +68,51 @@ class _SignInScreenState extends State<SignInScreen> {
       buttonLabel: _sent ? t.verify : t.sendOtp,
       busy: _busy,
       onPressed: _submit,
-      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        TextField(
-          key: const Key('phone'),
-          controller: _phone,
-          enabled: !_sent,
-          keyboardType: TextInputType.phone,
-          inputFormatters: [FilteringTextInputFormatter.digitsOnly, LengthLimitingTextInputFormatter(10)],
-          decoration: InputDecoration(labelText: t.mobileLabel, hintText: t.mobileHint, prefixText: '+91 ', border: const OutlineInputBorder()),
-        ),
-        if (_sent) ...[
-          const SizedBox(height: 16),
-          Text(t.otpSentTo('+91 ${_phone.text}')),
-          const SizedBox(height: 12),
-          TextField(
-            key: const Key('otp'),
-            controller: _otp,
-            autofocus: true,
-            keyboardType: TextInputType.number,
-            inputFormatters: [FilteringTextInputFormatter.digitsOnly, LengthLimitingTextInputFormatter(6)],
-            decoration: InputDecoration(labelText: t.otpLabel, border: const OutlineInputBorder(), helperText: t.demoOtp),
-            onSubmitted: (_) => _submit(),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Labelled(
+            label: t.mobileLabel,
+            child: TextField(
+              key: const Key('phone'),
+              controller: _phone,
+              enabled: !_sent,
+              keyboardType: TextInputType.phone,
+              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600, letterSpacing: 0.5),
+              inputFormatters: [FilteringTextInputFormatter.digitsOnly, LengthLimitingTextInputFormatter(10)],
+              decoration: InputDecoration(
+                hintText: t.mobileHint,
+                prefixIcon: const Padding(
+                padding: EdgeInsets.only(left: 14, right: 8),
+                child: Text('+91', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: C.muted)),
+              ),
+              prefixIconConstraints: const BoxConstraints(minWidth: 0, minHeight: 0),
+                suffixIcon: _sent ? const Icon(Icons.check_circle, color: C.good) : null,
+              ),
+            ),
           ),
+          if (_sent) ...[
+            const SizedBox(height: 16),
+            Notice(tone: Tone.good, icon: Icons.sms_outlined, body: t.otpSentTo('+91 ${_phone.text}')),
+            const SizedBox(height: 16),
+            Labelled(
+              label: t.otpLabel,
+              helper: t.demoOtp,
+              child: TextField(
+                key: const Key('otp'),
+                controller: _otp,
+                autofocus: true,
+                keyboardType: TextInputType.number,
+                textAlign: TextAlign.center,
+                style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w800, letterSpacing: 10),
+                inputFormatters: [FilteringTextInputFormatter.digitsOnly, LengthLimitingTextInputFormatter(6)],
+                decoration: const InputDecoration(hintText: '••••••'),
+                onSubmitted: (_) => _submit(),
+              ),
+            ),
+          ],
         ],
-      ]),
+      ),
     );
   }
 }

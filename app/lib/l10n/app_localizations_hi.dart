@@ -588,4 +588,453 @@ class AppLocalizationsHi extends AppLocalizations {
   String complaintSent(String ref) {
     return 'आपकी शिकायत दर्ज हो गई है। संदर्भ $ref।';
   }
+
+  @override
+  String get stageSignIn => 'साइन इन';
+
+  @override
+  String get stageDetails => 'विवरण';
+
+  @override
+  String get stageKyc => 'केवाईसी';
+
+  @override
+  String get stageOffer => 'ऑफ़र';
+
+  @override
+  String get stageProperty => 'प्रॉपर्टी';
+
+  @override
+  String get homeSubtitle => 'होम लोन · प्रॉपर्टी पर लोन';
+
+  @override
+  String get heroPill => 'मिनटों में फ़ैसला';
+
+  @override
+  String heroFacts(String rate, String years) {
+    return '$rate% सालाना से · $years साल तक';
+  }
+
+  @override
+  String resumeBody(String pct) {
+    return '$pct% पूरा · जहाँ छोड़ा था, वहीं से शुरू करें';
+  }
+
+  @override
+  String get resume => 'जारी रखें';
+
+  @override
+  String get calculators => 'कैलकुलेटर';
+
+  @override
+  String get calcEmi => 'ईएमआई';
+
+  @override
+  String get calcEmiSub => 'मासिक किस्त';
+
+  @override
+  String get calcEligibility => 'पात्रता';
+
+  @override
+  String get calcEligibilitySub => 'कितना लोन मिल सकता है';
+
+  @override
+  String get emiCalcTitle => 'ईएमआई कैलकुलेटर';
+
+  @override
+  String get eligibilityCalcTitle => 'पात्रता कैलकुलेटर';
+
+  @override
+  String totalInterest(String amount) {
+    return 'कुल ब्याज $amount';
+  }
+
+  @override
+  String get calcIncomeOnly =>
+      'सिर्फ़ आय के आधार पर। प्रॉपर्टी की क़ीमत से यह कम हो सकता है।';
+
+  @override
+  String get verified => 'सत्यापित';
+
+  @override
+  String get yourLoan => 'आपका लोन';
+
+  @override
+  String docsProgress(String done, String total) {
+    return '$total में से $done सत्यापित';
+  }
+
+  @override
+  String get docNeeded => 'ज़रूरी';
+
+  @override
+  String get docTryAgain => 'फिर से करें';
+
+  @override
+  String get fetched => 'मिल गया';
+
+  @override
+  String get statusApproved => 'मंज़ूर';
+
+  @override
+  String get statusSanctioned => 'स्वीकृत';
+
+  @override
+  String get statusInReview => 'समीक्षा में';
+
+  @override
+  String get statusDeclined => 'अस्वीकृत';
+
+  @override
+  String get trackTitle => 'अपना आवेदन ट्रैक करें';
+
+  @override
+  String get tlSubmitted => 'आवेदन जमा हुआ';
+
+  @override
+  String get tlVerified => 'केवाईसी और दस्तावेज़ सत्यापित';
+
+  @override
+  String get tlInPrinciple => 'सैद्धांतिक मंज़ूरी';
+
+  @override
+  String get tlProperty => 'प्रॉपर्टी विवरण और मूल्यांकन';
+
+  @override
+  String get tlPropertyNext => 'अपनी प्रॉपर्टी का विवरण और फ़ोटो जोड़ें';
+
+  @override
+  String get tlOfficer => 'अधिकारी समीक्षा';
+
+  @override
+  String get tlOfficerNext => 'एक कामकाजी दिन के अंदर';
+
+  @override
+  String get tlLegal => 'क़ानूनी और टाइटल जाँच';
+
+  @override
+  String get tlSanction => 'अंतिम मंज़ूरी और ई-साइन';
+
+  @override
+  String get tlSanctionNext => 'मंज़ूरी पत्र ऑनलाइन साइन करें';
+
+  @override
+  String get tlDisbursement => 'राशि जारी';
+
+  @override
+  String get helpTitle => 'मदद चाहिए?';
+
+  @override
+  String get propertyType => 'नई या रीसेल';
+
+  @override
+  String get greetMorning => 'सुप्रभात';
+
+  @override
+  String get greetAfternoon => 'नमस्कार';
+
+  @override
+  String get greetEvening => 'शुभ संध्या';
+
+  @override
+  String nearlyThere(String name) {
+    return '$name, बस थोड़ा और';
+  }
+
+  @override
+  String get chooseLanguage => 'अपनी भाषा चुनें';
+
+  @override
+  String get languageNote => 'आप इसे कभी भी बदल सकते हैं।';
+
+  @override
+  String get liveChecks => 'लाइव जाँच';
+
+  @override
+  String get checkBureau => 'क्रेडिट ब्यूरो';
+
+  @override
+  String checkScore(String score) {
+    return 'स्कोर $score';
+  }
+
+  @override
+  String get checkNoHistory => 'अभी कोई हिस्ट्री नहीं';
+
+  @override
+  String get checkBank => 'AA से बैंक';
+
+  @override
+  String get checkBankRead => '12 महीने पढ़े गए';
+
+  @override
+  String get checkKyc => 'ई-केवाईसी और सेल्फ़ी';
+
+  @override
+  String get checkPending => 'बाकी';
+
+  @override
+  String get checkDocs => 'दस्तावेज़';
+
+  @override
+  String countOf(String done, String total) {
+    return '$total में से $done';
+  }
+
+  @override
+  String minutesLeft(String n) {
+    return 'लगभग $n मिनट बाकी';
+  }
+
+  @override
+  String ratePa(String rate) {
+    return '$rate% सालाना';
+  }
+
+  @override
+  String get continueApplication => 'अपना आवेदन जारी रखें';
+
+  @override
+  String get shapeOffer => 'अपना ऑफ़र तय करें';
+
+  @override
+  String get shapeOfferSub => 'सैद्धांतिक रूप से मंज़ूर · बदलने के लिए खिसकाएँ';
+
+  @override
+  String get withinLimits => 'आपकी सीमा के अंदर';
+
+  @override
+  String get aboveLimits => 'सीमा से ज़्यादा: राशि घटाएँ या साल बढ़ाएँ';
+
+  @override
+  String mostYouCan(String amount) {
+    return 'आप ज़्यादा से ज़्यादा ले सकते हैं: $amount';
+  }
+
+  @override
+  String get useMax => 'पूरा लें';
+
+  @override
+  String get principal => 'मूलधन';
+
+  @override
+  String get interest => 'ब्याज';
+
+  @override
+  String get totalRepaid => 'कुल भुगतान';
+
+  @override
+  String get emiShareIncome => 'आय में ईएमआई का हिस्सा';
+
+  @override
+  String loanShareProperty(String value) {
+    return '$value की प्रॉपर्टी में लोन का हिस्सा';
+  }
+
+  @override
+  String get lockOffer => 'यह ऑफ़र पक्का करें';
+
+  @override
+  String get offerLocked => 'आपका ऑफ़र पक्का हो गया।';
+
+  @override
+  String approvedUpTo(String amount) {
+    return '$amount तक मंज़ूर';
+  }
+
+  @override
+  String readingDoc(String doc) {
+    return 'आपका $doc पढ़ा जा रहा है';
+  }
+
+  @override
+  String get documentAi => 'दस्तावेज़ AI';
+
+  @override
+  String sure(String pct) {
+    return '$pct% पक्का';
+  }
+
+  @override
+  String get readMatches => 'यह वही दस्तावेज़ है जो हमने माँगा था';
+
+  @override
+  String get readClear => 'साफ़ फ़ोटो, धुंधलापन या चमक नहीं';
+
+  @override
+  String get whatWeRead => 'हमने क्या पढ़ा';
+
+  @override
+  String get looksRight => 'सही है';
+
+  @override
+  String get fieldName => 'नाम';
+
+  @override
+  String get fieldPan => 'पैन';
+
+  @override
+  String get fieldAadhaar => 'आधार';
+
+  @override
+  String get fieldEmployer => 'नियोक्ता';
+
+  @override
+  String get fieldNetPay => 'शुद्ध वेतन';
+
+  @override
+  String get fieldPeriod => 'वेतन अवधि';
+
+  @override
+  String get fieldYear => 'वर्ष';
+
+  @override
+  String get fieldIncome => 'आय';
+
+  @override
+  String get fieldBusiness => 'व्यवसाय';
+
+  @override
+  String get fieldGstin => 'जीएसटीआईएन';
+
+  @override
+  String get consentSectionRequired => 'आपके लोन के लिए ज़रूरी';
+
+  @override
+  String get consentSectionOptional => 'वैकल्पिक: जब तक आप चालू न करें, बंद';
+
+  @override
+  String get advancedOptions => 'विकल्प';
+
+  @override
+  String consentValidUntil(String given, String until) {
+    return '$given को दी गई · $until तक मान्य';
+  }
+
+  @override
+  String consentUntilWithdrawn(String given) {
+    return '$given को दी गई · वापस लेने तक';
+  }
+
+  @override
+  String get recheckTitle => 'राशि जारी होने से ठीक पहले एक और जाँच';
+
+  @override
+  String get recheckBody =>
+      'राशि जारी करने से ठीक पहले हम आपकी क्रेडिट रिपोर्ट फिर देखते हैं। मना करने पर अधिकारी तब आपसे पूछ सकते हैं।';
+
+  @override
+  String get aaMonthsLabel => 'कितने महीनों की स्टेटमेंट साझा करें';
+
+  @override
+  String monthsN(String n) {
+    return '$n महीने';
+  }
+
+  @override
+  String get aaAccountsLabel => 'साझा करने वाले खाते';
+
+  @override
+  String get accountSavingsSalary => 'बचत खाता ·· 0912 · वेतन जमा';
+
+  @override
+  String get accountSavings => 'बचत खाता ·· 4821';
+
+  @override
+  String get accountFd => 'सावधि जमा ·· 3307';
+
+  @override
+  String get aaAccountNeeded => 'साझा करने के लिए कम से कम एक खाता चुनें।';
+
+  @override
+  String get kycMethodLabel => 'अपनी पहचान कैसे पक्की करें';
+
+  @override
+  String get kycAadhaarOtp => 'आधार OTP';
+
+  @override
+  String get kycDigilocker => 'डिजिलॉकर';
+
+  @override
+  String get kycVideo => 'वीडियो KYC कॉल';
+
+  @override
+  String get useCkycTitle => 'मेरा मौजूदा CKYC रिकॉर्ड इस्तेमाल करें';
+
+  @override
+  String get useCkycBody =>
+      'अगर आपने किसी और बैंक या फ़ंड के साथ KYC किया है, तो हम दोबारा पूछने के बजाय वही रिकॉर्ड ले लेते हैं।';
+
+  @override
+  String get optOffersTitle => 'ऑफ़र और नए प्रोडक्ट';
+
+  @override
+  String get optOffersBody =>
+      'चुनें कि आप ऑफ़र के बारे में कैसे जानना चाहते हैं। इन्हें कभी भी बंद कर सकते हैं।';
+
+  @override
+  String get channelSms => 'SMS';
+
+  @override
+  String get channelEmail => 'ईमेल';
+
+  @override
+  String get channelWhatsapp => 'WhatsApp';
+
+  @override
+  String get optUpdatesTitle => 'WhatsApp पर लोन अपडेट';
+
+  @override
+  String get optUpdatesBody =>
+      'SMS के साथ-साथ WhatsApp पर स्टेटस अपडेट और EMI रिमाइंडर।';
+
+  @override
+  String get optInsuranceTitle => 'होम लोन सुरक्षा कोटेशन';
+
+  @override
+  String get optInsuranceBody =>
+      'कोटेशन के लिए अपना नाम, उम्र और लोन राशि हमारे बीमा साझेदार से साझा करें। ख़रीदना कभी ज़रूरी नहीं।';
+
+  @override
+  String get getQuote => 'कोटेशन लें';
+
+  @override
+  String get manageConsents => 'सहमतियाँ संभालें';
+
+  @override
+  String get manageConsentsBody =>
+      'वैकल्पिक सहमतियाँ कभी भी बंद करें। ज़रूरी सहमति वापस लेने पर आपका आवेदन रुक जाता है, और उसके लिए लाया गया डेटा हम मिटा देते हैं।';
+
+  @override
+  String get withdraw => 'वापस लें';
+
+  @override
+  String get consentHistory => 'सहमति का इतिहास';
+
+  @override
+  String historyGiven(String item) {
+    return '$item दी गई';
+  }
+
+  @override
+  String historyWithdrawn(String item) {
+    return '$item वापस ली गई';
+  }
+
+  @override
+  String get historyEmpty => 'अभी कुछ नहीं।';
+
+  @override
+  String get consentOn => 'चालू';
+
+  @override
+  String get consentOff => 'बंद';
+
+  @override
+  String get withdrawnRequired =>
+      'आपने एक ज़रूरी सहमति वापस ली, इसलिए आपका आवेदन रुका हुआ है।';
+
+  @override
+  String get checkMatchPending =>
+      'फ़ोटो मिलान: आधार या पैन कार्ड अपलोड करने पर होगा';
 }

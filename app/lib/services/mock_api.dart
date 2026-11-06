@@ -6,6 +6,7 @@
 import 'dart:math' as math;
 import 'dart:typed_data';
 
+import '../format.dart';
 import '../policy.dart';
 import 'api.dart';
 import 'models.dart';
@@ -46,6 +47,7 @@ class MockNirnayApi implements NirnayApi {
   static const demoOtp = '123456';
   final _rng = math.Random(7);
   Persona _persona = demoPersonas['9876500001']!;
+  String _pan = 'ABXXX1234X', _aadhaar = 'XXXX XXXX 0000';
 
   Future<void> _wait() => Future.delayed(delay);
 
@@ -65,15 +67,27 @@ class MockNirnayApi implements NirnayApi {
     return Session(token: 'demo-token-$deviceId', deviceId: deviceId, applicationId: id);
   }
 
+  ConsentRecord? lastConsent; // the sample engine only keeps the latest choices
+
+  @override
+  Future<Uint8List?> sample(Session session, String kind) async => null; // the app's own stand-ins are enough here
+
+  @override
+  Future<void> recordConsents(Session session, ConsentRecord consent) async {
+    lastConsent = consent;
+  }
+
   @override
   Future<Profile> fetchProfile(Session session, String pan) async {
     await _wait();
     final p = _persona;
+    _pan = '${pan.substring(0, 2)}XXX${pan.substring(5, 9)}X';
+    _aadhaar = 'XXXX XXXX ${(4000 + _rng.nextInt(5999)).toString()}';
     return Profile(
       name: p.name,
       dateOfBirth: p.dob,
-      panMasked: '${pan.substring(0, 2)}XXX${pan.substring(5, 9)}X',
-      aadhaarMasked: 'XXXX XXXX ${(4000 + _rng.nextInt(5999)).toString()}',
+      panMasked: _pan,
+      aadhaarMasked: _aadhaar,
       address: 'Flat 304, Lake View Road, Pune, Maharashtra 411038',
       employment: p.employment,
       employer: p.employer,
@@ -94,7 +108,19 @@ class MockNirnayApi implements NirnayApi {
   Future<DocResult> uploadDocument(Session session, DocSlot slot, Uint8List bytes, String fileName) async {
     await _wait();
     // The real engine OCRs the image and runs the document classifier (model 6).
-    return DocResult(slot: slot, detectedType: slot.name, confidence: 0.93 + _rng.nextDouble() * 0.06, accepted: true);
+    // Here the "read" fields come from the persona; an edited salary slip shows the inflated pay.
+    final p = _persona;
+    final pay = rupees(p.editedSalarySlip ? p.income * 1.5 : p.income);
+    final fields = switch (slot) {
+      DocSlot.pan => {'name': p.name, 'pan': _pan},
+      DocSlot.aadhaar => {'name': p.name, 'aadhaar': _aadhaar},
+      DocSlot.salarySlip => {'employer': p.employer, 'name': p.name, 'period': 'Oct 2026', 'netPay': pay},
+      DocSlot.form16 => {'employer': p.employer, 'name': p.name, 'year': 'FY 2025-26'},
+      DocSlot.itr => {'name': p.name, 'year': 'AY 2026-27', 'income': rupees(p.income * 12)},
+      DocSlot.gst => {'business': p.employer, 'gstin': '27${_pan.substring(0, 5)}1Z5'},
+      _ => <String, String>{},
+    };
+    return DocResult(slot: slot, detectedType: slot.name, confidence: 0.93 + _rng.nextDouble() * 0.06, accepted: true, fields: fields);
   }
 
   @override

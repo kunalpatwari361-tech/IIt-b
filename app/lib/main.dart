@@ -2,19 +2,27 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'l10n/app_localizations.dart';
+import 'languages.dart';
 import 'screens/consent_screen.dart';
 import 'screens/decision_screen.dart';
 import 'screens/details_screen.dart';
 import 'screens/documents_screen.dart';
+import 'screens/offer_screen.dart';
 import 'screens/property_screen.dart';
 import 'screens/selfie_screen.dart';
 import 'screens/sign_in_screen.dart';
 import 'screens/welcome_screen.dart';
 import 'services/api.dart';
+import 'services/http_api.dart';
 import 'services/mock_api.dart';
 import 'state.dart';
+import 'theme.dart';
 
-void main() => runApp(NirnayApp(api: MockNirnayApi()));
+/// The engine to call, for example --dart-define=NIRNAY_API_URL=http://localhost:8000.
+/// Left empty, the app runs on the built-in sample engine.
+const engineUrl = String.fromEnvironment('NIRNAY_API_URL');
+
+void main() => runApp(NirnayApp(api: engineUrl.isEmpty ? MockNirnayApi() : HttpNirnayApi(engineUrl)));
 
 class NirnayApp extends StatelessWidget {
   const NirnayApp({super.key, required this.api});
@@ -31,11 +39,8 @@ class NirnayApp extends StatelessWidget {
           debugShowCheckedModeBanner: false,
           locale: locale,
           supportedLocales: AppLocalizations.supportedLocales,
-          localizationsDelegates: AppLocalizations.localizationsDelegates,
-          theme: ThemeData(
-            colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF0B5D7A)),
-            useMaterial3: true,
-          ),
+          localizationsDelegates: const [AppLocalizations.delegate, ...flutterDelegates],
+          theme: nirnayTheme(),
           initialRoute: '/',
           routes: {
             '/': (_) => const WelcomeScreen(),
@@ -45,6 +50,7 @@ class NirnayApp extends StatelessWidget {
             '/selfie': (_) => const SelfieScreen(),
             '/documents': (_) => const DocumentsScreen(),
             '/decision': (_) => const DecisionScreen(),
+            '/offer': (_) => const OfferScreen(),
             '/property': (_) => const PropertyScreen(),
           },
         );

@@ -38,21 +38,41 @@ class Profile {
 }
 
 class SelfieResult {
-  SelfieResult({required this.faceFound, required this.live, required this.livenessScore, required this.faceMatch, required this.matchScore});
+  SelfieResult({
+    required this.faceFound,
+    required this.live,
+    required this.livenessScore,
+    required this.faceMatch,
+    required this.matchScore,
+    this.matchPending = false,
+  });
   final bool faceFound, live, faceMatch;
   final double livenessScore, matchScore;
+  // No ID photo to compare with yet: the engine matches the selfie when the Aadhaar or PAN card arrives.
+  final bool matchPending;
   bool get passed => faceFound && live && faceMatch;
+}
+
+/// The customer's consent choices, sent to the engine before any data is fetched (DPDP Act 2023).
+class ConsentRecord {
+  ConsentRecord({required this.given, required this.options, required this.optional});
+  final Map<String, bool> given; // bureau, aa, kyc, privacy
+  final Map<String, Object> options; // aaMonths, aaAccounts, kycMethod, useCkyc, recheckBeforePayout
+  final Map<String, bool> optional; // offers by channel, WhatsApp updates, insurance quote
+
+  Map<String, Object> toJson() => {'given': given, 'options': options, 'optional': optional};
 }
 
 enum DocSlot { pan, aadhaar, salarySlip, form16, itr, gst, bankStatement, saleDeed, allotmentLetter, encumbrance, propertyTax }
 
 class DocResult {
-  DocResult({required this.slot, required this.detectedType, required this.confidence, required this.accepted, this.reasonCode});
+  DocResult({required this.slot, required this.detectedType, required this.confidence, required this.accepted, this.reasonCode, this.fields = const {}});
   final DocSlot slot;
   final String detectedType; // what model 6 says it is
   final double confidence;
   final bool accepted;
   final String? reasonCode; // R-DOC-01 wrong document, R-DOC-02 unreadable
+  final Map<String, String> fields; // what OCR read: name, pan, employer, netPay, period, year, income, business, gstin
 }
 
 class PropertyInput {
