@@ -85,6 +85,18 @@ Without `NIRNAY_API_URL` the app uses the sample engine. With it:
 
 On an Android emulator the engine is at `http://10.0.2.2:8000`.
 
+**On a real phone over USB** (tested on a Galaxy Z Flip3, Android 15):
+```bash
+adb reverse tcp:8000 tcp:8000
+```
+```bash
+flutter build apk --release --dart-define=NIRNAY_API_URL=http://127.0.0.1:8000
+```
+```bash
+adb install -r build/app/outputs/flutter-apk/app-release.apk
+```
+`adb reverse` makes the phone's own `127.0.0.1:8000` reach the engine on the laptop. Android blocks plain `http://`, so `android/app/src/main/res/xml/network_security_config.xml` allows it only for `127.0.0.1`, `localhost` and `10.0.2.2`; every other host still needs HTTPS. Run `adb reverse` again whenever the phone is reconnected.
+
 **Tests:** 26 tests, run with `flutter test`.
 - **Policy maths:** the report's worked example to the rupee: ₹45.26 lakh by income, ₹48 lakh by property, EMI ₹39,767, FOIR 49.8%, LTV 75%. Also the FOIR and LTV tiers, and the KFS APR.
 - **Photo checks:** blur, glare (but not a white scan background), darkness, and unreadable files.

@@ -19,6 +19,7 @@ import io
 import json
 import re
 import sys
+import threading
 import unicodedata
 from pathlib import Path
 
@@ -36,10 +37,18 @@ MIN_TEXT_LAYER = 60          # a PDF page with fewer letters than this is treate
 _CJK = re.compile("[぀-ヿ㐀-䶿一-鿿가-힯]")
 _DEVANAGARI = re.compile(r"[ऀ-ॿ]")
 _engines: dict[str, object] = {}
+# The engine answers requests on several threads; RapidOCR's steps keep state between calls,
+# so one page is read at a time (the same fix as model 9's OpenCV detector).
+_lock = threading.RLock()
 
 
 def engine(script: str = "latin"):
     """RapidOCR with the English (default) or Devanagari recogniser, loaded once."""
+    with _lock:
+        return _engine(script)
+
+
+def _engine(script: str):
     if script not in _engines:
         from rapidocr_onnxruntime import RapidOCR
         if script == "devanagari":
@@ -66,6 +75,11 @@ def _boxes(img: np.ndarray, scripts: list[str]) -> list[tuple]:
     Uses RapidOCR's own steps (pinned to 1.4.x in requirements) so both recognisers see
     exactly the same crops. Returns (box, text, score, script) per box.
     """
+    with _lock:
+        return _boxes_locked(img, scripts)
+
+
+def _boxes_locked(img: np.ndarray, scripts: list[str]) -> list[tuple]:
     det = engine("latin")
     raw_h, raw_w = img.shape[:2]
     op: dict = {}

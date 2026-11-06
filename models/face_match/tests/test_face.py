@@ -58,3 +58,14 @@ def test_same_person_matches_and_different_person_does_not():
     printed_other = (SAMPLES / "image_F1.jpg").read_bytes()    # a printed photo of someone else
     assert m.match(real, same_on_screen)["match"]
     assert not m.match(real, printed_other)["match"]
+
+
+def test_parallel_requests_do_not_crash():
+    """The engine serves requests on several threads. Before the lock, two photos of different
+    sizes going through the detector at once crashed OpenCV (buf.shape() == m.shape())."""
+    from concurrent.futures import ThreadPoolExecutor
+    m = face.model()
+    photos = [_png(size=(320 + 97 * i, 240 + 61 * i)) for i in range(8)]
+    with ThreadPoolExecutor(max_workers=8) as pool:
+        results = list(pool.map(m.describe, photos * 3))
+    assert all(r["faces_found"] == 0 for r in results)

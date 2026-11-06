@@ -17,6 +17,7 @@ from __future__ import annotations
 import io
 import json
 import sys
+import threading
 from pathlib import Path
 
 import cv2
@@ -51,14 +52,18 @@ class FaceModel:
                 raise FileNotFoundError(f"Missing {p.name}. Run: python -m backend.fetch")
         self.detector = cv2.FaceDetectorYN.create(str(detector), "", (320, 320), MIN_FACE_SCORE, 0.3, 50)
         self.recogniser = cv2.FaceRecognizerSF.create(str(recogniser), "")
+        # OpenCV's networks are not thread-safe: setInputSize() then detect() from two request
+        # threads at once mixes their shapes and crashes. One photo at a time per model.
+        self._lock = threading.RLock()
 
     def faces(self, img: np.ndarray) -> list[np.ndarray]:
         """Every face found, largest first. Each row: x, y, w, h, 5 landmark pairs, score (full-size pixels)."""
         h, w = img.shape[:2]
         scale = min(1.0, MAX_SIDE / max(h, w))
         small = cv2.resize(img, (int(w * scale), int(h * scale))) if scale < 1 else img
-        self.detector.setInputSize((small.shape[1], small.shape[0]))
-        _, found = self.detector.detect(small)
+        with self._lock:
+            self.detector.setInputSize((small.shape[1], small.shape[0]))
+            _, found = self.detector.detect(small)
         if found is None:
             return []
         found = found.copy()
@@ -66,11 +71,13 @@ class FaceModel:
         return sorted(found, key=lambda f: -f[2] * f[3])
 
     def fingerprint(self, img: np.ndarray, face: np.ndarray) -> np.ndarray:
-        aligned = self.recogniser.alignCrop(img, face)
-        return self.recogniser.feature(aligned)
+        with self._lock:
+            aligned = self.recogniser.alignCrop(img, face)
+            return self.recogniser.feature(aligned)
 
     def similarity(self, a: np.ndarray, b: np.ndarray) -> float:
-        return float(self.recogniser.match(a, b, cv2.FaceRecognizerSF_FR_COSINE))
+        with self._lock:
+            return float(self.recogniser.match(a, b, cv2.FaceRecognizerSF_FR_COSINE))
 
     def describe(self, data: bytes | np.ndarray) -> dict:
         """Find the main face in one photo and fingerprint it."""
@@ -111,12 +118,14 @@ class FaceModel:
 
 
 _loaded: FaceModel | None = None
+_load_lock = threading.Lock()
 
 
 def model() -> FaceModel:
     global _loaded
-    if _loaded is None:
-        _loaded = FaceModel()
+    with _load_lock:
+        if _loaded is None:
+            _loaded = FaceModel()
     return _loaded
 
 

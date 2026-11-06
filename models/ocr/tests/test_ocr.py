@@ -51,3 +51,11 @@ def test_blank_page_has_no_text():
     Image.new("RGB", (800, 600), "white").save(buf, "PNG")
     r = ocr.read(buf.getvalue())
     assert r["text"] == "" and r["error"] is None
+
+
+def test_parallel_pages_are_read_safely():
+    from concurrent.futures import ThreadPoolExecutor
+    data, _ = _page([("title", "SALARY SLIP"), ("kv", "Name of Employee\tPriya Nair")])
+    with ThreadPoolExecutor(max_workers=4) as pool:
+        texts = [r["text"].replace(" ", "") for r in pool.map(ocr.read, [data] * 4)]
+    assert all("PriyaNair" in t for t in texts)
