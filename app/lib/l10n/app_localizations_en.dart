@@ -1035,4 +1035,168 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get checkMatchPending =>
       'Photo match: done when you upload your Aadhaar or PAN card';
+
+  @override
+  String get realDetailsIntro =>
+      'Tell us about yourself. We check every detail against your documents.';
+
+  @override
+  String get fullNameLabel => 'Full name (as on your PAN card)';
+
+  @override
+  String get emailLabel => 'Email';
+
+  @override
+  String get employerLabel => 'Employer or business name';
+
+  @override
+  String get creditScoreLabel => 'Credit score (optional)';
+
+  @override
+  String get creditScoreHint =>
+      'From your CIBIL or Experian report, if you know it';
+
+  @override
+  String get addressLabel => 'Address';
+
+  @override
+  String get saveDetails => 'Save my details';
+
+  @override
+  String get selfDeclaredNote =>
+      'You entered these details. We check them against the documents you upload next.';
+
+  @override
+  String get pickDob => 'Choose your date of birth';
+
+  @override
+  String get fillDetails =>
+      'Please fill in your name, date of birth, work, employer and income.';
+
+  @override
+  String get docSaleDeed => 'Sale deed or allotment letter';
+
+  @override
+  String get saleDeedBody =>
+      'Upload a photo or PDF of the registered sale deed (the page with the property and the buyer). We read it to check the title.';
+
+  @override
+  String get statusPending => 'Pending review';
+
+  @override
+  String decisionRef(String ref) {
+    return 'Decision record $ref';
+  }
+
+  @override
+  String get scoreTitle => 'How we scored you';
+
+  @override
+  String get scoreOutOf => 'out of 900';
+
+  @override
+  String gradeLabel(String grade) {
+    return 'Grade $grade';
+  }
+
+  @override
+  String scoreStart(String base) {
+    return 'Everyone starts at $base points. Each line below adds or takes away points.';
+  }
+
+  @override
+  String get scoreNote =>
+      'This is the credit score part of the decision. Your income, identity, documents and property are checked too.';
+
+  @override
+  String get factorBureau => 'Credit bureau score';
+
+  @override
+  String get factorHistory => 'Years of credit history';
+
+  @override
+  String get factorLtv => 'Loan as a share of property value';
+
+  @override
+  String get factorLoanAmount => 'Loan amount';
+
+  @override
+  String get factorMissing => 'Not available';
+
+  @override
+  String rangeBelow(String x) {
+    return 'below $x';
+  }
+
+  @override
+  String rangeBetween(String a, String b) {
+    return '$a to $b';
+  }
+
+  @override
+  String rangeAtLeast(String x) {
+    return '$x or more';
+  }
+
+  @override
+  String get viewLetter => 'Decision letter';
+
+  @override
+  String get letterTitle => 'Your decision letter';
+
+  @override
+  String get letterPartlyEnglish =>
+      'Some lines could not be translated and are shown in English.';
+
+  @override
+  String get copyText => 'Copy text';
+
+  @override
+  String get copied => 'Copied';
+
+  @override
+  String get askTitle => 'Ask a question';
+
+  @override
+  String get askHint => 'For example: what happens next?';
+
+  @override
+  String get askSend => 'Send';
+
+  @override
+  String get askHuman => 'A person from our team will follow up on this.';
+
+  @override
+  String get uploadPdf => 'Upload PDF';
+
+  @override
+  String get kfsFeeBase => 'Processing fee (0.5%)';
+
+  @override
+  String get kfsGst => 'GST on the fee (18%)';
+
+  @override
+  String get kfsNoteEngine =>
+      'Worked out for this offer. The signed Key Facts Statement comes with your sanction letter.';
+
+  @override
+  String otpOnServer(String phone) {
+    return 'This test server does not send SMS. The 6-digit code for $phone is shown in the server window on the computer.';
+  }
+
+  @override
+  String get resendOtp => 'Send a new code';
+
+  @override
+  String get newOtpSent => 'New code sent.';
+
+  @override
+  String get otpExpired => 'This code has expired. Tap Send a new code.';
+
+  @override
+  String get otpTooManyTries => 'Too many wrong tries. Tap Send a new code.';
+
+  @override
+  String get otpTooManySends =>
+      'Too many codes asked for. Please wait 15 minutes and try again.';
 }

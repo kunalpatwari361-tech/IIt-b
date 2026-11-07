@@ -175,9 +175,9 @@ class AppState extends ChangeNotifier {
   LoanRequest get request => LoanRequest(product: product, amount: loanAmount, years: years, propertyValue: propertyValue);
 
   /// Income documents asked for, by type of work. Bank statements come through the Account Aggregator.
-  List<DocSlot> get requiredDocs => profile?.employment == Employment.selfEmployed
+  List<DocSlot> get requiredDocs => profile?.requiredDocuments ?? (profile?.employment == Employment.selfEmployed
       ? [DocSlot.pan, DocSlot.aadhaar, DocSlot.itr, DocSlot.gst]
-      : [DocSlot.pan, DocSlot.aadhaar, DocSlot.salarySlip, DocSlot.form16];
+      : [DocSlot.pan, DocSlot.aadhaar, DocSlot.salarySlip, DocSlot.form16]);
 
   bool get docsComplete => requiredDocs.every((s) => documents[s]?.accepted ?? false);
 

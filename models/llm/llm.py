@@ -238,10 +238,11 @@ _OFFLINE_FACTS = [
     ("stamp_duty", re.compile(r"Stamp\s+Duty\s+Amount\s*\(Rs\.\)\s*([0-9][0-9,]+)", re.I)),
 ]
 _OFFLINE_ISSUES = [
-    ("deceased_owner", re.compile(r"\b(deceased|late\s+shri|late\s+smt|expired|passed away|legal heirs?|succession)\b", re.I)),
-    ("power_of_attorney_sale", re.compile(r"\b(power of attorney|GPA holder|attorney holder)\b", re.I)),
-    ("encumbrance_or_charge", re.compile(r"\b(mortgaged? (?:with|to)|charge (?:in favour|created)|lien (?:in favour|marked)|attached by)\b", re.I)),
-    ("pending_litigation", re.compile(r"\b(suit no|pending before|litigation|stay order)\b", re.I)),
+    # \s* rather than \s+ throughout: OCR often drops the spaces between words ("LateShriRamesh").
+    ("deceased_owner", re.compile(r"(deceased|late\s*shri|late\s*smt|expired|passed\s*away|legal\s*heirs?|succession)", re.I)),
+    ("power_of_attorney_sale", re.compile(r"(power\s*of\s*attorney|GPA\s*holder|attorney\s*holder)", re.I)),
+    ("encumbrance_or_charge", re.compile(r"(mortgaged?\s*(?:with|to)\b|charge\s*(?:in\s*favour|created)|lien\s*(?:in\s*favour|marked)|attached\s*by)", re.I)),
+    ("pending_litigation", re.compile(r"(suit\s*no|pending\s*before|litigation|stay\s*order)", re.I)),
 ]
 
 
@@ -260,7 +261,7 @@ def _read_deed_offline(text: str) -> dict:
                 issues.append({"kind": kind, "explanation": f"The deed mentions '{rx.search(s).group(0)}'. A lawyer should check it.",
                                "quote": s[:240]})
                 break
-    is_deed = bool(re.search(r"\b(sale deed|deed of (?:absolute )?sale|conveyance|indenture)\b", text, re.I))
+    is_deed = bool(re.search(r"(sale\s*deed|deed\s*of\s*(?:absolute\s*)?sale|conveyance|indenture)", text, re.I))
     return {"is_sale_deed": is_deed, "facts": facts, "issues": issues,
             "summary": "Read by offline keyword rules, not the LLM. The title chain was not checked."}
 

@@ -1034,4 +1034,169 @@ class AppLocalizationsSd extends AppLocalizations {
   @override
   String get checkMatchPending =>
       'تصوير جو ميلاپ: آڌار يا پين ڪارڊ اپلوڊ ڪرڻ تي ٿيندو';
+
+  @override
+  String get realDetailsIntro =>
+      'پنهنجي باري ۾ ٻڌايو. اسين هر تفصيل اوهان جي دستاويزن سان جانچيون ٿا.';
+
+  @override
+  String get fullNameLabel => 'پورو نالو (جيئن پين ڪارڊ تي آهي)';
+
+  @override
+  String get emailLabel => 'اي ميل';
+
+  @override
+  String get employerLabel => 'آجر يا ڪاروبار جو نالو';
+
+  @override
+  String get creditScoreLabel => 'ڪريڊٽ اسڪور (اختياري)';
+
+  @override
+  String get creditScoreHint =>
+      'اوهان جي CIBIL يا Experian رپورٽ مان، جيڪڏهن خبر هجي';
+
+  @override
+  String get addressLabel => 'پتو';
+
+  @override
+  String get saveDetails => 'منهنجون تفصيلون محفوظ ڪريو';
+
+  @override
+  String get selfDeclaredNote =>
+      'اهي تفصيلون اوهان ڀريون آهن. اڳتي جيڪي دستاويز اپلوڊ ڪندا، انهن سان اسين جانچينداسين.';
+
+  @override
+  String get pickDob => 'پنهنجي ڄمڻ جي تاريخ چونڊيو';
+
+  @override
+  String get fillDetails =>
+      'مهرباني ڪري نالو، ڄمڻ جي تاريخ، ڪم، آجر ۽ آمدني ڀريو.';
+
+  @override
+  String get docSaleDeed => 'وڪري جو دستاويز يا الاٽمينٽ خط';
+
+  @override
+  String get saleDeedBody =>
+      'رجسٽرڊ وڪري دستاويز جي تصوير يا PDF اپلوڊ ڪريو (اهو صفحو جنهن ۾ ملڪيت ۽ خريدار هجي). ملڪيت جانچڻ لاءِ اسين ان کي پڙهون ٿا.';
+
+  @override
+  String get statusPending => 'جائزو باقي آهي';
+
+  @override
+  String decisionRef(String ref) {
+    return 'فيصلي جو رڪارڊ $ref';
+  }
+
+  @override
+  String get scoreTitle => 'اسان توهان جو اسڪور ڪيئن ڪڍيو';
+
+  @override
+  String get scoreOutOf => '900 مان';
+
+  @override
+  String gradeLabel(String grade) {
+    return 'گريڊ $grade';
+  }
+
+  @override
+  String scoreStart(String base) {
+    return 'هر ڪو $base پوائنٽن کان شروع ڪري ٿو. هيٺ هر سٽ پوائنٽ وڌائي يا گهٽائي ٿي.';
+  }
+
+  @override
+  String get scoreNote =>
+      'هي فيصلي جو ڪريڊٽ اسڪور وارو حصو آهي. توهان جي آمدني، سڃاڻپ، دستاويز ۽ ملڪيت پڻ جانچي وڃي ٿي.';
+
+  @override
+  String get factorBureau => 'ڪريڊٽ بيورو اسڪور';
+
+  @override
+  String get factorHistory => 'ڪريڊٽ تاريخ جا سال';
+
+  @override
+  String get factorLtv => 'ملڪيت جي قيمت جي مقابلي ۾ لون جو حصو';
+
+  @override
+  String get factorLoanAmount => 'لون جي رقم';
+
+  @override
+  String get factorMissing => 'موجود ناهي';
+
+  @override
+  String rangeBelow(String x) {
+    return '$x کان گهٽ';
+  }
+
+  @override
+  String rangeBetween(String a, String b) {
+    return '$a کان $b';
+  }
+
+  @override
+  String rangeAtLeast(String x) {
+    return '$x يا وڌيڪ';
+  }
+
+  @override
+  String get viewLetter => 'فيصلي جو خط';
+
+  @override
+  String get letterTitle => 'توهان جو فيصلي جو خط';
+
+  @override
+  String get letterPartlyEnglish =>
+      'ڪجهه سٽن جو ترجمو نه ٿي سگهيو، تنهنڪري اهي انگريزي ۾ آهن.';
+
+  @override
+  String get copyText => 'متن ڪاپي ڪريو';
+
+  @override
+  String get copied => 'ڪاپي ٿي ويو';
+
+  @override
+  String get askTitle => 'سوال پڇو';
+
+  @override
+  String get askHint => 'مثال: اڳتي ڇا ٿيندو؟';
+
+  @override
+  String get askSend => 'موڪليو';
+
+  @override
+  String get askHuman =>
+      'اسان جي ٽيم جو ڪو ماڻهو ان بابت توهان سان رابطو ڪندو.';
+
+  @override
+  String get uploadPdf => 'PDF اپلوڊ ڪريو';
+
+  @override
+  String get kfsFeeBase => 'پروسيسنگ فيس (0.5%)';
+
+  @override
+  String get kfsGst => 'فيس تي GST (18%)';
+
+  @override
+  String get kfsNoteEngine =>
+      'هي هن آڇ لاءِ ڪڍيو ويو آهي. صحيح ٿيل اهم حقيقتن جو بيان توهان جي منظوري خط سان گڏ ايندو.';
+
+  @override
+  String otpOnServer(String phone) {
+    return 'هي ٽيسٽ سرور SMS نٿو موڪلي. $phone لاءِ 6 انگن جو ڪوڊ ڪمپيوٽر جي سرور ونڊو ۾ نظر اچي ٿو.';
+  }
+
+  @override
+  String get resendOtp => 'نئون ڪوڊ موڪليو';
+
+  @override
+  String get newOtpSent => 'نئون ڪوڊ موڪليو ويو.';
+
+  @override
+  String get otpExpired => 'هن ڪوڊ جي مدت ختم ٿي وئي. نئون ڪوڊ موڪليو دٻايو.';
+
+  @override
+  String get otpTooManyTries => 'گهڻي ڀيرا غلط ڪوڊ. نئون ڪوڊ موڪليو دٻايو.';
+
+  @override
+  String get otpTooManySends =>
+      'تمام گهڻا ڪوڊ گهريا ويا. 15 منٽ ترسي ٻيهر ڪوشش ڪريو.';
 }

@@ -1035,4 +1035,168 @@ class AppLocalizationsDoi extends AppLocalizations {
   @override
   String get checkMatchPending =>
       'फोटो मलान: आधार जां पैन कार्ड अपलोड करने पर होग';
+
+  @override
+  String get realDetailsIntro =>
+      'अपने बारे च दस्सो। अस हर जानकारी तुंदे कागजें कन्नै जांचने आं।';
+
+  @override
+  String get fullNameLabel => 'पूरा नां (जि\'यां पैन कार्ड पर ऐ)';
+
+  @override
+  String get emailLabel => 'ईमेल';
+
+  @override
+  String get employerLabel => 'नियोक्ता जां कारोबार दा नां';
+
+  @override
+  String get creditScoreLabel => 'क्रेडिट स्कोर (मर्जी मताबक)';
+
+  @override
+  String get creditScoreHint =>
+      'तुंदी CIBIL जां Experian रिपोर्ट थमां, जेकर पता होऐ';
+
+  @override
+  String get addressLabel => 'पता';
+
+  @override
+  String get saveDetails => 'मेरी जानकारी सांभो';
+
+  @override
+  String get selfDeclaredNote =>
+      'एह जानकारी तुसें भरी ऐ। अग्गें जेह्ड़े कागज अपलोड करगे, उंदे कन्नै अस इसगी जांचगे।';
+
+  @override
+  String get pickDob => 'अपनी जनम तरीक चुनो';
+
+  @override
+  String get fillDetails =>
+      'किरपा करियै नां, जनम तरीक, कम्म, नियोक्ता ते आमदनी भरो।';
+
+  @override
+  String get docSaleDeed => 'बिक्री दा कागज जां अलॉटमेंट पत्तर';
+
+  @override
+  String get saleDeedBody =>
+      'रजिस्टर बिक्री कागज दी फोटो जां PDF अपलोड करो (जिस सफे पर जायदाद ते खरीददार होऐ)। मालकी जांचने आस्तै अस इसगी पढ़दे आं।';
+
+  @override
+  String get statusPending => 'समीक्षा बाकी ऐ';
+
+  @override
+  String decisionRef(String ref) {
+    return 'फैसले दा रिकार्ड $ref';
+  }
+
+  @override
+  String get scoreTitle => 'असें तुंदा स्कोर कियां कड्डेआ';
+
+  @override
+  String get scoreOutOf => '900 चा';
+
+  @override
+  String gradeLabel(String grade) {
+    return 'ग्रेड $grade';
+  }
+
+  @override
+  String scoreStart(String base) {
+    return 'हर कोई $base अंकें थमां शुरू करदा ऐ। हेठ हर लाइन अंक जोड़दी जां घटांदी ऐ।';
+  }
+
+  @override
+  String get scoreNote =>
+      'एह फैसले दा क्रेडिट स्कोर आह्‌ला हिस्सा ऐ। तुंदी आमदन, पन्छान, दस्तावेज ते जायदाद बी जांची जंदी ऐ।';
+
+  @override
+  String get factorBureau => 'क्रेडिट ब्यूरो स्कोर';
+
+  @override
+  String get factorHistory => 'क्रेडिट इतिहास दे ब’रे';
+
+  @override
+  String get factorLtv => 'जायदाद दी कीमत दे मकाबले लोन दा हिस्सा';
+
+  @override
+  String get factorLoanAmount => 'लोन दी रकम';
+
+  @override
+  String get factorMissing => 'उपलब्ध नेईं';
+
+  @override
+  String rangeBelow(String x) {
+    return '$x शा घट्ट';
+  }
+
+  @override
+  String rangeBetween(String a, String b) {
+    return '$a थमां $b';
+  }
+
+  @override
+  String rangeAtLeast(String x) {
+    return '$x जां मता';
+  }
+
+  @override
+  String get viewLetter => 'फैसले दी चिट्ठी';
+
+  @override
+  String get letterTitle => 'तुंदी फैसले दी चिट्ठी';
+
+  @override
+  String get letterPartlyEnglish =>
+      'किश लाइनें दा अनुवाद नेईं होई सकेआ, इस करी ओह् अंग्रेजी च न।';
+
+  @override
+  String get copyText => 'लिखत कापी करो';
+
+  @override
+  String get copied => 'कापी होई गेआ';
+
+  @override
+  String get askTitle => 'सुआल पुच्छो';
+
+  @override
+  String get askHint => 'जियां: अग्गें केह् होग?';
+
+  @override
+  String get askSend => 'भेजो';
+
+  @override
+  String get askHuman =>
+      'साढ़ी टीम दा कोई माह्‌नू इस बारै तुंदे कन्नै राब्ता करग।';
+
+  @override
+  String get uploadPdf => 'PDF अपलोड करो';
+
+  @override
+  String get kfsFeeBase => 'प्रोसेसिंग फीस (0.5%)';
+
+  @override
+  String get kfsGst => 'फीस पर GST (18%)';
+
+  @override
+  String get kfsNoteEngine =>
+      'एह इस पेशकश आस्तै कड्डेआ गेदा ऐ। दस्तखत कीते दा मुक्ख तथ्य ब्यान तुंदी मंजूरी चिट्ठी कन्नै औग।';
+
+  @override
+  String otpOnServer(String phone) {
+    return 'एह टेस्ट सर्वर SMS नेईं भेजदा। $phone दा 6 अंकें दा कोड कंप्यूटर दी सर्वर विंडो च दिक्खदा ऐ।';
+  }
+
+  @override
+  String get resendOtp => 'नमां कोड भेजो';
+
+  @override
+  String get newOtpSent => 'नमां कोड भेजी दित्ता।';
+
+  @override
+  String get otpExpired => 'इस कोड दी मियाद मुक्की गेई। नमां कोड भेजो दबाओ।';
+
+  @override
+  String get otpTooManyTries => 'मते बारी गलत कोड। नमां कोड भेजो दबाओ।';
+
+  @override
+  String get otpTooManySends => 'मते कोड मंगे गे। 15 मिंट रुकियै फी कोशश करो।';
 }

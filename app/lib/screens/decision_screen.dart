@@ -1,8 +1,8 @@
-import 'dart:math' as math;
-
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
+import '../config.dart';
 import '../format.dart';
 import '../l10n/app_localizations.dart';
 import '../reasons.dart';
@@ -29,7 +29,7 @@ class DecisionScreen extends StatelessWidget {
     final isFinal = d.stage == 'final';
     final (title, tone, icon, status) = switch (d.outcome) {
       Outcome.approve => (isFinal ? t.sanctioned : t.approvedInPrinciple, Tone.good, Icons.verified_outlined, isFinal ? t.statusSanctioned : t.statusApproved),
-      Outcome.refer => (t.referredTitle, Tone.warn, Icons.hourglass_top, t.statusInReview),
+      Outcome.refer => (t.referredTitle, Tone.warn, Icons.hourglass_top, t.statusPending),
       Outcome.reject => (t.rejectedTitle, Tone.bad, Icons.info_outline, t.statusDeclined),
     };
     final positives = d.reasons.where((r) => r.positive).toList();
@@ -57,6 +57,8 @@ class DecisionScreen extends StatelessWidget {
                     Pill(status, tone: tone),
                   ],
                 ),
+                if (d.reference != null)
+                  Text(t.decisionRef(d.reference!), key: const Key('decision-ref'), style: const TextStyle(fontSize: 11.5, color: C.muted)),
                 const SizedBox(height: 12),
                 Row(
                   children: [
@@ -127,6 +129,11 @@ class DecisionScreen extends StatelessWidget {
               ),
             ),
           ],
+          if (d.score != null) ...[
+            const SizedBox(height: 20),
+            SectionTitle(t.scoreTitle),
+            _ScorePanel(score: d.score!),
+          ],
           if (d.outcome != Outcome.reject) ...[
             const SizedBox(height: 20),
             SectionTitle(t.trackTitle),
@@ -144,6 +151,28 @@ class DecisionScreen extends StatelessWidget {
               ),
             ),
           ],
+          const SizedBox(height: 14),
+          Row(
+            children: [
+              Expanded(
+                child: OutlinedButton.icon(
+                  key: const Key('letter'),
+                  onPressed: () => _showLetter(context),
+                  icon: const Icon(Icons.description_outlined, size: 18),
+                  label: Text(t.viewLetter, overflow: TextOverflow.ellipsis),
+                ),
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: OutlinedButton.icon(
+                  key: const Key('ask'),
+                  onPressed: () => _showAssistant(context),
+                  icon: const Icon(Icons.chat_bubble_outline, size: 18),
+                  label: Text(t.askTitle, overflow: TextOverflow.ellipsis),
+                ),
+              ),
+            ],
+          ),
           const SizedBox(height: 14),
           SectionCard(
             padding: const EdgeInsets.fromLTRB(14, 12, 14, 6),
@@ -244,7 +273,8 @@ class DecisionScreen extends StatelessWidget {
 
   void _showKfs(BuildContext context, Decision d) {
     final t = AppLocalizations.of(context);
-    final k = Kfs.of(d);
+    final engine = d.keyFacts;
+    final k = engine != null && engine.loanAmount == d.amount ? engine : KeyFacts.compute(d.amount, d.emi, d.years);
     Widget row(String label, String value) => Padding(
       padding: const EdgeInsets.symmetric(vertical: 4),
       child: Row(
@@ -270,7 +300,8 @@ class DecisionScreen extends StatelessWidget {
               row(t.kfsRate, '${d.ratePct.toStringAsFixed(2)}% p.a.'),
               row(t.kfsEmi, rupees(d.emi)),
               row(t.kfsInstalments, '${d.years * 12}'),
-              row(t.kfsFee, rupees(k.fee)),
+              row(t.kfsFeeBase, rupees(k.fee)),
+              row(t.kfsGst, rupees(k.gst)),
               row(t.kfsTotalInterest, rupees(k.totalInterest)),
               row(t.kfsTotalPayable, rupees(k.totalPayable)),
               row(t.kfsApr, '${k.aprPct.toStringAsFixed(2)}%'),
@@ -279,7 +310,7 @@ class DecisionScreen extends StatelessWidget {
               const SizedBox(height: 8),
               Text(t.officerLine(grievanceOfficer.$1, grievanceOfficer.$2)),
               const SizedBox(height: 8),
-              Text(t.kfsNote, style: Theme.of(context).textTheme.bodySmall),
+              Text(demoMode ? t.kfsNote : t.kfsNoteEngine, style: Theme.of(context).textTheme.bodySmall),
             ],
           ),
         ),
@@ -289,28 +320,245 @@ class DecisionScreen extends StatelessWidget {
   }
 }
 
-/// Key Facts Statement maths: processing fee 0.5% + 18% GST (illustrative), and the APR,
-/// the yearly rate at which the EMIs repay the amount actually received (loan minus fee).
-class Kfs {
-  Kfs({required this.fee, required this.totalInterest, required this.totalPayable, required this.aprPct});
-  final double fee, totalInterest, totalPayable, aprPct;
+/// How model 1 (the credit scorecard) reached the score: start, points per factor, score and grade.
+class _ScorePanel extends StatelessWidget {
+  const _ScorePanel({required this.score});
+  final ScoreBreakdown score;
 
-  factory Kfs.of(Decision d) {
-    final n = d.years * 12;
-    final fee = d.amount * 0.005 * 1.18;
-    final totalPayable = d.emi * n;
-    final received = d.amount - fee;
-    // Solve received = EMI x [1 - (1 + i)^-n] / i for the monthly rate i (bisection).
-    var lo = 1e-6, hi = 0.05;
-    for (var k = 0; k < 100; k++) {
-      final mid = (lo + hi) / 2;
-      final pv = d.emi * (1 - math.pow(1 + mid, -n)) / mid;
-      if (pv > received) {
-        lo = mid;
-      } else {
-        hi = mid;
-      }
+  @override
+  Widget build(BuildContext context) {
+    final t = AppLocalizations.of(context);
+    String label(String input) => switch (input) {
+          'bureau_score' => t.factorBureau,
+          'credit_history_years' => t.factorHistory,
+          'ltv' => t.factorLtv,
+          'loan_amount' => t.factorLoanAmount,
+          _ => input,
+        };
+    final good = score.grade == 'A' || score.grade == 'B';
+    return SectionCard(
+      key: const Key('score-panel'),
+      padding: const EdgeInsets.fromLTRB(16, 14, 16, 10),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Text('${score.score}', style: serif(30)),
+              const SizedBox(width: 8),
+              Expanded(child: Text(t.scoreOutOf, style: const TextStyle(fontSize: 13, color: C.muted))),
+              Pill(t.gradeLabel(score.grade), tone: good ? Tone.good : Tone.warn),
+            ],
+          ),
+          const SizedBox(height: 6),
+          Text(t.scoreStart('${score.base}'), style: const TextStyle(fontSize: 12.5, color: C.muted)),
+          const Divider(height: 18),
+          for (final f in score.factors)
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 4),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(label(f.input), style: const TextStyle(fontSize: 13.5, fontWeight: FontWeight.w600)),
+                        Text(_range(t, f),
+                            style: const TextStyle(fontSize: 12, color: C.muted)),
+                      ],
+                    ),
+                  ),
+                  Text(
+                    f.points > 0 ? '+${f.points}' : '${f.points}',
+                    style: TextStyle(
+                        fontSize: 15, fontWeight: FontWeight.w800, color: f.points > 0 ? C.goodInk : f.points < 0 ? C.badInk : C.muted),
+                  ),
+                ],
+              ),
+            ),
+          const SizedBox(height: 6),
+          Text(t.scoreNote, style: const TextStyle(fontSize: 12, color: C.muted, height: 1.35)),
+        ],
+      ),
+    );
+  }
+}
+
+/// The scorecard's range for one input ("below 418", "53.5 to 62.2", "738 or more") in the app's language.
+String _range(AppLocalizations t, ScoreFactor f) {
+  if (f.bin == 'missing' || f.bin == 'unknown value') return t.factorMissing;
+  final unit = f.input == 'ltv' ? '%' : '';
+  final below = RegExp(r'^below (.+)$').firstMatch(f.bin);
+  if (below != null) return t.rangeBelow('${below[1]}$unit');
+  final more = RegExp(r'^(.+) or more$').firstMatch(f.bin);
+  if (more != null) return t.rangeAtLeast('${more[1]}$unit');
+  final between = RegExp(r'^(.+) to (.+)$').firstMatch(f.bin);
+  if (between != null) return t.rangeBetween('${between[1]}$unit', '${between[2]}$unit');
+  return f.bin;
+}
+
+/// The decision letter from the engine (template + the LLM's plain words, translated).
+Future<void> _showLetter(BuildContext context) async {
+  final t = AppLocalizations.of(context);
+  final state = context.read<AppState>();
+  final future = state.api.decisionLetter(state.session!, state.locale.languageCode);
+  await showModalBottomSheet<void>(
+    context: context,
+    isScrollControlled: true,
+    showDragHandle: true,
+    builder: (sheet) => FractionallySizedBox(
+      heightFactor: 0.85,
+      child: FutureBuilder<DecisionLetter>(
+        future: future,
+        builder: (context, snap) {
+          if (snap.hasError) return Center(child: Text(t.errorGeneric));
+          if (!snap.hasData) return const Center(child: CircularProgressIndicator());
+          final letter = snap.data!;
+          final text = letter.lines.join('\n\n');
+          return ListView(
+            key: const Key('letter-sheet'),
+            padding: const EdgeInsets.fromLTRB(20, 0, 20, 24),
+            children: [
+              Text(t.letterTitle, style: serif(20)),
+              if (letter.untranslated > 0) ...[
+                const SizedBox(height: 8),
+                Notice(tone: Tone.info, icon: Icons.translate, body: t.letterPartlyEnglish),
+              ],
+              const SizedBox(height: 12),
+              SelectableText(text, style: const TextStyle(fontSize: 14, height: 1.5)),
+              const SizedBox(height: 16),
+              OutlinedButton.icon(
+                onPressed: () async {
+                  await Clipboard.setData(ClipboardData(text: text));
+                  if (sheet.mounted) showError(sheet, t.copied);
+                },
+                icon: const Icon(Icons.copy, size: 18),
+                label: Text(t.copyText),
+              ),
+            ],
+          );
+        },
+      ),
+    ),
+  );
+}
+
+/// The help assistant: questions about this application, answered by the engine in the customer's language.
+Future<void> _showAssistant(BuildContext context) => showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      showDragHandle: true,
+      builder: (_) => Padding(
+        padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+        child: const FractionallySizedBox(heightFactor: 0.8, child: _AssistantSheet()),
+      ),
+    );
+
+class _AssistantSheet extends StatefulWidget {
+  const _AssistantSheet();
+
+  @override
+  State<_AssistantSheet> createState() => _AssistantSheetState();
+}
+
+class _AssistantSheetState extends State<_AssistantSheet> {
+  final _question = TextEditingController();
+  final _talk = <(String, AssistantAnswer?)>[];
+  bool _busy = false;
+
+  @override
+  void dispose() {
+    _question.dispose();
+    super.dispose();
+  }
+
+  Future<void> _send() async {
+    final q = _question.text.trim();
+    if (q.isEmpty || _busy) return;
+    final t = AppLocalizations.of(context);
+    final state = context.read<AppState>();
+    setState(() {
+      _busy = true;
+      _talk.add((q, null));
+      _question.clear();
+    });
+    try {
+      final a = await state.api.ask(state.session!, q, state.locale.languageCode);
+      setState(() => _talk[_talk.length - 1] = (q, a));
+    } catch (_) {
+      setState(() => _talk[_talk.length - 1] = (q, AssistantAnswer(answer: t.errorGeneric, handoff: false)));
+    } finally {
+      if (mounted) setState(() => _busy = false);
     }
-    return Kfs(fee: fee, totalInterest: totalPayable - d.amount, totalPayable: totalPayable + fee, aprPct: (lo + hi) / 2 * 12 * 100);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final t = AppLocalizations.of(context);
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(20, 0, 20, 16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(t.askTitle, style: serif(20)),
+          const SizedBox(height: 10),
+          Expanded(
+            child: ListView(
+              key: const Key('ask-answers'),
+              children: [
+                for (final (q, a) in _talk) ...[
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: Container(
+                      margin: const EdgeInsets.only(top: 8, left: 40),
+                      padding: const EdgeInsets.all(10),
+                      decoration: BoxDecoration(color: C.brandTint, borderRadius: BorderRadius.circular(12)),
+                      child: Text(q),
+                    ),
+                  ),
+                  Container(
+                    margin: const EdgeInsets.only(top: 8, right: 40),
+                    padding: const EdgeInsets.all(10),
+                    decoration: BoxDecoration(color: C.card, borderRadius: BorderRadius.circular(12), border: Border.all(color: C.field)),
+                    child: a == null
+                        ? const SizedBox(width: 18, height: 18, child: CircularProgressIndicator(strokeWidth: 2))
+                        : Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(a.answer),
+                              if (a.handoff) ...[
+                                const SizedBox(height: 6),
+                                Text(t.askHuman, style: const TextStyle(fontSize: 12, color: C.muted)),
+                              ],
+                            ],
+                          ),
+                  ),
+                ],
+              ],
+            ),
+          ),
+          Row(
+            children: [
+              Expanded(
+                child: TextField(
+                  key: const Key('ask-question'),
+                  controller: _question,
+                  textInputAction: TextInputAction.send,
+                  onSubmitted: (_) => _send(),
+                  decoration: InputDecoration(hintText: t.askHint),
+                ),
+              ),
+              const SizedBox(width: 8),
+              FilledButton(
+                key: const Key('ask-send'),
+                style: FilledButton.styleFrom(minimumSize: const Size(72, 48)), // the theme's buttons are full width
+                onPressed: _busy ? null : _send,
+                child: Text(t.askSend),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
   }
 }

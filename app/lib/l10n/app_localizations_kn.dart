@@ -1038,4 +1038,168 @@ class AppLocalizationsKn extends AppLocalizations {
   @override
   String get checkMatchPending =>
       'ಫೋಟೋ ಹೊಂದಾಣಿಕೆ: ಆಧಾರ್ ಅಥವಾ ಪ್ಯಾನ್ ಕಾರ್ಡ್ ಅಪ್‌ಲೋಡ್ ಮಾಡಿದಾಗ ಆಗುತ್ತದೆ';
+
+  @override
+  String get realDetailsIntro =>
+      'ನಿಮ್ಮ ಬಗ್ಗೆ ತಿಳಿಸಿ. ಪ್ರತಿಯೊಂದು ವಿವರವನ್ನು ನಿಮ್ಮ ದಾಖಲೆಗಳೊಂದಿಗೆ ಪರಿಶೀಲಿಸುತ್ತೇವೆ.';
+
+  @override
+  String get fullNameLabel => 'ಪೂರ್ಣ ಹೆಸರು (ಪ್ಯಾನ್ ಕಾರ್ಡ್‌ನಲ್ಲಿರುವಂತೆ)';
+
+  @override
+  String get emailLabel => 'ಇಮೇಲ್';
+
+  @override
+  String get employerLabel => 'ಉದ್ಯೋಗದಾತ ಅಥವಾ ವ್ಯವಹಾರದ ಹೆಸರು';
+
+  @override
+  String get creditScoreLabel => 'ಕ್ರೆಡಿಟ್ ಸ್ಕೋರ್ (ಐಚ್ಛಿಕ)';
+
+  @override
+  String get creditScoreHint =>
+      'ನಿಮ್ಮ CIBIL ಅಥವಾ Experian ವರದಿಯಿಂದ, ಗೊತ್ತಿದ್ದರೆ';
+
+  @override
+  String get addressLabel => 'ವಿಳಾಸ';
+
+  @override
+  String get saveDetails => 'ನನ್ನ ವಿವರಗಳನ್ನು ಉಳಿಸಿ';
+
+  @override
+  String get selfDeclaredNote =>
+      'ಈ ವಿವರಗಳನ್ನು ನೀವು ನಮೂದಿಸಿದ್ದೀರಿ. ಮುಂದೆ ನೀವು ಅಪ್‌ಲೋಡ್ ಮಾಡುವ ದಾಖಲೆಗಳೊಂದಿಗೆ ಪರಿಶೀಲಿಸುತ್ತೇವೆ.';
+
+  @override
+  String get pickDob => 'ನಿಮ್ಮ ಜನ್ಮದಿನಾಂಕ ಆಯ್ಕೆಮಾಡಿ';
+
+  @override
+  String get fillDetails =>
+      'ದಯವಿಟ್ಟು ಹೆಸರು, ಜನ್ಮದಿನಾಂಕ, ಕೆಲಸ, ಉದ್ಯೋಗದಾತ ಮತ್ತು ಆದಾಯ ತುಂಬಿ.';
+
+  @override
+  String get docSaleDeed => 'ಮಾರಾಟ ಪತ್ರ ಅಥವಾ ಹಂಚಿಕೆ ಪತ್ರ';
+
+  @override
+  String get saleDeedBody =>
+      'ನೋಂದಾಯಿತ ಮಾರಾಟ ಪತ್ರದ ಫೋಟೋ ಅಥವಾ PDF ಅಪ್‌ಲೋಡ್ ಮಾಡಿ (ಆಸ್ತಿ ಮತ್ತು ಖರೀದಿದಾರರಿರುವ ಪುಟ). ಮಾಲೀಕತ್ವ ಪರಿಶೀಲಿಸಲು ನಾವು ಇದನ್ನು ಓದುತ್ತೇವೆ.';
+
+  @override
+  String get statusPending => 'ಪರಿಶೀಲನೆ ಬಾಕಿ ಇದೆ';
+
+  @override
+  String decisionRef(String ref) {
+    return 'ನಿರ್ಧಾರ ದಾಖಲೆ $ref';
+  }
+
+  @override
+  String get scoreTitle => 'ನಿಮ್ಮ ಸ್ಕೋರ್ ಅನ್ನು ನಾವು ಹೇಗೆ ಲೆಕ್ಕ ಹಾಕಿದೆವು';
+
+  @override
+  String get scoreOutOf => '900 ರಲ್ಲಿ';
+
+  @override
+  String gradeLabel(String grade) {
+    return 'ಗ್ರೇಡ್ $grade';
+  }
+
+  @override
+  String scoreStart(String base) {
+    return 'ಎಲ್ಲರೂ $base ಅಂಕಗಳಿಂದ ಪ್ರಾರಂಭಿಸುತ್ತಾರೆ. ಕೆಳಗಿನ ಪ್ರತಿಯೊಂದು ಸಾಲು ಅಂಕಗಳನ್ನು ಸೇರಿಸುತ್ತದೆ ಅಥವಾ ಕಳೆಯುತ್ತದೆ.';
+  }
+
+  @override
+  String get scoreNote =>
+      'ಇದು ನಿರ್ಧಾರದ ಕ್ರೆಡಿಟ್ ಸ್ಕೋರ್ ಭಾಗ. ನಿಮ್ಮ ಆದಾಯ, ಗುರುತು, ದಾಖಲೆಗಳು ಮತ್ತು ಆಸ್ತಿಯನ್ನೂ ಪರಿಶೀಲಿಸಲಾಗುತ್ತದೆ.';
+
+  @override
+  String get factorBureau => 'ಕ್ರೆಡಿಟ್ ಬ್ಯೂರೋ ಸ್ಕೋರ್';
+
+  @override
+  String get factorHistory => 'ಕ್ರೆಡಿಟ್ ಇತಿಹಾಸದ ವರ್ಷಗಳು';
+
+  @override
+  String get factorLtv => 'ಆಸ್ತಿ ಮೌಲ್ಯದಲ್ಲಿ ಸಾಲದ ಪಾಲು';
+
+  @override
+  String get factorLoanAmount => 'ಸಾಲದ ಮೊತ್ತ';
+
+  @override
+  String get factorMissing => 'ಲಭ್ಯವಿಲ್ಲ';
+
+  @override
+  String rangeBelow(String x) {
+    return '$x ಕ್ಕಿಂತ ಕಡಿಮೆ';
+  }
+
+  @override
+  String rangeBetween(String a, String b) {
+    return '$a ರಿಂದ $b';
+  }
+
+  @override
+  String rangeAtLeast(String x) {
+    return '$x ಅಥವಾ ಹೆಚ್ಚು';
+  }
+
+  @override
+  String get viewLetter => 'ನಿರ್ಧಾರ ಪತ್ರ';
+
+  @override
+  String get letterTitle => 'ನಿಮ್ಮ ನಿರ್ಧಾರ ಪತ್ರ';
+
+  @override
+  String get letterPartlyEnglish =>
+      'ಕೆಲವು ಸಾಲುಗಳನ್ನು ಅನುವಾದಿಸಲಾಗಲಿಲ್ಲ, ಅವು ಇಂಗ್ಲಿಷ್‌ನಲ್ಲಿವೆ.';
+
+  @override
+  String get copyText => 'ಪಠ್ಯ ನಕಲಿಸಿ';
+
+  @override
+  String get copied => 'ನಕಲಿಸಲಾಗಿದೆ';
+
+  @override
+  String get askTitle => 'ಪ್ರಶ್ನೆ ಕೇಳಿ';
+
+  @override
+  String get askHint => 'ಉದಾ: ಮುಂದೆ ಏನಾಗುತ್ತದೆ?';
+
+  @override
+  String get askSend => 'ಕಳುಹಿಸಿ';
+
+  @override
+  String get askHuman => 'ನಮ್ಮ ತಂಡದ ಒಬ್ಬರು ಈ ಬಗ್ಗೆ ನಿಮ್ಮನ್ನು ಸಂಪರ್ಕಿಸುತ್ತಾರೆ.';
+
+  @override
+  String get uploadPdf => 'PDF ಅಪ್‌ಲೋಡ್ ಮಾಡಿ';
+
+  @override
+  String get kfsFeeBase => 'ಪ್ರಕ್ರಿಯೆ ಶುಲ್ಕ (0.5%)';
+
+  @override
+  String get kfsGst => 'ಶುಲ್ಕದ ಮೇಲೆ GST (18%)';
+
+  @override
+  String get kfsNoteEngine =>
+      'ಈ ಆಫರ್‌ಗಾಗಿ ಲೆಕ್ಕ ಹಾಕಲಾಗಿದೆ. ಸಹಿ ಮಾಡಿದ ಪ್ರಮುಖ ಅಂಶಗಳ ಹೇಳಿಕೆ ನಿಮ್ಮ ಮಂಜೂರಾತಿ ಪತ್ರದೊಂದಿಗೆ ಬರುತ್ತದೆ.';
+
+  @override
+  String otpOnServer(String phone) {
+    return 'ಈ ಪರೀಕ್ಷಾ ಸರ್ವರ್ SMS ಕಳುಹಿಸುವುದಿಲ್ಲ. $phone ಗಾಗಿ 6 ಅಂಕಿಯ ಕೋಡ್ ಕಂಪ್ಯೂಟರ್‌ನ ಸರ್ವರ್ ವಿಂಡೋದಲ್ಲಿ ಕಾಣುತ್ತದೆ.';
+  }
+
+  @override
+  String get resendOtp => 'ಹೊಸ ಕೋಡ್ ಕಳುಹಿಸಿ';
+
+  @override
+  String get newOtpSent => 'ಹೊಸ ಕೋಡ್ ಕಳುಹಿಸಲಾಗಿದೆ.';
+
+  @override
+  String get otpExpired => 'ಈ ಕೋಡ್‌ನ ಅವಧಿ ಮುಗಿದಿದೆ. ಹೊಸ ಕೋಡ್ ಕಳುಹಿಸಿ ಒತ್ತಿ.';
+
+  @override
+  String get otpTooManyTries => 'ಹಲವು ಬಾರಿ ತಪ್ಪು ಕೋಡ್. ಹೊಸ ಕೋಡ್ ಕಳುಹಿಸಿ ಒತ್ತಿ.';
+
+  @override
+  String get otpTooManySends =>
+      'ತುಂಬಾ ಹೆಚ್ಚು ಕೋಡ್‌ಗಳನ್ನು ಕೇಳಲಾಗಿದೆ. 15 ನಿಮಿಷ ಕಾಯ್ದು ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ.';
 }

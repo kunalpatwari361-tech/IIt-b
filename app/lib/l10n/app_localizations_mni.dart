@@ -1039,4 +1039,170 @@ class AppLocalizationsMni extends AppLocalizations {
   @override
   String get checkMatchPending =>
       'ফটো মাপনা: আধার নত্রগা পেন কার্ড অপলোড তৌবা মতমদা তৌগনি';
+
+  @override
+  String get realDetailsIntro =>
+      'নহাক্কী মরমদা হায়বীয়ু। ঐখোয়না মতিক খুদিংমক নহাক্কী কাগজশিংগা চান্নবা য়েংই।';
+
+  @override
+  String get fullNameLabel => 'মমিং পুম্নমক (পেন কার্দদা লৈবগুম্না)';
+
+  @override
+  String get emailLabel => 'ইমেল';
+
+  @override
+  String get employerLabel => 'থবক পীবা মীওই নত্রগা লৈনবা ফমগী মমিং';
+
+  @override
+  String get creditScoreLabel => 'ক্রেডিট স্কোর (অপাম্বা)';
+
+  @override
+  String get creditScoreHint =>
+      'নহাক্কী CIBIL নত্রগা Experian রিপোর্টতগী, খঙলবদি';
+
+  @override
+  String get addressLabel => 'লৈফম';
+
+  @override
+  String get saveDetails => 'ঐগী মতিক সেভ তৌবীয়ু';
+
+  @override
+  String get selfDeclaredNote =>
+      'মতিক অসি নহাক্না ইখি। মথঙদা অপলোড তৌগদবা কাগজশিংগা ঐখোয়না চান্নবা য়েংগনি।';
+
+  @override
+  String get pickDob => 'নহাক্কী পোকপা তাঙ খনবীয়ু';
+
+  @override
+  String get fillDetails =>
+      'চাংনবীদুনা মমিং, পোকপা তাঙ, থবক, থবক পীবা মীওই অমসুং শেন্থোক ইবীয়ু।';
+
+  @override
+  String get docSaleDeed => 'য়োনবগী দলিল নত্রগা অলোটমেন্ট চিঠি';
+
+  @override
+  String get saleDeedBody =>
+      'রেজিস্তর তৌরবা য়োনবগী দলিলগী ফোতো নত্রগা PDF অপলোড তৌবীয়ু (লম অমসুং লৈবা মীওই লৈবা লমাই)। মালিক ওইবা চান্নবগীদমক ঐখোয়না পাই।';
+
+  @override
+  String get statusPending => 'য়েংশিনবা লৈরি';
+
+  @override
+  String decisionRef(String ref) {
+    return 'ৱারেপকী রেকর্ড $ref';
+  }
+
+  @override
+  String get scoreTitle => 'ঐখোয়না নহাক্কী স্কোর করম্না থীখিবগে';
+
+  @override
+  String get scoreOutOf => '900 গী মনুংদা';
+
+  @override
+  String gradeLabel(String grade) {
+    return 'গ্রেড $grade';
+  }
+
+  @override
+  String scoreStart(String base) {
+    return 'মী খুদিংমক $base পোইন্তদগী হৌই। মখাগী লাইন খুদিংমকনা পোইন্ত হাপচিল্লি নত্রগা হন্থহল্লি।';
+  }
+
+  @override
+  String get scoreNote =>
+      'মসি ৱারেপ অসিগী ক্রেডিট স্কোরগী শরুক অমনি। নহাক্কী শেনফম, মমিং, কাগজ অমসুং লমসু চান্নই।';
+
+  @override
+  String get factorBureau => 'ক্রেডিট ব্যুরো স্কোর';
+
+  @override
+  String get factorHistory => 'ক্রেডিট ৱারীগী চহী';
+
+  @override
+  String get factorLtv => 'লমগী মমলগা চাননবদা লোনগী শরুক';
+
+  @override
+  String get factorLoanAmount => 'লোনগী শেল';
+
+  @override
+  String get factorMissing => 'লৈতে';
+
+  @override
+  String rangeBelow(String x) {
+    return '$x তগী হন্থবা';
+  }
+
+  @override
+  String rangeBetween(String a, String b) {
+    return '$a দগী $b ফাওবা';
+  }
+
+  @override
+  String rangeAtLeast(String x) {
+    return '$x নত্রগা হেন্না';
+  }
+
+  @override
+  String get viewLetter => 'ৱারেপকী চিঠি';
+
+  @override
+  String get letterTitle => 'নহাক্কী ৱারেপকী চিঠি';
+
+  @override
+  String get letterPartlyEnglish =>
+      'লাইন খরা হন্দোকপা ঙমদে, মরম অদুনা মখোয় ইংলিসতা লৈরি।';
+
+  @override
+  String get copyText => 'ৱাহৈ কোপি তৌবীয়ু';
+
+  @override
+  String get copied => 'কোপি তৌরে';
+
+  @override
+  String get askTitle => 'ৱাহং অমা হংবীয়ু';
+
+  @override
+  String get askHint => 'খুদম ওইনা: মতুংদা করি থোক্কনি?';
+
+  @override
+  String get askSend => 'থাবীয়ু';
+
+  @override
+  String get askHuman =>
+      'ঐখোয়গী তীমগী মী অমনা মসিগী মতাংদা নহাক্কা পাউ ফাওনগনি।';
+
+  @override
+  String get uploadPdf => 'PDF আপলোড তৌবীয়ু';
+
+  @override
+  String get kfsFeeBase => 'প্রোসেসিং ফি (0.5%)';
+
+  @override
+  String get kfsGst => 'ফিগী মথক্তা GST (18%)';
+
+  @override
+  String get kfsNoteEngine =>
+      'অফর অসিগীদমক থীখিবনি। মিং ইবা মরু ওইবা ৱাফমগী লাইরিক নহাক্কী য়াবা চিঠিগা লোয়ননা লাক্কনি।';
+
+  @override
+  String otpOnServer(String phone) {
+    return 'তেস্ত সর্ভর অসিনা SMS থাদে। $phone গী অঙ্ক 6 লৈবা কোড কম্পিউতরগী সর্ভর উইন্দোদা উই।';
+  }
+
+  @override
+  String get resendOtp => 'অনৌবা কোড থাবীয়ু';
+
+  @override
+  String get newOtpSent => 'অনৌবা কোড থাখ্রে।';
+
+  @override
+  String get otpExpired => 'কোড অসিগী মতম লোইরে। অনৌবা কোড থাবীয়ু নম্বীয়ু।';
+
+  @override
+  String get otpTooManyTries =>
+      'অময়াম্না অরানবা কোড। অনৌবা কোড থাবীয়ু নম্বীয়ু।';
+
+  @override
+  String get otpTooManySends =>
+      'কোড য়াম্না কৌখ্রে। মিনিত 15 ঙাইরগা অমুক হন্না হোৎনবীয়ু।';
 }

@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../config.dart';
 import '../l10n/app_localizations.dart';
 import '../reasons.dart';
 import 'doc_read_screen.dart';
@@ -37,7 +38,9 @@ class _DocumentsScreenState extends State<DocumentsScreen> {
     });
     DocResult? read;
     try {
-      final problem = await compute(checks.check, bytes);
+      // Blur, glare and darkness are photo problems; a PDF goes straight to the engine.
+      final pdf = isPdf(bytes);
+      final problem = pdf ? checks.PhotoProblem.none : await compute(checks.check, bytes);
       if (problem != checks.PhotoProblem.none) {
         _problems[slot] = switch (problem) {
           checks.PhotoProblem.blurry => t.tooBlurry,
@@ -47,7 +50,7 @@ class _DocumentsScreenState extends State<DocumentsScreen> {
         };
         return;
       }
-      final result = await state.api.uploadDocument(state.session!, slot, bytes, '${slot.name}.jpg');
+      final result = await state.api.uploadDocument(state.session!, slot, bytes, '${slot.name}.${pdf ? 'pdf' : 'jpg'}');
       if (!result.accepted) {
         _problems[slot] = result.reasonCode == 'R-DOC-02' ? t.docUnreadable : t.docWrong(docName(t, slot));
       }
@@ -204,19 +207,30 @@ class _DocumentsScreenState extends State<DocumentsScreen> {
                 ],
               ),
             ],
-            Align(
-              alignment: Alignment.centerRight,
-              child: TextButton.icon(
-                key: Key('sample-${slot.name}'),
-                onPressed: busy
-                    ? null
-                    : () => _add(slot, () async {
-                          final s = context.read<AppState>();
-                          return await s.api.sample(s.session!, slot.name) ?? sampleDocument(seed: slot.index);
-                        }),
-                icon: const Icon(Icons.science_outlined, size: 18),
-                label: Text(t.useSample),
-              ),
+            Wrap(
+              alignment: WrapAlignment.end,
+              children: [
+                // ID cards are photographed: the engine needs the face on them, and e-Aadhaar PDFs are locked.
+                if (!ok && slot != DocSlot.pan && slot != DocSlot.aadhaar)
+                  TextButton.icon(
+                    key: Key('pdf-${slot.name}'),
+                    onPressed: busy ? null : () => _add(slot, pickPdf),
+                    icon: const Icon(Icons.picture_as_pdf_outlined, size: 18),
+                    label: Text(t.uploadPdf),
+                  ),
+                if (demoMode)
+                  TextButton.icon(
+                    key: Key('sample-${slot.name}'),
+                    onPressed: busy
+                        ? null
+                        : () => _add(slot, () async {
+                              final s = context.read<AppState>();
+                              return await s.api.sample(s.session!, slot.name) ?? sampleDocument(seed: slot.index);
+                            }),
+                    icon: const Icon(Icons.science_outlined, size: 18),
+                    label: Text(t.useSample),
+                  ),
+              ],
             ),
           ],
         ),

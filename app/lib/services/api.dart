@@ -6,8 +6,9 @@ import 'dart:typed_data';
 import 'models.dart';
 
 abstract class NirnayApi {
-  /// Sends a one-time code by SMS.
-  Future<void> sendOtp(String phone);
+  /// Sends a one-time code by SMS. Returns how it went out, when the engine says: "console" means
+  /// a test server printed it in its own window instead of texting it.
+  Future<String?> sendOtp(String phone);
 
   /// Checks the code and binds this device to the account.
   Future<Session> verifyOtp(String phone, String otp, String deviceId);
@@ -16,7 +17,8 @@ abstract class NirnayApi {
   Future<void> recordConsents(Session session, ConsentRecord consent);
 
   /// PAN + Aadhaar eKYC / DigiLocker + bureau + Account Aggregator, after consent.
-  Future<Profile> fetchProfile(Session session, String pan);
+  /// In real mode [declared] carries what the customer typed in; the sample engine ignores it.
+  Future<Profile> fetchProfile(Session session, String pan, {Declaration? declared});
 
   /// Face found, passive liveness and 1:1 match with the eKYC photo.
   Future<SelfieResult> checkSelfie(Session session, Uint8List jpeg);
@@ -29,6 +31,12 @@ abstract class NirnayApi {
 
   /// Stage B: property, valuation (model 7), title and the final sanction.
   Future<Decision> finalSanction(Session session, LoanRequest request, PropertyInput property);
+
+  /// The decision letter, in the customer's language (app language code, e.g. "hi").
+  Future<DecisionLetter> decisionLetter(Session session, String lang);
+
+  /// The help assistant: answers about this application only, in the customer's language.
+  Future<AssistantAnswer> ask(Session session, String question, String lang);
 
   /// Demo only: a sample file for a capture step without a camera. `kind` is a document slot
   /// name or `photo-<label>`. Null means the app uses its own stand-in image.

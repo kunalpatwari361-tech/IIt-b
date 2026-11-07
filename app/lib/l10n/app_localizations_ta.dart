@@ -1048,4 +1048,171 @@ class AppLocalizationsTa extends AppLocalizations {
   @override
   String get checkMatchPending =>
       'புகைப்பட ஒப்பீடு: ஆதார் அல்லது பான் அட்டையைப் பதிவேற்றும்போது நடக்கும்';
+
+  @override
+  String get realDetailsIntro =>
+      'உங்களைப் பற்றிச் சொல்லுங்கள். ஒவ்வொரு விவரத்தையும் உங்கள் ஆவணங்களுடன் சரிபார்க்கிறோம்.';
+
+  @override
+  String get fullNameLabel => 'முழுப் பெயர் (பான் அட்டையில் உள்ளபடி)';
+
+  @override
+  String get emailLabel => 'மின்னஞ்சல்';
+
+  @override
+  String get employerLabel => 'வேலை வழங்குநர் அல்லது தொழில் பெயர்';
+
+  @override
+  String get creditScoreLabel => 'கடன் மதிப்பெண் (விருப்பம்)';
+
+  @override
+  String get creditScoreHint =>
+      'உங்கள் CIBIL அல்லது Experian அறிக்கையிலிருந்து, தெரிந்தால்';
+
+  @override
+  String get addressLabel => 'முகவரி';
+
+  @override
+  String get saveDetails => 'என் விவரங்களைச் சேமி';
+
+  @override
+  String get selfDeclaredNote =>
+      'இந்த விவரங்களை நீங்கள் உள்ளிட்டீர்கள். அடுத்து பதிவேற்றும் ஆவணங்களுடன் இவற்றைச் சரிபார்ப்போம்.';
+
+  @override
+  String get pickDob => 'உங்கள் பிறந்த தேதியைத் தேர்வுசெய்க';
+
+  @override
+  String get fillDetails =>
+      'பெயர், பிறந்த தேதி, வேலை, வேலை வழங்குநர், வருமானம் ஆகியவற்றை நிரப்புங்கள்.';
+
+  @override
+  String get docSaleDeed => 'விற்பனைப் பத்திரம் அல்லது ஒதுக்கீட்டுக் கடிதம்';
+
+  @override
+  String get saleDeedBody =>
+      'பதிவுசெய்த விற்பனைப் பத்திரத்தின் புகைப்படம் அல்லது PDF-ஐப் பதிவேற்றுங்கள் (சொத்தும் வாங்குபவரும் உள்ள பக்கம்). உரிமையைச் சரிபார்க்க இதைப் படிக்கிறோம்.';
+
+  @override
+  String get statusPending => 'பரிசீலனை நிலுவையில்';
+
+  @override
+  String decisionRef(String ref) {
+    return 'முடிவுப் பதிவு $ref';
+  }
+
+  @override
+  String get scoreTitle => 'உங்கள் மதிப்பெண்ணை எப்படிக் கணக்கிட்டோம்';
+
+  @override
+  String get scoreOutOf => '900-க்கு';
+
+  @override
+  String gradeLabel(String grade) {
+    return 'தரம் $grade';
+  }
+
+  @override
+  String scoreStart(String base) {
+    return 'எல்லோரும் $base புள்ளிகளில் தொடங்குகிறார்கள். கீழே உள்ள ஒவ்வொரு வரியும் புள்ளிகளைக் கூட்டும் அல்லது குறைக்கும்.';
+  }
+
+  @override
+  String get scoreNote =>
+      'இது முடிவின் கடன் மதிப்பெண் பகுதி. உங்கள் வருமானம், அடையாளம், ஆவணங்கள், சொத்தும் சரிபார்க்கப்படும்.';
+
+  @override
+  String get factorBureau => 'கடன் பணியக மதிப்பெண்';
+
+  @override
+  String get factorHistory => 'கடன் வரலாற்றின் ஆண்டுகள்';
+
+  @override
+  String get factorLtv => 'சொத்து மதிப்பில் கடனின் பங்கு';
+
+  @override
+  String get factorLoanAmount => 'கடன் தொகை';
+
+  @override
+  String get factorMissing => 'கிடைக்கவில்லை';
+
+  @override
+  String rangeBelow(String x) {
+    return '$x-க்குக் குறைவு';
+  }
+
+  @override
+  String rangeBetween(String a, String b) {
+    return '$a முதல் $b வரை';
+  }
+
+  @override
+  String rangeAtLeast(String x) {
+    return '$x அல்லது அதற்கு மேல்';
+  }
+
+  @override
+  String get viewLetter => 'முடிவுக் கடிதம்';
+
+  @override
+  String get letterTitle => 'உங்கள் முடிவுக் கடிதம்';
+
+  @override
+  String get letterPartlyEnglish =>
+      'சில வரிகளை மொழிபெயர்க்க முடியவில்லை, அவை ஆங்கிலத்தில் உள்ளன.';
+
+  @override
+  String get copyText => 'உரையை நகலெடு';
+
+  @override
+  String get copied => 'நகலெடுக்கப்பட்டது';
+
+  @override
+  String get askTitle => 'கேள்வி கேளுங்கள்';
+
+  @override
+  String get askHint => 'எ.கா: அடுத்து என்ன நடக்கும்?';
+
+  @override
+  String get askSend => 'அனுப்பு';
+
+  @override
+  String get askHuman =>
+      'எங்கள் குழுவில் ஒருவர் இதுகுறித்து உங்களைத் தொடர்புகொள்வார்.';
+
+  @override
+  String get uploadPdf => 'PDF பதிவேற்று';
+
+  @override
+  String get kfsFeeBase => 'செயலாக்கக் கட்டணம் (0.5%)';
+
+  @override
+  String get kfsGst => 'கட்டணத்தின் மீது GST (18%)';
+
+  @override
+  String get kfsNoteEngine =>
+      'இந்தச் சலுகைக்காகக் கணக்கிடப்பட்டது. கையொப்பமிட்ட முக்கிய உண்மைகள் அறிக்கை உங்கள் ஒப்புதல் கடிதத்துடன் வரும்.';
+
+  @override
+  String otpOnServer(String phone) {
+    return 'இந்தச் சோதனைச் சேவையகம் SMS அனுப்பாது. $phone-க்கான 6 இலக்கக் குறியீடு கணினியின் சேவையகச் சாளரத்தில் தெரியும்.';
+  }
+
+  @override
+  String get resendOtp => 'புதிய குறியீட்டை அனுப்பு';
+
+  @override
+  String get newOtpSent => 'புதிய குறியீடு அனுப்பப்பட்டது.';
+
+  @override
+  String get otpExpired =>
+      'இந்தக் குறியீடு காலாவதியானது. புதிய குறியீட்டை அனுப்பு என்பதைத் தட்டுங்கள்.';
+
+  @override
+  String get otpTooManyTries =>
+      'பலமுறை தவறான குறியீடு. புதிய குறியீட்டை அனுப்பு என்பதைத் தட்டுங்கள்.';
+
+  @override
+  String get otpTooManySends =>
+      'மிக அதிகமான குறியீடுகள் கேட்கப்பட்டன. 15 நிமிடம் காத்திருந்து மீண்டும் முயலுங்கள்.';
 }

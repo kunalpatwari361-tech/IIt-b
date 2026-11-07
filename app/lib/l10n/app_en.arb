@@ -604,5 +604,104 @@
   "consentOn": "On",
   "consentOff": "Off",
   "withdrawnRequired": "You withdrew a consent we need, so your application is paused.",
-  "checkMatchPending": "Photo match: done when you upload your Aadhaar or PAN card"
+  "checkMatchPending": "Photo match: done when you upload your Aadhaar or PAN card",
+  "realDetailsIntro": "Tell us about yourself. We check every detail against your documents.",
+  "fullNameLabel": "Full name (as on your PAN card)",
+  "emailLabel": "Email",
+  "employerLabel": "Employer or business name",
+  "creditScoreLabel": "Credit score (optional)",
+  "creditScoreHint": "From your CIBIL or Experian report, if you know it",
+  "addressLabel": "Address",
+  "saveDetails": "Save my details",
+  "selfDeclaredNote": "You entered these details. We check them against the documents you upload next.",
+  "pickDob": "Choose your date of birth",
+  "fillDetails": "Please fill in your name, date of birth, work, employer and income.",
+  "docSaleDeed": "Sale deed or allotment letter",
+  "saleDeedBody": "Upload a photo or PDF of the registered sale deed (the page with the property and the buyer). We read it to check the title.",
+  "statusPending": "Pending review",
+  "decisionRef": "Decision record {ref}",
+  "@decisionRef": {
+    "placeholders": {
+      "ref": {
+        "type": "String"
+      }
+    }
+  },
+  "scoreTitle": "How we scored you",
+  "scoreOutOf": "out of 900",
+  "gradeLabel": "Grade {grade}",
+  "@gradeLabel": {
+    "placeholders": {
+      "grade": {
+        "type": "String"
+      }
+    }
+  },
+  "scoreStart": "Everyone starts at {base} points. Each line below adds or takes away points.",
+  "@scoreStart": {
+    "placeholders": {
+      "base": {
+        "type": "String"
+      }
+    }
+  },
+  "scoreNote": "This is the credit score part of the decision. Your income, identity, documents and property are checked too.",
+  "factorBureau": "Credit bureau score",
+  "factorHistory": "Years of credit history",
+  "factorLtv": "Loan as a share of property value",
+  "factorLoanAmount": "Loan amount",
+  "factorMissing": "Not available",
+  "rangeBelow": "below {x}",
+  "@rangeBelow": {
+    "placeholders": {
+      "x": {
+        "type": "String"
+      }
+    }
+  },
+  "rangeBetween": "{a} to {b}",
+  "@rangeBetween": {
+    "placeholders": {
+      "a": {
+        "type": "String"
+      },
+      "b": {
+        "type": "String"
+      }
+    }
+  },
+  "rangeAtLeast": "{x} or more",
+  "@rangeAtLeast": {
+    "placeholders": {
+      "x": {
+        "type": "String"
+      }
+    }
+  },
+  "viewLetter": "Decision letter",
+  "letterTitle": "Your decision letter",
+  "letterPartlyEnglish": "Some lines could not be translated and are shown in English.",
+  "copyText": "Copy text",
+  "copied": "Copied",
+  "askTitle": "Ask a question",
+  "askHint": "For example: what happens next?",
+  "askSend": "Send",
+  "askHuman": "A person from our team will follow up on this.",
+  "uploadPdf": "Upload PDF",
+  "kfsFeeBase": "Processing fee (0.5%)",
+  "kfsGst": "GST on the fee (18%)",
+  "kfsNoteEngine": "Worked out for this offer. The signed Key Facts Statement comes with your sanction letter.",
+  "otpOnServer": "This test server does not send SMS. The 6-digit code for {phone} is shown in the server window on the computer.",
+  "@otpOnServer": {
+    "placeholders": {
+      "phone": {
+        "type": "String"
+      }
+    }
+  },
+  "resendOtp": "Send a new code",
+  "newOtpSent": "New code sent.",
+  "otpExpired": "This code has expired. Tap Send a new code.",
+  "otpTooManyTries": "Too many wrong tries. Tap Send a new code.",
+  "otpTooManySends": "Too many codes asked for. Please wait 15 minutes and try again."
 }

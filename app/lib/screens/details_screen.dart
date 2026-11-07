@@ -3,14 +3,17 @@ import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
+import '../config.dart';
 import '../format.dart';
 import '../l10n/app_localizations.dart';
 import '../policy.dart';
+import '../services/models.dart';
 import '../state.dart';
 import '../theme.dart';
 import '../widgets/common.dart';
 
-/// Auto-filled details and the quick eligibility check, before the full application.
+/// Auto-filled details (sample engine) or the customer's own details (real mode), then the
+/// quick eligibility check, before the full application.
 class DetailsScreen extends StatefulWidget {
   const DetailsScreen({super.key});
 
@@ -19,13 +22,52 @@ class DetailsScreen extends StatefulWidget {
 }
 
 class _DetailsScreenState extends State<DetailsScreen> {
-  final _pan = TextEditingController(text: 'ABCPK1234F');
+  final _pan = TextEditingController(text: realMode ? '' : 'ABCPK1234F');
+  // Real mode: what the customer tells us. The engine marks it self-declared.
+  final _name = TextEditingController(), _email = TextEditingController(), _employer = TextEditingController();
+  final _income = TextEditingController(), _emi = TextEditingController(text: '0'), _score = TextEditingController();
+  final _address = TextEditingController();
+  DateTime? _dob;
+  Employment _work = Employment.salaried;
   bool _busy = false;
 
   @override
   void dispose() {
-    _pan.dispose();
+    for (final c in [_pan, _name, _email, _employer, _income, _emi, _score, _address]) {
+      c.dispose();
+    }
     super.dispose();
+  }
+
+  Declaration? _declaration() {
+    final income = double.tryParse(_income.text), emi = double.tryParse(_emi.text.isEmpty ? '0' : _emi.text);
+    if (_name.text.trim().length < 2 || _dob == null || _employer.text.trim().length < 2 || income == null || income <= 0 || emi == null) {
+      return null;
+    }
+    final score = int.tryParse(_score.text);
+    return Declaration(
+      name: _name.text.trim(),
+      dateOfBirth: _dob!,
+      employment: _work,
+      employer: _employer.text.trim(),
+      monthlyIncome: income,
+      existingEmi: emi,
+      email: _email.text.trim(),
+      address: _address.text.trim(),
+      creditScore: score != null && score >= 300 && score <= 900 ? score : null,
+    );
+  }
+
+  Future<void> _pickDob() async {
+    final now = DateTime.now();
+    final d = await showDatePicker(
+      context: context,
+      initialDate: _dob ?? DateTime(now.year - 30, 1, 1),
+      firstDate: DateTime(now.year - 80),
+      lastDate: DateTime(now.year - 18, now.month, now.day),
+      helpText: AppLocalizations.of(context).pickDob,
+    );
+    if (d != null) setState(() => _dob = d);
   }
 
   Future<void> _fetch() async {
@@ -33,11 +75,13 @@ class _DetailsScreenState extends State<DetailsScreen> {
     final state = context.read<AppState>();
     final pan = _pan.text.trim().toUpperCase();
     if (!RegExp(r'^[A-Z]{5}[0-9]{4}[A-Z]$').hasMatch(pan)) return showError(context, t.invalidPan);
+    final declared = realMode ? _declaration() : null;
+    if (realMode && declared == null) return showError(context, t.fillDetails);
     setState(() => _busy = true);
     try {
       state.update(() => state.pan = pan);
       await state.api.recordConsents(state.session!, state.consentRecord);
-      state.setProfile(await state.api.fetchProfile(state.session!, pan));
+      state.setProfile(await state.api.fetchProfile(state.session!, pan, declared: declared));
     } catch (_) {
       if (mounted) showError(context, t.errorGeneric);
     } finally {
@@ -58,7 +102,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
       title: t.detailsTitle,
       step: 3,
       busy: _busy,
-      buttonLabel: p == null ? t.fetchDetails : t.continueLabel,
+      buttonLabel: p == null ? (realMode ? t.saveDetails : t.fetchDetails) : t.continueLabel,
       onPressed: p == null ? _fetch : () => Navigator.pushNamed(context, '/selfie'),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -78,9 +122,12 @@ class _DetailsScreenState extends State<DetailsScreen> {
               ),
             ),
           ),
+          if (realMode && p == null) ..._declarationForm(t),
           if (p != null) ...[
             const SizedBox(height: 14),
-            Notice(tone: Tone.good, icon: Icons.verified_user_outlined, body: t.fetchedFrom),
+            p.selfDeclared
+                ? Notice(tone: Tone.info, icon: Icons.edit_note, body: t.selfDeclaredNote)
+                : Notice(tone: Tone.good, icon: Icons.verified_user_outlined, body: t.fetchedFrom),
             const SizedBox(height: 14),
             SectionCard(
               child: Row(
@@ -100,7 +147,10 @@ class _DetailsScreenState extends State<DetailsScreen> {
                       children: [
                         Text(p.name, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w800)),
                         Text('${t.dobLabel}: ${DateFormat('d MMM y').format(p.dateOfBirth)}', style: const TextStyle(fontSize: 12.5, color: C.muted)),
-                        Text('PAN ${p.panMasked} · Aadhaar ${p.aadhaarMasked}', style: const TextStyle(fontSize: 12.5, color: C.muted)),
+                        Text(
+                          p.aadhaarMasked.isEmpty ? 'PAN ${p.panMasked}' : 'PAN ${p.panMasked} · Aadhaar ${p.aadhaarMasked}',
+                          style: const TextStyle(fontSize: 12.5, color: C.muted),
+                        ),
                       ],
                     ),
                   ),
@@ -130,7 +180,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
               child: _MoneyField(
                 key: const Key('income'),
                 value: state.income,
-                verified: state.income == p.monthlyIncome ? t.verified : null,
+                verified: !p.selfDeclared && state.income == p.monthlyIncome ? t.verified : null,
                 onChanged: (v) => state.update(() => state.income = v),
               ),
             ),
@@ -191,6 +241,74 @@ class _DetailsScreenState extends State<DetailsScreen> {
         ],
       ),
     );
+  }
+
+  List<Widget> _declarationForm(AppLocalizations t) {
+    Widget text(
+      String label,
+      TextEditingController c,
+      String key, {
+      TextInputType type = TextInputType.text,
+      bool digits = false,
+      String? prefix,
+      String? helper,
+    }) => Padding(
+      padding: const EdgeInsets.only(top: 14),
+      child: Labelled(
+        label: label,
+        helper: helper,
+        child: TextField(
+          key: Key(key),
+          controller: c,
+          keyboardType: type,
+          inputFormatters: digits ? [FilteringTextInputFormatter.digitsOnly] : null,
+          style: const TextStyle(fontSize: 15),
+          decoration: InputDecoration(prefixText: prefix),
+        ),
+      ),
+    );
+    Widget work(Employment e, String label) => Expanded(
+      child: ChoiceChip(
+        key: Key('work-${e.name}'),
+        label: SizedBox(
+          width: double.infinity,
+          child: Text(label, textAlign: TextAlign.center),
+        ),
+        selected: _work == e,
+        onSelected: (_) => setState(() => _work = e),
+      ),
+    );
+    final dob = _dob;
+    return [
+      const SizedBox(height: 14),
+      Notice(tone: Tone.info, icon: Icons.person_outline, body: t.realDetailsIntro),
+      text(t.fullNameLabel, _name, 'decl-name'),
+      Padding(
+        padding: const EdgeInsets.only(top: 14),
+        child: Labelled(
+          label: t.dobLabel,
+          child: OutlinedButton.icon(
+            key: const Key('decl-dob'),
+            onPressed: _pickDob,
+            icon: const Icon(Icons.event_outlined, size: 18),
+            label: Text(dob == null ? t.pickDob : DateFormat('d MMM y').format(dob)),
+          ),
+        ),
+      ),
+      text(t.emailLabel, _email, 'decl-email', type: TextInputType.emailAddress),
+      Padding(
+        padding: const EdgeInsets.only(top: 14),
+        child: Labelled(
+          label: t.employmentLabel,
+          child: Row(children: [work(Employment.salaried, t.salaried), const SizedBox(width: 8), work(Employment.selfEmployed, t.selfEmployed)]),
+        ),
+      ),
+      text(t.employerLabel, _employer, 'decl-employer'),
+      text(t.incomeLabel, _income, 'decl-income', type: TextInputType.number, digits: true, prefix: '₹ '),
+      text(t.existingEmiLabel, _emi, 'decl-emi', type: TextInputType.number, digits: true, prefix: '₹ '),
+      text(t.creditScoreLabel, _score, 'decl-score', type: TextInputType.number, digits: true, helper: t.creditScoreHint),
+      text(t.addressLabel, _address, 'decl-address', type: TextInputType.streetAddress),
+    ];
   }
 
   Widget _sliderHead(String label, String value) => Row(

@@ -61,12 +61,14 @@ def consents_ok(app: Application) -> bool:
 
 # --------------------------------------------------------------------------- data pull (eKYC, PAN, bureau, AA)
 
-def fetch_profile(app: Application, pan: str) -> dict:
+def fetch_profile(app: Application, pan: str, declared: dict | None = None) -> dict:
     if not consents_ok(app):
         raise IntakeError("consent_required", 409)
     pan = pan.strip().upper()
     if not fields.PAN.fullmatch(pan):
         raise IntakeError("bad_pan")
+    if app.mode == "real":
+        return _declared_profile(app, pan, declared)
     p = app.persona
     app.pan = pan
     aadhaar_last4 = str(int(app.id.split("-")[-1]) % 10000).zfill(4)
@@ -96,6 +98,67 @@ def fetch_profile(app: Application, pan: str) -> dict:
                    "existing_emi": existing_emi, "bureau": bureau, "pan_masked": pan_check["pan_masked"],
                    "pan_name": pan_check["name"], "aadhaar_masked": ekyc["aadhaar_masked"]}
     return app.profile
+
+
+SELF_DECLARED = ("name", "dob", "email", "address", "employment", "employer", "monthly_income", "existing_emi", "credit_score")
+
+
+def _declared_profile(app: Application, pan: str, d: dict | None) -> dict:
+    """Real mode: no bureau, eKYC or Account Aggregator connection, so the applicant types the
+    facts in. Every one is marked self-declared; the documents then have to prove them."""
+    if not d:
+        raise IntakeError("details_required")
+    try:
+        dob = date.fromisoformat(d["dob"])
+    except (KeyError, ValueError) as e:
+        raise IntakeError("bad_dob") from e
+    age = (date.today() - dob).days / 365.25
+    if not 18 <= age <= 80:
+        raise IntakeError("bad_dob")
+    app.pan = pan
+    app.declared = {k: d.get(k) for k in SELF_DECLARED}
+    score = d.get("credit_score")
+    bureau = {"source": "self-declared", "score": int(score) if score else None,
+              "status": "self_declared" if score else "no_history", "history_years": None, "total_accounts": 0,
+              "active_accounts": 0, "overdue_accounts": 0, "recent_delinquencies": 0, "enquiries_6m": 0,
+              "new_accounts_6m": 0, "outstanding": 0, "sanctioned_total": 0, "disbursed_total": 0,
+              "avg_account_age_years": None, "has_credit_card": None, "existing_emi": float(d["existing_emi"])}
+    app.sources = {"declared": app.declared}
+    app.profile = {"name": d["name"].strip(), "dob": dob.isoformat(), "gender": None, "address": d.get("address") or "",
+                   "pincode": None, "address_months": None, "email": (d.get("email") or "").strip().lower() or None,
+                   "employment": d["employment"], "employer": d["employer"].strip(),
+                   "monthly_income": float(d["monthly_income"]), "income_source": "self-declared, to be proven by documents",
+                   "existing_emi": float(d["existing_emi"]), "bureau": bureau, "pan_masked": f"{pan[:2]}XXX{pan[5:9]}X",
+                   "pan_name": None, "aadhaar_masked": None, "self_declared": list(SELF_DECLARED)}
+    return app.profile
+
+
+def _bank_from_statement(app: Application, text: str, found: dict) -> dict | None:
+    """Real mode: the uploaded statement's rows go through model 5, as AA data would."""
+    from . import statement
+    parsed = statement.parse(text)
+    if not parsed["usable"]:
+        return {"usable": False, "rows_read": parsed["rows_read"]}
+    tagged = tagger.tag_statement(parsed["transactions"])
+    s = tagged["summary"]
+    credits = sum(m.get(c, 0) for m in s["by_month"].values() for c in ("salary", "other_income", "cash_deposit"))
+    s["avg_monthly_credits"] = round(credits / max(len(s["months"]), 1), 2)
+    app.bank = {"model": tagged["model"], "model_version": tagged["model_version"], "summary": s,
+                "account_masked": found.get("account"), "account_months": None, "accounts_shared": ["uploaded statement"],
+                "months": len(s["months"]), "transactions": parsed["rows_read"], "source": "uploaded statement"}
+    if app.profile is not None:
+        app.profile["existing_emi"] = max(app.profile["existing_emi"], s["avg_monthly_emi"])
+    return {"usable": True, "rows_read": parsed["rows_read"], "rows_skipped": parsed["rows_skipped"],
+            "months": parsed["months"]}
+
+
+def required_documents(app: Application) -> list[str]:
+    from .policy import POLICY
+    emp = (app.profile or {}).get("employment", "salaried")
+    docs = list(POLICY["required_documents"][emp])
+    if app.mode == "real":
+        docs.append("bankStatement")        # no Account Aggregator, so the statement is uploaded
+    return docs
 
 
 # --------------------------------------------------------------------------- selfie (models 9 and 10)
@@ -176,7 +239,17 @@ def upload_document(store: Store, app: Application, slot: str, data: bytes, file
     if slot == "saleDeed" and rec["accepted"]:
         from models.llm import llm
         rec["deed"] = llm.read_deed(text)
+    if slot == "aadhaar" and found.get("aadhaar") and app.profile is not None:
+        app.profile["aadhaar_masked"] = found["aadhaar"]            # only ever the last four digits
+    if slot == "pan" and found.get("name") and app.profile is not None and app.mode == "real":
+        app.profile["pan_name"] = found["name"]                      # no NSDL check in real mode: the card's name
+    if slot == "bankStatement" and rec["accepted"] and app.mode == "real":
+        rec["statement"] = _bank_from_statement(app, text, found)
     app.documents[slot] = rec
+    # Keep the file for officers, except Aadhaar: UIDAI rules forbid storing Aadhaar copies,
+    # so only the masked number and the checks are kept.
+    keep = settings.store_files and slot != "aadhaar"
+    store.save_document(app, rec, digest, data if keep else None, kind)
     return rec
 
 

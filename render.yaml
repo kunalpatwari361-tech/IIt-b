@@ -1,0 +1,29 @@
+# Render Blueprint for the Nirnay engine (real mode). In Render: New > Blueprint > this repo.
+# Secrets marked `sync: false` are asked for in Render's dashboard; never put them in this file.
+services:
+  - type: web
+    name: nirnay-engine
+    runtime: docker
+    dockerfilePath: ./backend/Dockerfile
+    dockerContext: .
+    plan: standard            # 2 GB memory: the engine uses about 1 GB with every model loaded
+    region: singapore         # nearest Render region to India
+    healthCheckPath: /v1/health
+    autoDeploy: false         # deploy when you choose, not on every push to main
+    envVars:
+      - key: NIRNAY_SANDBOX
+        value: "0"
+      - key: DATABASE_URL     # Supabase: Connect > Session pooler connection string
+        sync: false
+      - key: NIRNAY_SMS_PROVIDER
+        value: twilio         # or msg91
+      - key: TWILIO_ACCOUNT_SID
+        sync: false
+      - key: TWILIO_AUTH_TOKEN
+        sync: false
+      - key: TWILIO_VERIFY_SERVICE_SID
+        sync: false
+      - key: NIRNAY_STAFF_KEY # Render makes a random one; copy it from the dashboard for staff calls
+        generateValue: true
+      - key: ANTHROPIC_API_KEY  # optional: turns on Claude for the deed reader, letters and assistant
+        sync: false

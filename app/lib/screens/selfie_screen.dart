@@ -3,6 +3,7 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../config.dart';
 import '../l10n/app_localizations.dart';
 import '../services/capture.dart';
 import '../state.dart';
@@ -88,8 +89,9 @@ class _SelfieScreenState extends State<SelfieScreen> {
                   icon: const Icon(Icons.refresh, size: 18),
                   label: Text(t.retake),
                 ),
-              OutlinedButton.icon(
-                key: const Key('sample-selfie'),
+              if (demoMode)
+                OutlinedButton.icon(
+                  key: const Key('sample-selfie'),
                 onPressed: () => _check(sampleSelfie()),
                 icon: const Icon(Icons.science_outlined, size: 18),
                 label: Text(t.useSample),

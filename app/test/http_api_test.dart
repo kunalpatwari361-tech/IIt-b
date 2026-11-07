@@ -98,7 +98,13 @@ void main() {
         {'code': 'R-PRP-01', 'positive': false, 'values': {}},
       ],
       'valuation': {'estimate': 16501000.0, 'low': 12456000.0, 'high': 20413000.0, 'valueForLtv': 12000000.0},
-      'kfs': {'apr_pct': 10.6}, 'record': {'seq': 4, 'hash': 'abc'},
+      'kfs': {'loan_amount': 6000000.0, 'processing_fee': 30000, 'gst_on_fee': 5400, 'total_interest': 5938309.2,
+        'total_payable': 11973709.2, 'apr_pct': 10.6, 'cooling_off_days': 3},
+      'score': {'score': 712, 'grade': 'B', 'base': 650, 'factors': [
+        {'input': 'bureau_score', 'bin': '738 or more', 'points': 38},
+        {'input': 'loan_amount', 'bin': 'missing', 'points': 0},
+      ]},
+      'record': {'seq': 4, 'hash': 'abcdef0123456789'},
     };
     final a = api({
       'POST /v1/applications/HL-2611-12345/in-principle': (200, {...decision, 'stage': 'in_principle', 'outcome': 'approve', 'valuation': null}),
@@ -117,10 +123,36 @@ void main() {
     expect(fin.outcome, Outcome.refer);
     expect(fin.reasons.single.code, 'R-PRP-01');
     expect(fin.valuation!.valueForLtv, 12000000);
+    expect(fin.keyFacts!.loanAmount, 6000000);
+    expect(fin.keyFacts!.fee + fin.keyFacts!.gst, 35400);
+    expect(fin.keyFacts!.aprPct, 10.6);
+    expect(fin.score!.score, 712);
+    expect(fin.score!.factors.first.points, 38);
+    expect(fin.reference, '#4 · abcdef0123');
     final body = bodies.last;
     expect(body, contains('"locality":"Baner"'));
     expect(body, contains('"latitude":18.5'));
     expect(body, contains('name="photos"; filename="front.jpg"'));
     expect(body, contains('"product":"lap"'));
+  });
+
+  test('the decision letter and the assistant', () async {
+    final a = api({
+      'GET /v1/applications/HL-2611-12345/letter': (200, {'lines': ['Dear Ravi,', 'Your loan is approved.'], 'engines': {'untranslated': 1}}),
+      'POST /v1/applications/HL-2611-12345/assistant': (200, {'answer': 'We will call you.', 'handoff_to_human': true}),
+    });
+    final letter = await a.decisionLetter(session, 'hi');
+    expect(letter.lines, ['Dear Ravi,', 'Your loan is approved.']);
+    expect(letter.untranslated, 1);
+    expect(seen.last.url.queryParameters['lang'], 'hi');
+    final answer = await a.ask(session, 'When will I hear back?', 'hi');
+    expect(answer.handoff, isTrue);
+    expect(jsonDecode(bodies.last), {'question': 'When will I hear back?', 'lang': 'hi'});
+  });
+
+  test('the engine says how the sign-in code went out', () async {
+    final a = HttpNirnayApi('http://engine.test',
+        client: MockClient((req) async => http.Response('', 204, headers: {'x-otp-delivery': 'console'})));
+    expect(await a.sendOtp('9876500001'), 'console');
   });
 }

@@ -77,9 +77,25 @@ void main() {
     expect(find.text('Loan is 75% of the property value; the limit is 80%'), findsOneWidget);
     expect(find.text('Track your application'), findsOneWidget);
     expect(find.text("Add your property's details and photos"), findsOneWidget);
+    expect(find.byKey(const Key('score-panel')), findsOneWidget);
+    expect(find.text('How we scored you'), findsOneWidget);
+    expect(find.textContaining('Decision record #SBX-'), findsOneWidget);
     await tapKey(tester, 'kfs');
     expect(find.text('Key Facts Statement'), findsOneWidget);
+    expect(find.text('₹22,500'), findsOneWidget); // fee 0.5%
+    expect(find.text('₹4,050'), findsOneWidget); // GST on the fee
     await tester.tap(find.text('Close'));
+    await tester.pumpAndSettle();
+    await tapAndWait(tester, 'letter');
+    expect(find.text('Your decision letter'), findsOneWidget);
+    expect(find.textContaining('loan offer of ₹45,00,000'), findsOneWidget);
+    await tester.tapAt(const Offset(20, 20)); // close the sheet
+    await tester.pumpAndSettle();
+    await tapKey(tester, 'ask');
+    await tester.enterText(find.byKey(const Key('ask-question')), 'What happens next?');
+    await tapAndWait(tester, 'ask-send');
+    expect(find.textContaining('We will update you in the app'), findsOneWidget);
+    await tester.tapAt(const Offset(20, 20));
     await tester.pumpAndSettle();
     await tapKey(tester, 'primary'); // add property details
     await tapKey(tester, 'primary'); // final sanction
@@ -98,6 +114,7 @@ void main() {
     await settle(tester);
     expect(find.byKey(const Key('decision-refer')), findsOneWidget);
     expect(find.text('Our lawyer needs to review the property title.'), findsOneWidget);
+    expect(find.text('Pending review'), findsOneWidget);
   });
 
   testWidgets('Arjun is rejected with the reason, and can ask for a review', (tester) async {

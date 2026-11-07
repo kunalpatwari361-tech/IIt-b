@@ -111,7 +111,8 @@ def letter(app: Application, lang: str = "en") -> dict:
         k = o["kfs"]
         terms = [f"Loan amount: {_rupees(o['amount'])}", f"Tenure: {o['years']} years",
                  f"Interest rate: {o['rate_pct']}% a year, {k['rate_type']}", f"EMI: {_rupees(o['emi'])} a month",
-                 f"Processing fee: {_rupees(k['processing_fee'])}", f"Annual percentage rate (APR): {k['apr_pct']}%",
+                 f"Processing fee: {_rupees(k['processing_fee'])} plus GST {_rupees(k.get('gst_on_fee', 0))}",
+                 f"Annual percentage rate (APR): {k['apr_pct']}%",
                  f"Cooling-off period: {k['cooling_off_days']} days"]
     foot = [f"Grievance officer: {LENDER['grievance_officer']}, {LENDER['grievance_email']}.",
             f"If your complaint is not resolved in 30 days: {LENDER['escalation']}.",

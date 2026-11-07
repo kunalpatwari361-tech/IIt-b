@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
+import '../config.dart';
+
 import '../l10n/app_localizations.dart';
 import '../services/api.dart';
 import '../state.dart';
@@ -19,6 +21,7 @@ class _SignInScreenState extends State<SignInScreen> {
   late final TextEditingController _phone;
   final _otp = TextEditingController();
   bool _sent = false, _busy = false;
+  String? _delivery; // how the engine sent the code: "console" means it's in the server's window
 
   @override
   void initState() {
@@ -41,7 +44,7 @@ class _SignInScreenState extends State<SignInScreen> {
     setState(() => _busy = true);
     try {
       if (!_sent) {
-        await state.api.sendOtp(phone);
+        _delivery = await state.api.sendOtp(phone);
         state.update(() => state.phone = phone);
         setState(() => _sent = true);
       } else {
@@ -53,11 +56,35 @@ class _SignInScreenState extends State<SignInScreen> {
         Navigator.pushNamed(context, '/consent');
       }
     } on ApiException catch (e) {
-      if (mounted) showError(context, e.code == 'wrong_otp' ? t.wrongOtp : t.errorGeneric);
+      if (mounted) showError(context, _otpError(t, e.code));
     } finally {
       if (mounted) setState(() => _busy = false);
     }
   }
+
+  /// A fresh code, for one that expired, was used up, or never arrived.
+  Future<void> _resend() async {
+    final t = AppLocalizations.of(context);
+    final state = context.read<AppState>();
+    setState(() => _busy = true);
+    try {
+      _delivery = await state.api.sendOtp(_phone.text.trim());
+      _otp.clear();
+      if (mounted) showError(context, t.newOtpSent);
+    } on ApiException catch (e) {
+      if (mounted) showError(context, _otpError(t, e.code));
+    } finally {
+      if (mounted) setState(() => _busy = false);
+    }
+  }
+
+  static String _otpError(AppLocalizations t, String code) => switch (code) {
+        'wrong_otp' => t.wrongOtp,
+        'expired_otp' => t.otpExpired,
+        'too_many_attempts' => t.otpTooManyTries,
+        'too_many_requests' => t.otpTooManySends,
+        _ => t.errorGeneric,
+      };
 
   @override
   Widget build(BuildContext context) {
@@ -93,11 +120,14 @@ class _SignInScreenState extends State<SignInScreen> {
           ),
           if (_sent) ...[
             const SizedBox(height: 16),
-            Notice(tone: Tone.good, icon: Icons.sms_outlined, body: t.otpSentTo('+91 ${_phone.text}')),
+            if (_delivery == 'console')
+              Notice(key: const Key('otp-on-server'), tone: Tone.warn, icon: Icons.computer_outlined, body: t.otpOnServer('+91 ${_phone.text}'))
+            else
+              Notice(tone: Tone.good, icon: Icons.sms_outlined, body: t.otpSentTo('+91 ${_phone.text}')),
             const SizedBox(height: 16),
             Labelled(
               label: t.otpLabel,
-              helper: t.demoOtp,
+              helper: demoMode ? t.demoOtp : null,
               child: TextField(
                 key: const Key('otp'),
                 controller: _otp,
@@ -108,6 +138,15 @@ class _SignInScreenState extends State<SignInScreen> {
                 inputFormatters: [FilteringTextInputFormatter.digitsOnly, LengthLimitingTextInputFormatter(6)],
                 decoration: const InputDecoration(hintText: '••••••'),
                 onSubmitted: (_) => _submit(),
+              ),
+            ),
+            Align(
+              alignment: Alignment.centerRight,
+              child: TextButton.icon(
+                key: const Key('resend-otp'),
+                onPressed: _busy ? null : _resend,
+                icon: const Icon(Icons.refresh, size: 18),
+                label: Text(t.resendOtp),
               ),
             ),
           ],

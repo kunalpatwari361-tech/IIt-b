@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
+import '../config.dart';
 import '../format.dart';
 import '../l10n/app_localizations.dart';
 import '../policy.dart';
@@ -41,8 +42,7 @@ class WelcomeScreen extends StatelessWidget {
                     Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                       _Header(initials: p == null ? null : _initials(p.name)),
                       const SizedBox(height: 10),
-                      _DemoNote(text: t.sandboxBanner),
-                      const SizedBox(height: 16),
+                      if (demoMode) ...[_DemoNote(text: t.sandboxBanner), const SizedBox(height: 16)],
                       Text(greeting, style: const TextStyle(color: Aurora.muted, fontSize: 13)),
                       const SizedBox(height: 2),
                       Text(p == null ? t.welcomeHeadline : t.nearlyThere(p.name.split(' ').first),
@@ -83,15 +83,17 @@ class WelcomeScreen extends StatelessWidget {
                               key: const Key('calc-eligibility'), title: t.calcEligibility, sub: t.calcEligibilitySub, onTap: () => _eligibilitySheet(context)),
                         ),
                       ]),
-                      const SizedBox(height: 26),
-                      _label(t.demoCustomers),
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 10),
-                        child: Text(t.demoCustomersBody, style: const TextStyle(fontSize: 12.5, color: Aurora.muted)),
-                      ),
-                      _Persona(phone: '9876500001', label: t.personaRavi, product: Product.homeLoan),
-                      _Persona(phone: '9876500002', label: t.personaMeena, product: Product.lap),
-                      _Persona(phone: '9876500003', label: t.personaArjun, product: Product.homeLoan),
+                      if (demoMode) ...[
+                        const SizedBox(height: 26),
+                        _label(t.demoCustomers),
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 10),
+                          child: Text(t.demoCustomersBody, style: const TextStyle(fontSize: 12.5, color: Aurora.muted)),
+                        ),
+                        _Persona(phone: '9876500001', label: t.personaRavi, product: Product.homeLoan),
+                        _Persona(phone: '9876500002', label: t.personaMeena, product: Product.lap),
+                        _Persona(phone: '9876500003', label: t.personaArjun, product: Product.homeLoan),
+                      ],
                     ]),
                   ]),
                 ),

@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
+import '../config.dart';
+
 import '../l10n/app_localizations.dart';
+import '../reasons.dart';
 import '../services/capture.dart';
 import '../services/models.dart';
 import '../state.dart';
@@ -18,15 +21,115 @@ class PropertyScreen extends StatefulWidget {
 }
 
 class _PropertyScreenState extends State<PropertyScreen> {
-  final _city = TextEditingController(text: 'Pune');
-  final _locality = TextEditingController(text: 'Kharadi');
-  final _society = TextEditingController(text: 'Palm Meadows');
-  final _area = TextEditingController(text: '1050');
+  // The sample engine's demo flat; real applicants start with empty fields.
+  final _city = TextEditingController(text: realMode ? '' : 'Pune');
+  final _locality = TextEditingController(text: realMode ? '' : 'Kharadi');
+  final _society = TextEditingController(text: realMode ? '' : 'Palm Meadows');
+  final _area = TextEditingController(text: realMode ? '' : '1050');
   late final TextEditingController _price;
   int _bhk = 2;
   bool _isNew = true, _busy = false;
   final _photos = <String, GeoPhoto>{};
   final _taking = <String>{};
+  bool _deedBusy = false;
+  String? _deedProblem;
+
+  /// The title is read from the sale deed. In real mode there's no land-records connection, so the
+  /// deed is the only proof of title; in the demo it's checked alongside the sandbox land records.
+  Future<void> _deed(Future<Uint8List?> Function() source) async {
+    final t = AppLocalizations.of(context);
+    final state = context.read<AppState>();
+    final bytes = await source();
+    if (bytes == null) return;
+    setState(() {
+      _deedBusy = true;
+      _deedProblem = null;
+    });
+    try {
+      final r = await state.api.uploadDocument(state.session!, DocSlot.saleDeed, bytes, isPdf(bytes) ? 'saleDeed.pdf' : 'saleDeed.jpg');
+      state.update(() => state.documents[DocSlot.saleDeed] = r);
+      if (!r.accepted) _deedProblem = r.reasonCode == 'R-DOC-02' ? t.docUnreadable : t.docWrong(t.docSaleDeed);
+    } catch (_) {
+      _deedProblem = t.errorGeneric;
+    } finally {
+      if (mounted) setState(() => _deedBusy = false);
+    }
+  }
+
+  Widget _deedTile() {
+    final t = AppLocalizations.of(context);
+    final r = context.watch<AppState>().documents[DocSlot.saleDeed];
+    final ok = r?.accepted ?? false;
+    final status = _deedBusy ? t.checking : _deedProblem ?? (ok ? t.docAccepted(t.docSaleDeed) : null);
+    return SectionCard(
+      padding: const EdgeInsets.fromLTRB(14, 12, 14, 12),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(ok ? Icons.check_circle : Icons.description_outlined, color: ok ? C.good : C.brand),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Text(docName(t, DocSlot.saleDeed), style: const TextStyle(fontSize: 14.5, fontWeight: FontWeight.w700)),
+              ),
+            ],
+          ),
+          const SizedBox(height: 6),
+          Text(t.saleDeedBody, style: const TextStyle(fontSize: 12.5, color: C.muted, height: 1.35)),
+          if (status != null) ...[
+            const SizedBox(height: 6),
+            Text(status, style: TextStyle(fontSize: 12.5, color: _deedProblem != null ? C.badInk : C.goodInk)),
+          ],
+          const SizedBox(height: 10),
+          Row(
+            children: [
+              Expanded(
+                child: OutlinedButton.icon(
+                  key: const Key('deed-camera'),
+                  onPressed: _deedBusy ? null : () => _deed(() => takePhoto()),
+                  icon: const Icon(Icons.photo_camera_outlined, size: 18),
+                  label: Text(t.camera),
+                ),
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: OutlinedButton.icon(
+                  key: const Key('deed-gallery'),
+                  onPressed: _deedBusy ? null : () => _deed(() => takePhoto(gallery: true)),
+                  icon: const Icon(Icons.photo_library_outlined, size: 18),
+                  label: Text(t.gallery),
+                ),
+              ),
+            ],
+          ),
+          Wrap(
+            alignment: WrapAlignment.end,
+            children: [
+              TextButton.icon(
+                key: const Key('deed-pdf'),
+                onPressed: _deedBusy ? null : () => _deed(pickPdf),
+                icon: const Icon(Icons.picture_as_pdf_outlined, size: 18),
+                label: Text(t.uploadPdf),
+              ),
+              if (demoMode)
+                TextButton.icon(
+                  key: const Key('deed-sample'),
+                  onPressed: _deedBusy
+                      ? null
+                      : () => _deed(() async {
+                            final s = context.read<AppState>();
+                            return await s.api.sample(s.session!, 'saleDeed') ?? sampleDocument(seed: 42);
+                          }),
+                  icon: const Icon(Icons.science_outlined, size: 18),
+                  label: Text(t.useSample),
+                ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
 
   @override
   void initState() {
@@ -185,6 +288,9 @@ class _PropertyScreenState extends State<PropertyScreen> {
           Notice(tone: Tone.info, icon: Icons.location_on_outlined, body: t.photosBody),
           const SizedBox(height: 10),
           for (final (key, label) in [('front', t.photoFront), ('inside', t.photoInside), ('view', t.photoView)]) _photoTile(key, label),
+          const SizedBox(height: 14),
+          SectionTitle(t.docSaleDeed),
+          _deedTile(),
         ],
       ),
     );
@@ -232,16 +338,17 @@ class _PropertyScreenState extends State<PropertyScreen> {
               onPressed: busy ? null : () => _photo(key, () => takePhoto()),
               icon: const Icon(Icons.photo_camera_outlined, color: C.brand),
             ),
-            IconButton(
-              tooltip: t.useSample,
-              onPressed: busy
-                  ? null
-                  : () => _photo(key, () async {
+            if (demoMode)
+              IconButton(
+                tooltip: t.useSample,
+                onPressed: busy
+                    ? null
+                    : () => _photo(key, () async {
                         final s = context.read<AppState>();
                         return await s.api.sample(s.session!, 'photo-$key') ?? sampleDocument(seed: 40 + key.length);
                       }),
-              icon: const Icon(Icons.science_outlined, color: C.brand),
-            ),
+                icon: const Icon(Icons.science_outlined, color: C.brand),
+              ),
           ],
         ),
       ),

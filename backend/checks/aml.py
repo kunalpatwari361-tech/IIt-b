@@ -60,10 +60,12 @@ def convert_un_xml(xml_path: Path, out: Path = UN_FILE) -> int:
     return len(entries)
 
 
-@lru_cache(maxsize=1)
-def watchlist() -> tuple[list[dict], dict]:
+@lru_cache(maxsize=2)
+def watchlist(sandbox_pep: bool = True) -> tuple[list[dict], dict]:
     entries, info = [], {"un_list": None, "pep_list": None}
     for path, key in ((UN_FILE, "un_list"), (PEP_FILE, "pep_list")):
+        if key == "pep_list" and not sandbox_pep:       # the PEP list here is fictional sandbox data
+            continue
         if path.exists():
             d = json.loads(path.read_text(encoding="utf-8"))
             entries += [{**e, "keys": [normalise(n) for n in e["names"]]} for e in d["entries"]]
@@ -88,9 +90,9 @@ def _dob_agrees(entry: dict, dob: date | None) -> bool | None:
     return dob.isoformat() in entry["dobs"] or dob.year in entry["years"]
 
 
-def screen(name: str, dob: date | None) -> dict:
+def screen(name: str, dob: date | None, sandbox_pep: bool = True) -> dict:
     from rapidfuzz import fuzz
-    entries, info = watchlist()
+    entries, info = watchlist(sandbox_pep)
     out = {"check": "aml_screening", "lists": info, "name_checked": normalise(name), "hits": [], "cleared": [],
            "flag": "pass", "reason_code": None}
     if info["un_list"] is None:

@@ -52,11 +52,12 @@ class MockNirnayApi implements NirnayApi {
   Future<void> _wait() => Future.delayed(delay);
 
   @override
-  Future<void> sendOtp(String phone) async {
+  Future<String?> sendOtp(String phone) async {
     await _wait();
     _persona = demoPersonas[phone] ??
         Persona(phone: phone, name: 'Priya Nair', dob: DateTime(1990, 5, 9), employment: Employment.salaried,
             employer: 'Orchid Health Systems Ltd', income: 85000, existingEmi: 5000, score: 748);
+    return 'sandbox';
   }
 
   @override
@@ -78,7 +79,7 @@ class MockNirnayApi implements NirnayApi {
   }
 
   @override
-  Future<Profile> fetchProfile(Session session, String pan) async {
+  Future<Profile> fetchProfile(Session session, String pan, {Declaration? declared}) async {
     await _wait();
     final p = _persona;
     _pan = '${pan.substring(0, 2)}XXX${pan.substring(5, 9)}X';
@@ -169,8 +170,75 @@ class MockNirnayApi implements NirnayApi {
         Reason(code: 'OK-LTV', positive: true, values: {'pct': _pct(e.ltv), 'cap': _pct(e.ltvCap)}),
       ]);
     }
-    return Decision(stage: 'in_principle', outcome: outcome, amount: e.eligible, years: years, ratePct: e.ratePct,
-        emi: e.emi, reasons: reasons);
+    return _last = Decision(stage: 'in_principle', outcome: outcome, amount: e.eligible, years: years, ratePct: e.ratePct,
+        emi: e.emi, reasons: reasons, keyFacts: KeyFacts.compute(e.eligible, e.emi, years),
+        score: scorecard(p.score, _historyYears[p.phone] ?? 6, e.eligible / request.propertyValue * 100), reference: _ref());
+  }
+
+  /// Years since the first loan for the demo customers (the bureau report would say).
+  static const _historyYears = {'9876500001': 8.0, '9876500002': 12.0, '9876500003': 3.0};
+  int _records = 0;
+  String _ref() => '#SBX-${++_records} · sample engine';
+
+  /// The sample engine's copy of model 1: the same point ranges the trained scorecard uses
+  /// (models/credit_scorecard), for the inputs the demo customers have. Starts at 650.
+  static ScoreBreakdown scorecard(int? bureau, double history, double ltvPct) {
+    (String, int) band(double v, List<(double, String, int)> bands, (String, int) top) {
+      for (final (upTo, label, pts) in bands) {
+        if (v < upTo) return (label, pts);
+      }
+      return top;
+    }
+
+    final b = bureau == null
+        ? ('missing', -7)
+        : band(bureau.toDouble(), [(418, 'below 418', -29), (616, '418 to 616', -13), (682, '616 to 682', 12), (738, '682 to 738', 22)],
+            ('738 or more', 38));
+    final h = band(history, [(0.208, 'below 0.208', -5), (0.792, '0.208 to 0.792', 3), (2.88, '0.792 to 2.88', 4), (4.54, '2.88 to 4.54', 8)],
+        ('4.54 or more', 17));
+    final l = band(ltvPct, [
+      (53.5, 'below 53.5', 38), (62.2, '53.5 to 62.2', 29), (66.8, '62.2 to 66.8', 21), (69.3, '66.8 to 69.3', 11),
+      (72.9, '69.3 to 72.9', 8), (74.3, '72.9 to 74.3', 3), (78.5, '74.3 to 78.5', 3), (83.4, '78.5 to 83.4', -8),
+      (84.6, '83.4 to 84.6', -17), (89.2, '84.6 to 89.2', -18)
+    ], ('89.2 or more', -19));
+    final factors = [
+      ScoreFactor(input: 'bureau_score', bin: b.$1, points: b.$2),
+      ScoreFactor(input: 'credit_history_years', bin: h.$1, points: h.$2),
+      ScoreFactor(input: 'loan_amount', bin: 'missing', points: 0),
+      ScoreFactor(input: 'ltv', bin: l.$1, points: l.$2),
+    ];
+    final score = (650 + factors.fold<int>(0, (a, f) => a + f.points)).clamp(300, 900);
+    final grade = score >= 760 ? 'A' : score >= 700 ? 'B' : score >= 650 ? 'C' : score >= 600 ? 'D' : 'E';
+    return ScoreBreakdown(score: score, grade: grade, base: 650, factors: factors);
+  }
+
+  Decision? _last;
+
+  @override
+  Future<DecisionLetter> decisionLetter(Session session, String lang) async {
+    await _wait();
+    final d = _last;
+    final lines = [
+      'Nirnay Housing Finance (sample engine)',
+      'Application number: ${session.applicationId}',
+      'Dear ${_persona.name},',
+      if (d == null) 'There is no decision yet.',
+      if (d != null && d.outcome == Outcome.approve) 'We are pleased to share your loan offer of ${rupees(d.amount)}.',
+      if (d != null && d.outcome == Outcome.refer) 'Your application needs a short review by our team before we can decide.',
+      if (d != null && d.outcome == Outcome.reject) 'We are sorry that we cannot offer this loan at present.',
+      'This decision was made by our automated underwriting engine. You can ask for a review by a person.',
+    ];
+    return DecisionLetter(lines: lines, untranslated: lang == 'en' ? 0 : lines.length);
+  }
+
+  @override
+  Future<AssistantAnswer> ask(Session session, String question, String lang) async {
+    await _wait();
+    final q = question.toLowerCase();
+    if (q.contains('next') || q.contains('status')) {
+      return AssistantAnswer(answer: 'Your application is with us. We will update you in the app and by SMS.', handoff: false);
+    }
+    return AssistantAnswer(answer: "I'm not sure about that. I can connect you to our support team.", handoff: true);
   }
 
   @override
@@ -198,8 +266,8 @@ class MockNirnayApi implements NirnayApi {
         ..add(Reason(code: 'OK-VALUE', positive: true, values: {'low': '${valuation.low}', 'high': '${valuation.high}'}))
         ..add(Reason(code: 'OK-TITLE', positive: true));
     }
-    return Decision(stage: 'final', outcome: outcome, amount: first.amount, years: first.years, ratePct: first.ratePct,
-        emi: first.emi, reasons: reasons, valuation: valuation);
+    return _last = Decision(stage: 'final', outcome: outcome, amount: first.amount, years: first.years, ratePct: first.ratePct,
+        emi: first.emi, reasons: reasons, valuation: valuation, keyFacts: first.keyFacts, score: first.score, reference: _ref());
   }
 
   static String _pct(double x) => '${(x * 100).toStringAsFixed(1).replaceAll(RegExp(r'\.0$'), '')}%';

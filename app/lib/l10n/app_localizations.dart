@@ -1957,6 +1957,288 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Photo match: done when you upload your Aadhaar or PAN card'**
   String get checkMatchPending;
+
+  /// No description provided for @realDetailsIntro.
+  ///
+  /// In en, this message translates to:
+  /// **'Tell us about yourself. We check every detail against your documents.'**
+  String get realDetailsIntro;
+
+  /// No description provided for @fullNameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Full name (as on your PAN card)'**
+  String get fullNameLabel;
+
+  /// No description provided for @emailLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Email'**
+  String get emailLabel;
+
+  /// No description provided for @employerLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Employer or business name'**
+  String get employerLabel;
+
+  /// No description provided for @creditScoreLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Credit score (optional)'**
+  String get creditScoreLabel;
+
+  /// No description provided for @creditScoreHint.
+  ///
+  /// In en, this message translates to:
+  /// **'From your CIBIL or Experian report, if you know it'**
+  String get creditScoreHint;
+
+  /// No description provided for @addressLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Address'**
+  String get addressLabel;
+
+  /// No description provided for @saveDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'Save my details'**
+  String get saveDetails;
+
+  /// No description provided for @selfDeclaredNote.
+  ///
+  /// In en, this message translates to:
+  /// **'You entered these details. We check them against the documents you upload next.'**
+  String get selfDeclaredNote;
+
+  /// No description provided for @pickDob.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose your date of birth'**
+  String get pickDob;
+
+  /// No description provided for @fillDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'Please fill in your name, date of birth, work, employer and income.'**
+  String get fillDetails;
+
+  /// No description provided for @docSaleDeed.
+  ///
+  /// In en, this message translates to:
+  /// **'Sale deed or allotment letter'**
+  String get docSaleDeed;
+
+  /// No description provided for @saleDeedBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Upload a photo or PDF of the registered sale deed (the page with the property and the buyer). We read it to check the title.'**
+  String get saleDeedBody;
+
+  /// No description provided for @statusPending.
+  ///
+  /// In en, this message translates to:
+  /// **'Pending review'**
+  String get statusPending;
+
+  /// No description provided for @decisionRef.
+  ///
+  /// In en, this message translates to:
+  /// **'Decision record {ref}'**
+  String decisionRef(String ref);
+
+  /// No description provided for @scoreTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'How we scored you'**
+  String get scoreTitle;
+
+  /// No description provided for @scoreOutOf.
+  ///
+  /// In en, this message translates to:
+  /// **'out of 900'**
+  String get scoreOutOf;
+
+  /// No description provided for @gradeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Grade {grade}'**
+  String gradeLabel(String grade);
+
+  /// No description provided for @scoreStart.
+  ///
+  /// In en, this message translates to:
+  /// **'Everyone starts at {base} points. Each line below adds or takes away points.'**
+  String scoreStart(String base);
+
+  /// No description provided for @scoreNote.
+  ///
+  /// In en, this message translates to:
+  /// **'This is the credit score part of the decision. Your income, identity, documents and property are checked too.'**
+  String get scoreNote;
+
+  /// No description provided for @factorBureau.
+  ///
+  /// In en, this message translates to:
+  /// **'Credit bureau score'**
+  String get factorBureau;
+
+  /// No description provided for @factorHistory.
+  ///
+  /// In en, this message translates to:
+  /// **'Years of credit history'**
+  String get factorHistory;
+
+  /// No description provided for @factorLtv.
+  ///
+  /// In en, this message translates to:
+  /// **'Loan as a share of property value'**
+  String get factorLtv;
+
+  /// No description provided for @factorLoanAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'Loan amount'**
+  String get factorLoanAmount;
+
+  /// No description provided for @factorMissing.
+  ///
+  /// In en, this message translates to:
+  /// **'Not available'**
+  String get factorMissing;
+
+  /// No description provided for @rangeBelow.
+  ///
+  /// In en, this message translates to:
+  /// **'below {x}'**
+  String rangeBelow(String x);
+
+  /// No description provided for @rangeBetween.
+  ///
+  /// In en, this message translates to:
+  /// **'{a} to {b}'**
+  String rangeBetween(String a, String b);
+
+  /// No description provided for @rangeAtLeast.
+  ///
+  /// In en, this message translates to:
+  /// **'{x} or more'**
+  String rangeAtLeast(String x);
+
+  /// No description provided for @viewLetter.
+  ///
+  /// In en, this message translates to:
+  /// **'Decision letter'**
+  String get viewLetter;
+
+  /// No description provided for @letterTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your decision letter'**
+  String get letterTitle;
+
+  /// No description provided for @letterPartlyEnglish.
+  ///
+  /// In en, this message translates to:
+  /// **'Some lines could not be translated and are shown in English.'**
+  String get letterPartlyEnglish;
+
+  /// No description provided for @copyText.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy text'**
+  String get copyText;
+
+  /// No description provided for @copied.
+  ///
+  /// In en, this message translates to:
+  /// **'Copied'**
+  String get copied;
+
+  /// No description provided for @askTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Ask a question'**
+  String get askTitle;
+
+  /// No description provided for @askHint.
+  ///
+  /// In en, this message translates to:
+  /// **'For example: what happens next?'**
+  String get askHint;
+
+  /// No description provided for @askSend.
+  ///
+  /// In en, this message translates to:
+  /// **'Send'**
+  String get askSend;
+
+  /// No description provided for @askHuman.
+  ///
+  /// In en, this message translates to:
+  /// **'A person from our team will follow up on this.'**
+  String get askHuman;
+
+  /// No description provided for @uploadPdf.
+  ///
+  /// In en, this message translates to:
+  /// **'Upload PDF'**
+  String get uploadPdf;
+
+  /// No description provided for @kfsFeeBase.
+  ///
+  /// In en, this message translates to:
+  /// **'Processing fee (0.5%)'**
+  String get kfsFeeBase;
+
+  /// No description provided for @kfsGst.
+  ///
+  /// In en, this message translates to:
+  /// **'GST on the fee (18%)'**
+  String get kfsGst;
+
+  /// No description provided for @kfsNoteEngine.
+  ///
+  /// In en, this message translates to:
+  /// **'Worked out for this offer. The signed Key Facts Statement comes with your sanction letter.'**
+  String get kfsNoteEngine;
+
+  /// No description provided for @otpOnServer.
+  ///
+  /// In en, this message translates to:
+  /// **'This test server does not send SMS. The 6-digit code for {phone} is shown in the server window on the computer.'**
+  String otpOnServer(String phone);
+
+  /// No description provided for @resendOtp.
+  ///
+  /// In en, this message translates to:
+  /// **'Send a new code'**
+  String get resendOtp;
+
+  /// No description provided for @newOtpSent.
+  ///
+  /// In en, this message translates to:
+  /// **'New code sent.'**
+  String get newOtpSent;
+
+  /// No description provided for @otpExpired.
+  ///
+  /// In en, this message translates to:
+  /// **'This code has expired. Tap Send a new code.'**
+  String get otpExpired;
+
+  /// No description provided for @otpTooManyTries.
+  ///
+  /// In en, this message translates to:
+  /// **'Too many wrong tries. Tap Send a new code.'**
+  String get otpTooManyTries;
+
+  /// No description provided for @otpTooManySends.
+  ///
+  /// In en, this message translates to:
+  /// **'Too many codes asked for. Please wait 15 minutes and try again.'**
+  String get otpTooManySends;
 }
 
 class _AppLocalizationsDelegate

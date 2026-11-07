@@ -2,6 +2,7 @@
 import 'dart:math' as math;
 import 'dart:typed_data';
 
+import 'package:file_picker/file_picker.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:image/image.dart' as img;
 import 'package:image_picker/image_picker.dart';
@@ -18,6 +19,15 @@ Future<Uint8List?> takePhoto({bool selfie = false, bool gallery = false}) async 
   );
   return file?.readAsBytes();
 }
+
+/// A PDF from the phone's files (income papers, bank statements, sale deeds), or null if none was picked.
+Future<Uint8List?> pickPdf() async {
+  final file = await FilePicker.pickFile(type: FileType.custom, allowedExtensions: const ['pdf']);
+  return file?.readAsBytes();
+}
+
+/// True for a PDF file (it starts with "%PDF").
+bool isPdf(Uint8List b) => b.length > 4 && b[0] == 0x25 && b[1] == 0x50 && b[2] == 0x44 && b[3] == 0x46;
 
 /// The phone's location for a geo-tag, or null if location is off or not allowed.
 Future<Position?> currentPosition() async {

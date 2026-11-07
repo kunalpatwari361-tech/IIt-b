@@ -1035,4 +1035,168 @@ class AppLocalizationsKok extends AppLocalizations {
   @override
   String get checkMatchPending =>
       'फोटो जुळोवप: आधार वा पॅन कार्ड अपलोड केल्यार जातलें';
+
+  @override
+  String get realDetailsIntro =>
+      'तुमचे विशीं सांगात. दर एक माहिती आमी तुमच्या कागदपत्रां वांगडा तपासतात.';
+
+  @override
+  String get fullNameLabel => 'पुराय नांव (पॅन कार्डार आसा तशें)';
+
+  @override
+  String get emailLabel => 'ईमेल';
+
+  @override
+  String get employerLabel => 'कामदार दिवपी वा वेवसायाचें नांव';
+
+  @override
+  String get creditScoreLabel => 'क्रेडिट स्कोअर (पर्यायी)';
+
+  @override
+  String get creditScoreHint =>
+      'तुमच्या CIBIL वा Experian अहवालांतल्यान, खबर आसल्यार';
+
+  @override
+  String get addressLabel => 'पत्तो';
+
+  @override
+  String get saveDetails => 'म्हजी माहिती सांबाळात';
+
+  @override
+  String get selfDeclaredNote =>
+      'ही माहिती तुमी भरल्या. फुडें अपलोड करतले त्या कागदपत्रां वांगडा आमी ती तपासतले.';
+
+  @override
+  String get pickDob => 'तुमची जल्म तारीख वेंचात';
+
+  @override
+  String get fillDetails =>
+      'उपकार करून नांव, जल्म तारीख, काम, कामदार दिवपी आनी उत्पन्न भरात.';
+
+  @override
+  String get docSaleDeed => 'विक्री खत वा वांटप पत्र';
+
+  @override
+  String get saleDeedBody =>
+      'नोंदणी जाल्ल्या विक्री खताचो फोटो वा PDF अपलोड करात (मालमत्ता आनी विकतें घेवपी आशिल्लें पान). मालकी तपासपाक आमी तें वाचतात.';
+
+  @override
+  String get statusPending => 'तपासणी उरल्या';
+
+  @override
+  String decisionRef(String ref) {
+    return 'निर्णयाची नोंद $ref';
+  }
+
+  @override
+  String get scoreTitle => 'आमी तुमचो स्कोअर कसो काडलो';
+
+  @override
+  String get scoreOutOf => '900 तल्यान';
+
+  @override
+  String gradeLabel(String grade) {
+    return 'श्रेणी $grade';
+  }
+
+  @override
+  String scoreStart(String base) {
+    return 'दरेकल्याची सुरवात $base गुणांसावन जाता. सकयली दरेक ओळ गुण जोडटा वा उणे करता.';
+  }
+
+  @override
+  String get scoreNote =>
+      'हो निर्णयाचो क्रेडिट स्कोअराचो भाग. तुमचें उत्पन्न, वळख, कागदपत्रां आनी मालमत्ताय तपासतात.';
+
+  @override
+  String get factorBureau => 'क्रेडिट ब्युरो स्कोअर';
+
+  @override
+  String get factorHistory => 'क्रेडिट इतिहासाचीं वर्सां';
+
+  @override
+  String get factorLtv => 'मालमत्तेच्या मोलाच्या तुळनेन कर्जाचो वांटो';
+
+  @override
+  String get factorLoanAmount => 'कर्जाची रक्कम';
+
+  @override
+  String get factorMissing => 'उपलब्ध ना';
+
+  @override
+  String rangeBelow(String x) {
+    return '$x परस उणें';
+  }
+
+  @override
+  String rangeBetween(String a, String b) {
+    return '$a ते $b';
+  }
+
+  @override
+  String rangeAtLeast(String x) {
+    return '$x वा चड';
+  }
+
+  @override
+  String get viewLetter => 'निर्णय पत्र';
+
+  @override
+  String get letterTitle => 'तुमचें निर्णय पत्र';
+
+  @override
+  String get letterPartlyEnglish =>
+      'कांय ओळींचो अणकार जावंक ना, देखून त्यो इंग्लीशींत आसात.';
+
+  @override
+  String get copyText => 'मजकूर कॉपी करात';
+
+  @override
+  String get copied => 'कॉपी जालें';
+
+  @override
+  String get askTitle => 'प्रस्न विचारात';
+
+  @override
+  String get askHint => 'देखीक: फुडें कितें जातलें?';
+
+  @override
+  String get askSend => 'धाडात';
+
+  @override
+  String get askHuman =>
+      'आमच्या पंगडांतलो एक मनीस हाचेविशीं तुमचेकडेन संपर्क करतलो.';
+
+  @override
+  String get uploadPdf => 'PDF अपलोड करात';
+
+  @override
+  String get kfsFeeBase => 'प्रक्रिया शुल्क (0.5%)';
+
+  @override
+  String get kfsGst => 'शुल्कार GST (18%)';
+
+  @override
+  String get kfsNoteEngine =>
+      'ह्या ऑफरा खातीर काडला. सही केल्लें मुखेल तथ्यांचें निवेदन तुमच्या मंजुरी पत्रा वांगडा येतलें.';
+
+  @override
+  String otpOnServer(String phone) {
+    return 'हो चांचणी सर्वर SMS धाडिना. $phone खातीरचो 6 आंकड्यांचो कोड कॉम्प्युटराचेर सर्वर विंडोंत दिसता.';
+  }
+
+  @override
+  String get resendOtp => 'नवो कोड धाडात';
+
+  @override
+  String get newOtpSent => 'नवो कोड धाडला.';
+
+  @override
+  String get otpExpired => 'ह्या कोडाची मुदत सोंपली. नवो कोड धाडात दामात.';
+
+  @override
+  String get otpTooManyTries => 'चड फावट चुकीचो कोड. नवो कोड धाडात दामात.';
+
+  @override
+  String get otpTooManySends => 'चड कोड मागले. 15 मिनटां राकून परत यत्न करात.';
 }

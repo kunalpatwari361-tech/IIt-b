@@ -1,0 +1,12 @@
+# The engine image needs backend/, models/ and the app's language files only.
+**
+!backend/**
+!models/**
+!app/lib/l10n/*.arb
+backend/var/
+**/__pycache__/
+**/*.pyc
+**/.pytest_cache/
+.git/
+.venv/
+data/

@@ -13,7 +13,7 @@ from models.credit_scorecard import scorecard
 from models.fraud_classifier import fraud
 from models.property_avm import avm
 
-from . import adapters, fields, gates, policy as pol, sandbox
+from . import adapters, fields, gates, intake, policy as pol, sandbox
 from .checks import aml, links
 from .config import settings
 from .intake import today
@@ -42,40 +42,50 @@ def gather(store: Store, app: Application, req: dict, prop: dict | None = None, 
     prof, bank = app.profile, app.bank
     request = _request(req)
     day = today()
+    real = app.mode == "real"
     ev: dict = {"stage": "final" if prop else "in_principle", "application_id": app.id, "today": day.isoformat(),
-                "sandbox": settings.sandbox, "policy_version": pol.POLICY["version"], "request": request,
-                "consents": app.consents}
+                "sandbox": not real, "mode": app.mode, "policy_version": pol.POLICY["version"], "request": request,
+                "consents": app.consents, "self_declared": prof.get("self_declared", [])}
     ev["profile"] = {k: prof[k] for k in ("name", "dob", "employment", "employer", "monthly_income", "existing_emi",
                                           "bureau", "pan_masked", "pan_name", "address_months", "email")}
     docs = app.documents
     ev["identity"] = {
         "selfie": app.selfie, "face_match": app.face_match,
-        "pan_name_score": round(fields.name_score(prof["pan_name"], prof["name"]), 1),
+        "pan_name_score": round(fields.name_score(prof["pan_name"], prof["name"]), 1) if prof.get("pan_name") else None,
         "document_name_scores": {s: d["name_score"] for s, d in docs.items() if d.get("name_score") is not None},
         "pan_on_card_matches": docs.get("pan", {}).get("pan_matches"),
     }
-    ev["aml"] = aml.screen(prof["name"], date.fromisoformat(prof["dob"]))
-    ev["required_documents"] = pol.POLICY["required_documents"][prof["employment"]]
+    ev["aml"] = aml.screen(prof["name"], date.fromisoformat(prof["dob"]), sandbox_pep=not real)
+    ev["required_documents"] = intake.required_documents(app)
     ev["documents"] = {s: {"accepted": d["accepted"], "reason_code": d["reason_code"],
                            "type": d["classifier"]["document_type"], "confidence": d["classifier"]["confidence"],
                            "tamper_signals": d["tamper"]["signals"], "reused_from": d.get("reuse", {}).get("reused_from", []),
                            "name_score": d.get("name_score")} for s, d in docs.items()}
-    s = bank["summary"]
+    s = (bank or {}).get("summary") or {"months": [], "avg_monthly_salary": 0.0, "salary_months": 0, "avg_monthly_emi": 0.0,
+                                        "avg_monthly_rent": 0.0, "bounces": 0, "cash_deposit_share_of_credits": None,
+                                        "entries_needing_review": 0, "avg_monthly_credits": 0.0}
     ev["bank"] = {k: s[k] for k in ("months", "avg_monthly_salary", "salary_months", "avg_monthly_emi", "avg_monthly_rent",
                                     "bounces", "cash_deposit_share_of_credits", "entries_needing_review", "avg_monthly_credits")}
-    ev["bank"].update(accounts_shared=bank["accounts_shared"], model_version=bank["model_version"])
+    ev["bank"].update(available=bank is not None, accounts_shared=(bank or {}).get("accounts_shared", []),
+                      model_version=(bank or {}).get("model_version"))
     slip = fields.amount(docs.get("salarySlip", {}).get("fields", {}).get("netPay"))
     itr_doc = fields.amount(docs.get("itr", {}).get("fields", {}).get("income"))
     bank_salary = s["avg_monthly_salary"] if s["salary_months"] >= 3 else None
     if prof["employment"] == "salaried":
-        income = bank_salary or slip or 0.0
-        source = "bank salary credits (model 5)" if bank_salary else ("salary slip (OCR)" if slip else "none")
+        proven = bank_salary or slip
+        income = proven or prof["monthly_income"]
+        source = ("bank salary credits (model 5)" if bank_salary else "salary slip (OCR)" if slip
+                  else "self-declared, not proven")
     else:
-        income = round(itr_doc / 12, 2) if itr_doc else prof["monthly_income"]
-        source = "ITR document (OCR)" if itr_doc else prof["income_source"] if "income_source" in prof else "ITR via consent"
+        itr_monthly = round(itr_doc / 12, 2) if itr_doc else None
+        sandbox_itr = None if real else (app.sources.get("itr") or {}).get("total_income")
+        proven = itr_monthly or (round(sandbox_itr / 12, 2) if sandbox_itr else None)
+        income = proven or prof["monthly_income"]
+        source = "ITR document (OCR)" if itr_monthly else "ITR via consent" if proven else "self-declared, not proven"
     ev["income"] = {"employment": prof["employment"], "income_used": income, "income_source": source,
+                    "proven": bool(proven), "declared": prof["monthly_income"] if real else None,
                     "existing_emi": prof["existing_emi"], "bank_salary": bank_salary, "slip_net_pay": slip,
-                    "payroll_net_pay": sandbox.payroll_net_pay(app.persona) if slip else None,
+                    "payroll_net_pay": sandbox.payroll_net_pay(app.persona) if slip and not real else None,
                     "itr_annual_from_document": itr_doc}
 
     value_for_models = request["property_value"]
@@ -86,7 +96,9 @@ def gather(store: Store, app: Application, req: dict, prop: dict | None = None, 
         buyers = [f["value"] for f in (deed or {}).get("facts", []) if f["field"] == "buyer"]
         ev["property"] = {
             "input": {k: v for k, v in prop.items() if k != "photos"}, "avm": a,
-            "land_records": sandbox.land_records(app.persona, prop["city"], prop["locality"]),
+            "land_records": (sandbox.land_records(app.persona, prop["city"], prop["locality"]) if not real else
+                             {"source": None, "title": "not_connected",
+                              "detail": "State land records are not connected; the title is read from the sale deed only."}),
             "deed": deed,
             "deed_buyer_score": max((round(fields.name_score(b, prof["name"]), 1) for b in buyers), default=None),
             "photos": _photo_checks(store, app, photos or [], day),
@@ -126,22 +138,27 @@ def _photo_checks(store: Store, app: Application, photos: list[dict], day: date)
 
 # --------------------------------------------------------------------------- decide (pure)
 
+GST_ON_FEES_PCT = 18          # GST on the processing fee
+
+
 def kfs(amount: float, rate: float, years: int) -> dict:
-    """Key Facts Statement numbers. APR counts the processing fee (illustrative 0.5%)."""
+    """Key Facts Statement numbers. The APR counts the processing fee (illustrative 0.5%) and its
+    18% GST, because both come out of what the customer receives. The app uses the same sums."""
     n = years * 12
     e = pol.emi(amount, rate, n) if amount > 0 else 0.0
     fee = round(amount * PROCESSING_FEE_PCT / 100)
+    gst = round(fee * GST_ON_FEES_PCT / 100)
     apr = None
     if amount > 0:
         lo, hi = 1e-6, 0.1
-        for _ in range(80):     # monthly rate r with (amount - fee) = present value of the EMIs
+        for _ in range(80):     # monthly rate r with (amount - fee - GST) = present value of the EMIs
             mid = (lo + hi) / 2
             pv = e * (1 - (1 + mid) ** -n) / mid
-            lo, hi = (mid, hi) if pv > amount - fee else (lo, mid)
+            lo, hi = (mid, hi) if pv > amount - fee - gst else (lo, mid)
         apr = round(lo * 12 * 100, 2)
     return {"loan_amount": amount, "tenure_months": n, "rate_pct": rate, "rate_type": "floating (repo-linked)",
-            "emi": round(e, 2), "processing_fee": fee, "other_charges": 0, "apr_pct": apr,
-            "total_interest": round(e * n - amount, 2), "total_payable": round(e * n + fee, 2),
+            "emi": round(e, 2), "processing_fee": fee, "gst_on_fee": gst, "other_charges": 0, "apr_pct": apr,
+            "total_interest": round(e * n - amount, 2), "total_payable": round(e * n + fee + gst, 2),
             "cooling_off_days": pol.POLICY["cooling_off_days"], "lender": LENDER}
 
 
@@ -257,4 +274,12 @@ def app_decision(result: dict) -> dict:
         val = {"estimate": a["estimate"], "low": a["low"], "high": a["high"], "valueForLtv": o["value_for_ltv"]}
     return {"stage": result["stage"], "outcome": o["outcome"], "amount": o["amount"], "years": o["years"],
             "ratePct": o["rate_pct"], "emi": o["emi"], "reasons": result["customer_reasons"], "valuation": val,
-            "kfs": o["kfs"], "record": result["record"]}
+            "kfs": o["kfs"], "record": result["record"], "score": customer_score(result["evidence"])}
+
+
+def customer_score(ev: dict) -> dict:
+    """The live scorecard's working, for the customer: start, points per factor, score, grade.
+    Only model 1 (credit) is shown. Fraud and screening results are never shown to customers."""
+    sc = ev["models"]["scorecard"]
+    return {"score": sc["score"], "grade": sc["grade"], "base": sc["base_score"],
+            "factors": [{"input": f["input"], "bin": f["bin"], "points": f["points"]} for f in sc["points"]]}

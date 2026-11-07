@@ -1034,4 +1034,166 @@ class AppLocalizationsMai extends AppLocalizations {
   @override
   String get checkMatchPending =>
       'फोटो मिलान: आधार वा पैन कार्ड अपलोड केलापर होएत';
+
+  @override
+  String get realDetailsIntro =>
+      'अपना बारेमे बताउ। हम सभ जानकारी अहाँक कागजातसँ जाँचैत छी।';
+
+  @override
+  String get fullNameLabel => 'पूरा नाम (जेना पैन कार्डपर अछि)';
+
+  @override
+  String get emailLabel => 'ईमेल';
+
+  @override
+  String get employerLabel => 'नियोक्ता वा व्यवसायक नाम';
+
+  @override
+  String get creditScoreLabel => 'क्रेडिट स्कोर (वैकल्पिक)';
+
+  @override
+  String get creditScoreHint => 'अहाँक CIBIL वा Experian रिपोर्टसँ, जँ बूझल हो';
+
+  @override
+  String get addressLabel => 'पता';
+
+  @override
+  String get saveDetails => 'हमर जानकारी सहेजू';
+
+  @override
+  String get selfDeclaredNote =>
+      'ई जानकारी अहाँ भरलहुँ। आगू जे कागजात अपलोड करब, ओहिसँ हम एकरा जाँचब।';
+
+  @override
+  String get pickDob => 'अपन जन्मतिथि चुनू';
+
+  @override
+  String get fillDetails => 'कृपया नाम, जन्मतिथि, काज, नियोक्ता आ आय भरू।';
+
+  @override
+  String get docSaleDeed => 'बिक्री दस्तावेज वा आवंटन पत्र';
+
+  @override
+  String get saleDeedBody =>
+      'पंजीकृत बिक्री दस्तावेजक फोटो वा PDF अपलोड करू (जाहि पन्नापर संपत्ति आ खरीदार हो)। मालिकाना जाँचबाक लेल हम एकरा पढ़ैत छी।';
+
+  @override
+  String get statusPending => 'समीक्षा बाँकी';
+
+  @override
+  String decisionRef(String ref) {
+    return 'निर्णय रिकॉर्ड $ref';
+  }
+
+  @override
+  String get scoreTitle => 'हम अहाँक स्कोर कोना निकाललहुँ';
+
+  @override
+  String get scoreOutOf => '900 मे सँ';
+
+  @override
+  String gradeLabel(String grade) {
+    return 'ग्रेड $grade';
+  }
+
+  @override
+  String scoreStart(String base) {
+    return 'सभ गोटे $base अंक सँ शुरू करैत छथि। नीचाँक प्रत्येक पाँती अंक जोड़ैत अछि वा घटबैत अछि।';
+  }
+
+  @override
+  String get scoreNote =>
+      'ई निर्णयक क्रेडिट स्कोर बला भाग अछि। अहाँक आय, पहिचान, दस्तावेज आ संपत्तिक सेहो जाँच होइत अछि।';
+
+  @override
+  String get factorBureau => 'क्रेडिट ब्यूरो स्कोर';
+
+  @override
+  String get factorHistory => 'क्रेडिट इतिहासक वर्ष';
+
+  @override
+  String get factorLtv => 'संपत्तिक मूल्यक तुलना मे लोनक हिस्सा';
+
+  @override
+  String get factorLoanAmount => 'लोनक राशि';
+
+  @override
+  String get factorMissing => 'उपलब्ध नहि';
+
+  @override
+  String rangeBelow(String x) {
+    return '$x सँ कम';
+  }
+
+  @override
+  String rangeBetween(String a, String b) {
+    return '$a सँ $b';
+  }
+
+  @override
+  String rangeAtLeast(String x) {
+    return '$x वा बेसी';
+  }
+
+  @override
+  String get viewLetter => 'निर्णय पत्र';
+
+  @override
+  String get letterTitle => 'अहाँक निर्णय पत्र';
+
+  @override
+  String get letterPartlyEnglish =>
+      'किछु पाँतीक अनुवाद नहि भ\' सकल, तेँ ओ अंग्रेजी मे अछि।';
+
+  @override
+  String get copyText => 'पाठ कॉपी करू';
+
+  @override
+  String get copied => 'कॉपी भ\' गेल';
+
+  @override
+  String get askTitle => 'प्रश्न पूछू';
+
+  @override
+  String get askHint => 'जेना: आब आगाँ की हएत?';
+
+  @override
+  String get askSend => 'पठाउ';
+
+  @override
+  String get askHuman => 'हमर टीमक कोनो व्यक्ति एहि पर अहाँ सँ संपर्क करताह।';
+
+  @override
+  String get uploadPdf => 'PDF अपलोड करू';
+
+  @override
+  String get kfsFeeBase => 'प्रोसेसिंग शुल्क (0.5%)';
+
+  @override
+  String get kfsGst => 'शुल्क पर GST (18%)';
+
+  @override
+  String get kfsNoteEngine =>
+      'ई एहि प्रस्तावक लेल निकालल गेल अछि। हस्ताक्षरित मुख्य तथ्य विवरण अहाँक स्वीकृति पत्रक संग आओत।';
+
+  @override
+  String otpOnServer(String phone) {
+    return 'ई टेस्ट सर्वर SMS नहि पठबैत अछि। $phone क 6 अंकक कोड कंप्यूटरक सर्वर विंडो मे देखाइत अछि।';
+  }
+
+  @override
+  String get resendOtp => 'नव कोड पठाउ';
+
+  @override
+  String get newOtpSent => 'नव कोड पठाओल गेल।';
+
+  @override
+  String get otpExpired => 'एहि कोडक समय सीमा खत्म भ\' गेल। नव कोड पठाउ दबाउ।';
+
+  @override
+  String get otpTooManyTries => 'बहुत बेर गलत कोड। नव कोड पठाउ दबाउ।';
+
+  @override
+  String get otpTooManySends =>
+      'बहुत बेसी कोड माँगल गेल। 15 मिनट रुकि फेर प्रयास करू।';
 }

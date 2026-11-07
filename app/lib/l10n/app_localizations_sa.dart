@@ -1039,4 +1039,171 @@ class AppLocalizationsSa extends AppLocalizations {
   @override
   String get checkMatchPending =>
       'चित्र-मेलनम्: आधार-पत्रे पैन-पत्रे वा उपारोपिते भविष्यति';
+
+  @override
+  String get realDetailsIntro =>
+      'स्वविषये कथयतु। वयं प्रत्येकं विवरणं भवतः पत्रैः सह परीक्षामहे।';
+
+  @override
+  String get fullNameLabel => 'पूर्णं नाम (पैन-पत्रे यथा अस्ति)';
+
+  @override
+  String get emailLabel => 'ईमेल';
+
+  @override
+  String get employerLabel => 'नियोक्तुः व्यवसायस्य वा नाम';
+
+  @override
+  String get creditScoreLabel => 'क्रेडिट-अङ्कः (ऐच्छिकः)';
+
+  @override
+  String get creditScoreHint =>
+      'भवतः CIBIL अथवा Experian प्रतिवेदनात्, यदि ज्ञायते';
+
+  @override
+  String get addressLabel => 'सङ्केतः';
+
+  @override
+  String get saveDetails => 'मम विवरणं रक्षतु';
+
+  @override
+  String get selfDeclaredNote =>
+      'एतत् विवरणं भवता पूरितम्। अनन्तरं उपारोप्यमाणैः पत्रैः सह वयम् एतत् परीक्षिष्यामहे।';
+
+  @override
+  String get pickDob => 'स्वजन्मतिथिं चिनोतु';
+
+  @override
+  String get fillDetails =>
+      'कृपया नाम, जन्मतिथिः, कार्यं, नियोक्ता, आयः च पूरयतु।';
+
+  @override
+  String get docSaleDeed => 'विक्रयपत्रम् आवण्टनपत्रं वा';
+
+  @override
+  String get saleDeedBody =>
+      'पञ्जीकृतविक्रयपत्रस्य चित्रं PDF वा उपारोपयतु (यस्मिन् पृष्ठे सम्पत्तिः क्रेता च स्तः)। स्वामित्वपरीक्षणाय वयम् एतत् पठामः।';
+
+  @override
+  String get statusPending => 'पुनरवलोकनम् अवशिष्टम्';
+
+  @override
+  String decisionRef(String ref) {
+    return 'निर्णय-अभिलेखः $ref';
+  }
+
+  @override
+  String get scoreTitle => 'वयं भवतः अङ्कं कथं गणितवन्तः';
+
+  @override
+  String get scoreOutOf => '900 मध्ये';
+
+  @override
+  String gradeLabel(String grade) {
+    return 'श्रेणी $grade';
+  }
+
+  @override
+  String scoreStart(String base) {
+    return 'सर्वे $base अङ्केभ्यः आरभन्ते। अधः प्रत्येका पङ्क्तिः अङ्कान् योजयति वा न्यूनीकरोति।';
+  }
+
+  @override
+  String get scoreNote =>
+      'अयं निर्णयस्य क्रेडिट-अङ्क-भागः। भवतः आयः, परिचयः, प्रलेखाः सम्पत्तिः च अपि परीक्ष्यन्ते।';
+
+  @override
+  String get factorBureau => 'क्रेडिट-ब्यूरो-अङ्कः';
+
+  @override
+  String get factorHistory => 'क्रेडिट-इतिहासस्य वर्षाणि';
+
+  @override
+  String get factorLtv => 'सम्पत्ति-मूल्यस्य तुलनायां ऋणस्य भागः';
+
+  @override
+  String get factorLoanAmount => 'ऋण-राशिः';
+
+  @override
+  String get factorMissing => 'न उपलब्धम्';
+
+  @override
+  String rangeBelow(String x) {
+    return '$x तः न्यूनम्';
+  }
+
+  @override
+  String rangeBetween(String a, String b) {
+    return '$a तः $b पर्यन्तम्';
+  }
+
+  @override
+  String rangeAtLeast(String x) {
+    return '$x अथवा अधिकम्';
+  }
+
+  @override
+  String get viewLetter => 'निर्णय-पत्रम्';
+
+  @override
+  String get letterTitle => 'भवतः निर्णय-पत्रम्';
+
+  @override
+  String get letterPartlyEnglish =>
+      'काश्चन पङ्क्तयः अनूदितुं न शक्ताः, अतः ताः आङ्ग्लभाषायाम् सन्ति।';
+
+  @override
+  String get copyText => 'पाठं प्रतिलिखतु';
+
+  @override
+  String get copied => 'प्रतिलिखितम्';
+
+  @override
+  String get askTitle => 'प्रश्नं पृच्छतु';
+
+  @override
+  String get askHint => 'यथा: अग्रे किं भविष्यति?';
+
+  @override
+  String get askSend => 'प्रेषयतु';
+
+  @override
+  String get askHuman =>
+      'अस्माकं दलस्य कश्चन जनः अस्मिन् विषये भवता सह सम्पर्कं करिष्यति।';
+
+  @override
+  String get uploadPdf => 'PDF आरोपयतु';
+
+  @override
+  String get kfsFeeBase => 'प्रक्रिया-शुल्कम् (0.5%)';
+
+  @override
+  String get kfsGst => 'शुल्के GST (18%)';
+
+  @override
+  String get kfsNoteEngine =>
+      'अस्य प्रस्तावस्य कृते गणितम्। हस्ताक्षरितं मुख्य-तथ्य-विवरणं भवतः स्वीकृति-पत्रेण सह आगमिष्यति।';
+
+  @override
+  String otpOnServer(String phone) {
+    return 'अयं परीक्षण-सर्वरः SMS न प्रेषयति। $phone कृते 6 अङ्कानां कोडः सङ्गणकस्य सर्वर-गवाक्षे दृश्यते।';
+  }
+
+  @override
+  String get resendOtp => 'नूतनं कोडं प्रेषयतु';
+
+  @override
+  String get newOtpSent => 'नूतनः कोडः प्रेषितः।';
+
+  @override
+  String get otpExpired =>
+      'अस्य कोडस्य अवधिः समाप्ता। नूतनं कोडं प्रेषयतु इति नुदतु।';
+
+  @override
+  String get otpTooManyTries =>
+      'बहुवारं अशुद्धः कोडः। नूतनं कोडं प्रेषयतु इति नुदतु।';
+
+  @override
+  String get otpTooManySends =>
+      'अतीव बहवः कोडाः याचिताः। 15 निमेषान् प्रतीक्ष्य पुनः प्रयतताम्।';
 }

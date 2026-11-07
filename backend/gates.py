@@ -72,7 +72,7 @@ def identity(ev: dict) -> Gate:
         g.refer("R-KYC-01", similarity=fm["similarity"])
     g.facts["face_match_similarity"] = fm and fm["similarity"]
     g.facts["pan_name_score"] = ev["identity"]["pan_name_score"]
-    if ev["identity"]["pan_name_score"] < 85:
+    if ev["identity"]["pan_name_score"] is not None and ev["identity"]["pan_name_score"] < 85:
         g.refer("R-KYC-02", score=ev["identity"]["pan_name_score"])
     low = {k: v for k, v in ev["identity"]["document_name_scores"].items() if v < 80}
     if low:
@@ -150,6 +150,8 @@ def policy_rules(ev: dict, p: dict) -> Gate:
         g.refer("R-POL-02", age_at_end=int(age + req["years"]))
     b = prof["bureau"]
     score = b.get("score")
+    if b.get("status") == "self_declared":
+        g.notes.append("credit score is self-declared: no bureau is connected")
     if not score:
         g.refer("R-BUR-04")
     elif score < p["bureau_reject_below"]:
@@ -167,8 +169,11 @@ def affordability(ev: dict, p: dict) -> tuple[Gate, pol.Eligibility]:
     g = Gate("affordability")
     req, inc, bank = ev["request"], ev["income"], ev["bank"]
     income = inc["income_used"]
-    if inc["employment"] == "salaried" and not inc["bank_salary"]:
+    if not inc["proven"]:
         g.refer("R-AFF-04")
+        g.notes.append("income not proven by a document; the declared figure was used")
+    elif inc.get("declared") and inc["declared"] > 1.25 * income:
+        g.notes.append(f"declared income {inc['declared']:.0f} is above what the documents show; using {income:.0f}")
     if inc["employment"] == "selfEmployed" and income and bank["avg_monthly_credits"] < p["business_credits_min_share"] * income:
         g.refer("R-AFF-03", credits=bank["avg_monthly_credits"], declared=income)
     if bank["bounces"] >= p["bounces_refer_at"]:
@@ -221,7 +226,12 @@ def property_gate(ev: dict) -> tuple[Gate, float | None]:
         g.refer("R-PRP-04", declared=avm["declared_price"], circle=avm["circle_value"])
     land = pr["land_records"]
     g.facts["land_records"] = land["title"]
-    if land["title"] != "clear":
+    if land["title"] == "not_connected":
+        g.notes.append(land["detail"])
+        if pr["deed"] is None:
+            g.refer("R-PRP-01")
+            g.notes.append("no sale deed uploaded, so the title could not be checked")
+    elif land["title"] != "clear":
         g.refer("R-PRP-01")
         g.notes.append(f"land records: {land['detail']}")
     deed = pr["deed"]

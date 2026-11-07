@@ -28,12 +28,32 @@ From the repo root (`K:\IIt b`), with the venv from the main README:
 
 | Variable | What it does |
 |---|---|
-| `NIRNAY_SANDBOX` | `1` (default): fictional people and stand-in data sources, OTP `123456` |
+| `NIRNAY_SANDBOX` | `1` (default): fictional people and stand-in data sources, OTP `123456`. `0`: **real mode** (below) |
+| `DATABASE_URL` | Supabase PostgreSQL (session pooler string). Unset: SQLite in `backend/var/nirnay.db` |
+| `NIRNAY_SMS_PROVIDER` | `twilio` or `msg91` for real SMS codes (with `TWILIO_ACCOUNT_SID`, `TWILIO_AUTH_TOKEN`, `TWILIO_VERIFY_SERVICE_SID`, or `MSG91_AUTH_KEY`, `MSG91_TEMPLATE_ID`). `sandbox` (the fixed demo code) is refused in real mode. |
+| `NIRNAY_STORE_FILES` | `1` (default): keep uploaded documents in the database for officers. Aadhaar images are never kept. |
 | `NIRNAY_STAFF_KEY` | Turns on the staff routes; send it as `X-Staff-Key` |
 | `ANTHROPIC_API_KEY` | Turns on Claude for model 11 (or `NIRNAY_LLM=on` with an `ant auth login` profile). Without it, offline rules stand in. |
 | `BHASHINI_USER_ID`, `BHASHINI_ULCA_API_KEY` | Turn on Bhashini for model 12 |
 | `NIRNAY_CORS_ORIGINS` | Browser origins allowed (default: the web build on port 8765) |
-| `NIRNAY_VAR_DIR` | Where the decision ledger is written (default `backend/var/`, git-ignored) |
+| `NIRNAY_VAR_DIR` | Where the local SQLite database goes (default `backend/var/`, git-ignored) |
+
+## Real mode and the database
+
+With `NIRNAY_SANDBOX=0` the engine serves real applicants. **[DEPLOY.md](DEPLOY.md)** is the step-by-step guide: Supabase, Twilio, Render and the shareable APK.
+
+- **Sign-in:** OTPs go by SMS through Twilio Verify or MSG91, which also check the code. The engine caps sends at 3 codes per number every 15 minutes, and tries at 5 per code.
+- **Details:** the applicant types their name, date of birth, work, employer, income, EMIs and (optionally) their credit score. Each fact is marked *self-declared* in the decision record.
+- **Documents prove them:** they're required, and a bank statement is added because there's no Account Aggregator.
+  - **Identity:** the selfie must match the face on the PAN or Aadhaar card. Real mode never skips the face match.
+  - **Names:** the names on the documents must match the declared name.
+  - **Income:** comes from the bank statement (`statement.py` reads its rows; then model 5), the salary slip or the ITR, not from what was typed.
+  - **Title:** with no land records, it's read from the sale deed. No deed means Refer.
+- **Lists:** the fictional sandbox PEP list is not used, and the sandbox sample documents are switched off.
+- **Database (`db.py`):** every step is saved as it happens and survives restarts.
+  - **Tables:** applications, sessions, OTP attempts, an append-only consent history, documents with their checks and files, and the hash-chained decision records.
+  - **On Supabase:** the tables live in a private `nirnay` schema with RLS on and no access for the API roles, and the connection uses TLS.
+- **Staff:** `GET /v1/staff/applications` lists every application.
 
 ## How the 12 models are wired in
 
@@ -132,6 +152,7 @@ The selfie test uses Minivision's sample photo when it is on the machine (`NIRNA
 
 - **Live LLM and translation runs.** No Anthropic, Bhashini or Hugging Face credentials were available, so Claude, Bhashini and IndicTrans2 are tested only through mocks. The phrasebook and the offline rules are what ran.
 - **Real data sources.** UIDAI, the bureaus, the Account Aggregator, payroll/EPFO, ITD and land records are sandbox functions in `sandbox.py`. Each is one function to replace with a real adapter.
-- **Storage.** Applications live in memory and are lost on restart; only the ledger is on disk. A deployment needs PostgreSQL, encryption of personal data in records, and WORM storage for the ledger.
+- **Storage hardening.** Applications are in the database, but personal data in records isn't encrypted at the application level (Supabase encrypts its disks), and the ledger isn't copied to WORM storage. Run one engine instance, because cross-application checks also use an in-memory copy.
+- **Real data sources.** Real mode replaces the bureau, Account Aggregator, eKYC, payroll and land records with self-declared facts and documents. Licensed connections would replace those one at a time.
 - **Officer actions.** Officers can read file notes and records, but there is no route yet to record their decision on a referred case. That belongs to the staff portal.
 - **Speed.** A document takes 4–9 seconds (two OCR passes on a CPU). The report's under-2-second target is for the decision itself, which takes well under a second once the evidence is in.

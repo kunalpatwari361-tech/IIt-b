@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../config.dart';
 import '../l10n/app_localizations.dart';
 import '../languages.dart';
 import '../state.dart';
@@ -141,6 +142,7 @@ class SandboxBanner extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (!demoMode) return const SizedBox.shrink();
     return Container(
       width: double.infinity,
       color: C.warnTint,

@@ -16,4 +16,7 @@ networkx>=3.3        # fraud rings
 ImageHash>=4.3       # reused property photos
 pypdf>=4.3           # PDF tamper checks
 defusedxml>=0.7      # reading the UN sanctions list safely
+sqlalchemy>=2.0      # the database (SQLite locally, Supabase PostgreSQL in production)
+psycopg[binary]>=3.2 # PostgreSQL driver
 pytest>=8
+# Tests only, for the PostgreSQL tests (embedded server): pgserver

@@ -67,3 +67,46 @@ class Ledger:
                 return {"ok": False, "records": count, "broken_at": rec["seq"]}
             prev, count = rec["hash"], count + 1
         return {"ok": True, "records": count, "last_hash": prev}
+
+
+class DbLedger(Ledger):
+    """The same hash-chained ledger, kept in the database's decision_records table."""
+
+    def __init__(self, db):
+        import sqlalchemy as sa
+        self.db, self.sa, self.t = db, sa, db.decision_records
+        self.lock = threading.Lock()
+
+    def _read(self):
+        sa, t = self.sa, self.t
+        with self.db.begin() as c:
+            rows = c.execute(sa.select(t.c.record, t.c.prev_hash, t.c.hash).order_by(t.c.seq)).all()
+        for r in rows:
+            yield {**r.record, "prev_hash": r.prev_hash, "hash": r.hash}
+
+    def append(self, body: dict) -> dict:
+        from .store import plain
+        sa, t = self.sa, self.t
+        body = json.loads(canonical(plain(body)))       # exactly what the hash covers
+        with self.lock, self.db.begin() as c:
+            last = c.execute(sa.select(t.c.seq, t.c.hash).order_by(t.c.seq.desc()).limit(1)).first()
+            seq, prev = (last.seq + 1, last.hash) if last else (1, GENESIS)
+            body = {"seq": seq, **body}
+            h = digest(body, prev)
+            from .db import now
+            c.execute(sa.insert(t).values(seq=seq, application_id=body.get("application_id", ""), stage=body.get("stage", ""),
+                                          outcome=body.get("outcome", ""), at=now(), record=body, prev_hash=prev, hash=h))
+        return {**body, "prev_hash": prev, "hash": h}
+
+    def get(self, seq: int) -> dict | None:
+        sa, t = self.sa, self.t
+        with self.db.begin() as c:
+            r = c.execute(sa.select(t.c.record, t.c.prev_hash, t.c.hash).where(t.c.seq == seq)).first()
+        return {**r.record, "prev_hash": r.prev_hash, "hash": r.hash} if r else None
+
+    def for_application(self, app_id: str) -> list[dict]:
+        sa, t = self.sa, self.t
+        with self.db.begin() as c:
+            rows = c.execute(sa.select(t.c.record, t.c.prev_hash, t.c.hash).where(t.c.application_id == app_id)
+                             .order_by(t.c.seq)).all()
+        return [{**r.record, "prev_hash": r.prev_hash, "hash": r.hash} for r in rows]

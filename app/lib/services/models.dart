@@ -1,4 +1,5 @@
 // What the app sends to and gets from the Nirnay engine.
+import 'dart:math' as math;
 import 'dart:typed_data';
 
 import '../policy.dart';
@@ -23,18 +24,58 @@ class Profile {
     required this.monthlyIncome,
     required this.existingEmi,
     required this.bureauScore,
+    this.requiredDocuments,
+    this.selfDeclared = false,
   });
   final String name, panMasked, aadhaarMasked, address, employer;
   final DateTime dateOfBirth;
   final Employment employment;
   final double monthlyIncome, existingEmi;
   final int? bureauScore; // null: no credit history
+  final List<DocSlot>? requiredDocuments; // the engine's list; null: the app's own
+  final bool selfDeclared; // real mode: the customer typed these in, and documents will prove them
 
   int ageOn(DateTime day) {
     var age = day.year - dateOfBirth.year;
     if (day.month < dateOfBirth.month || (day.month == dateOfBirth.month && day.day < dateOfBirth.day)) age--;
     return age;
   }
+}
+
+/// Real mode: what the customer tells us about themselves. The engine marks every fact
+/// self-declared and checks it against the documents.
+class Declaration {
+  Declaration({
+    required this.name,
+    required this.dateOfBirth,
+    required this.employment,
+    required this.employer,
+    required this.monthlyIncome,
+    required this.existingEmi,
+    this.email,
+    this.address,
+    this.creditScore,
+  });
+  final String name, employer;
+  final DateTime dateOfBirth;
+  final Employment employment;
+  final double monthlyIncome, existingEmi;
+  final String? email, address;
+  final int? creditScore;
+
+  Map<String, Object?> toJson() => {
+    'name': name,
+    'dob':
+        '${dateOfBirth.year.toString().padLeft(4, '0')}-${dateOfBirth.month.toString().padLeft(2, '0')}-'
+        '${dateOfBirth.day.toString().padLeft(2, '0')}',
+    'employment': employment == Employment.selfEmployed ? 'selfEmployed' : 'salaried',
+    'employer': employer,
+    'monthly_income': monthlyIncome,
+    'existing_emi': existingEmi,
+    if (email != null && email!.isNotEmpty) 'email': email,
+    if (address != null && address!.isNotEmpty) 'address': address,
+    if (creditScore != null) 'credit_score': creditScore,
+  };
 }
 
 class SelfieResult {
@@ -122,6 +163,9 @@ class Decision {
     required this.emi,
     required this.reasons,
     this.valuation,
+    this.keyFacts,
+    this.score,
+    this.reference,
   });
   final String stage; // "in_principle" or "final"
   final Outcome outcome;
@@ -129,6 +173,78 @@ class Decision {
   final int years;
   final List<Reason> reasons;
   final Valuation? valuation;
+  final KeyFacts? keyFacts; // the engine's Key Facts Statement for this offer
+  final ScoreBreakdown? score; // how the credit scorecard (model 1) reached its score
+  final String? reference; // the decision record's number and the start of its hash, for audits and complaints
+}
+
+/// Key Facts Statement numbers: processing fee 0.5% plus 18% GST (illustrative), and the APR,
+/// the yearly rate at which the EMIs repay what the customer actually receives. The engine
+/// sends the same figures; the app works them out itself only for an offer the customer reshaped.
+class KeyFacts {
+  KeyFacts({
+    required this.loanAmount,
+    required this.fee,
+    required this.gst,
+    required this.totalInterest,
+    required this.totalPayable,
+    required this.aprPct,
+    this.coolingOffDays = 3,
+  });
+  final double loanAmount, fee, gst, totalInterest, totalPayable, aprPct;
+  final int coolingOffDays;
+
+  factory KeyFacts.compute(double amount, double emi, int years) {
+    final n = years * 12;
+    final fee = (amount * 0.005).roundToDouble();
+    final gst = (fee * 0.18).roundToDouble();
+    final received = amount - fee - gst;
+    // Solve received = EMI x [1 - (1 + i)^-n] / i for the monthly rate i (bisection).
+    var lo = 1e-6, hi = 0.05;
+    for (var k = 0; k < 100; k++) {
+      final mid = (lo + hi) / 2;
+      final pv = emi * (1 - math.pow(1 + mid, -n)) / mid;
+      if (pv > received) {
+        lo = mid;
+      } else {
+        hi = mid;
+      }
+    }
+    return KeyFacts(
+      loanAmount: amount,
+      fee: fee,
+      gst: gst,
+      totalInterest: emi * n - amount,
+      totalPayable: emi * n + fee + gst,
+      aprPct: (lo + hi) / 2 * 12 * 100,
+    );
+  }
+}
+
+/// One line of the scorecard: an input, the range it fell in, and the points it added or took away.
+class ScoreFactor {
+  ScoreFactor({required this.input, required this.bin, required this.points});
+  final String input, bin; // input: bureau_score, credit_history_years, ltv, loan_amount
+  final int points;
+}
+
+class ScoreBreakdown {
+  ScoreBreakdown({required this.score, required this.grade, required this.base, required this.factors});
+  final int score, base;
+  final String grade; // A to E
+  final List<ScoreFactor> factors;
+}
+
+class DecisionLetter {
+  DecisionLetter({required this.lines, required this.untranslated});
+  final List<String> lines;
+  final int untranslated; // lines the translation engines couldn't do, left in English
+}
+
+class AssistantAnswer {
+  AssistantAnswer({required this.answer, required this.handoff});
+  final String answer;
+  final bool handoff; // the assistant couldn't answer, and a person will follow up
 }
 
 class Valuation {

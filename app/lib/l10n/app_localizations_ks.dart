@@ -1038,4 +1038,168 @@ class AppLocalizationsKs extends AppLocalizations {
   @override
   String get checkMatchPending =>
       'تصویر میلان: آدھار یا پین کارڈ اپ لوڈ کرنہٕ پیٹھ';
+
+  @override
+  String get realDetailsIntro =>
+      'پنُن بابت ونِو۔ أسۍ چھِ پرٛتھ تفصیل تُہٕنٛدٮ۪ن دستاویزن سٕتۍ جانچان۔';
+
+  @override
+  String get fullNameLabel => 'پورٕ ناو (یِتھ پین کارڈس پیٹھ چھُ)';
+
+  @override
+  String get emailLabel => 'ای میل';
+
+  @override
+  String get employerLabel => 'آجر یا کاروبارُک ناو';
+
+  @override
+  String get creditScoreLabel => 'کریڈٹ اسکور (اختیٲری)';
+
+  @override
+  String get creditScoreHint =>
+      'تُہٕنٛزِ CIBIL یا Experian رپورٹ پیٹھٕ، اگر پتہٕ آسہِ';
+
+  @override
+  String get addressLabel => 'پتہٕ';
+
+  @override
+  String get saveDetails => 'میٲنۍ تفصیل محفوظ کٔرِو';
+
+  @override
+  String get selfDeclaredNote =>
+      'یِم تفصیل چھےٚ تُہۍ بٔرمٕژ۔ پتہٕ یِم دستاویز تُہۍ اپ لوڈ کٔرِو، تِمن سٕتۍ کرو أسۍ یِم جانچ۔';
+
+  @override
+  String get pickDob => 'پنٕنۍ زٕنمہٕ تٲرٟخ ژارِو';
+
+  @override
+  String get fillDetails =>
+      'مہربٲنی کٔرِتھ ناو، زٕنمہٕ تٲرٟخ، کام، آجر تہٕ آمدنی بٔرِو۔';
+
+  @override
+  String get docSaleDeed => 'بیع نامہٕ یا الاٹمنٹ لیٹر';
+
+  @override
+  String get saleDeedBody =>
+      'رجسٹرڈ بیع نامہٕ چِہ تصویر یا PDF کٔرِو اپ لوڈ (سُہ صفحہ یُس جایداد تہٕ خریدار ہاوِ)۔ ملکیت جانچنہٕ خٲطرٕ چھِ أسۍ یہِ پران۔';
+
+  @override
+  String get statusPending => 'جائزٕ چھُ باقی';
+
+  @override
+  String decisionRef(String ref) {
+    return 'فیصلُک ریکارڈ $ref';
+  }
+
+  @override
+  String get scoreTitle => 'أسۍ کِتھٕ پٲٹھۍ کوڑ تُہُنٛد اسکور';
+
+  @override
+  String get scoreOutOf => '900 منٛزٕ';
+
+  @override
+  String gradeLabel(String grade) {
+    return 'گریڈ $grade';
+  }
+
+  @override
+  String scoreStart(String base) {
+    return 'پرٛتھ کانٛسہ چھُ $base پوائنٹس پیٹھٕ شروع گژھان۔ بۄنِم پرٛتھ سطر چھےٚ پوائنٹس جوڑان یا کم کران۔';
+  }
+
+  @override
+  String get scoreNote =>
+      'یہِ چھُ فیصلُک کریڈٹ اسکور حِصہٕ۔ تُہٕنٛز آمدنی، شناخت، دستاویز تہٕ جایداد تہِ چھےٚ جانچنہٕ یِوان۔';
+
+  @override
+  String get factorBureau => 'کریڈٹ بیورو اسکور';
+
+  @override
+  String get factorHistory => 'کریڈٹ تاریخُک ؤری';
+
+  @override
+  String get factorLtv => 'جایدادٕچ قیمتہِ مقابلہٕ لونُک حِصہٕ';
+
+  @override
+  String get factorLoanAmount => 'لونُک رقم';
+
+  @override
+  String get factorMissing => 'دستیاب نہٕ';
+
+  @override
+  String rangeBelow(String x) {
+    return '$x کھۄتہٕ کم';
+  }
+
+  @override
+  String rangeBetween(String a, String b) {
+    return '$a پیٹھٕ $b تام';
+  }
+
+  @override
+  String rangeAtLeast(String x) {
+    return '$x یا زیادٕ';
+  }
+
+  @override
+  String get viewLetter => 'فیصلُک خط';
+
+  @override
+  String get letterTitle => 'تُہُنٛد فیصلُک خط';
+
+  @override
+  String get letterPartlyEnglish =>
+      'کینٛہہ سطرن ہُند ترجمہٕ ہیوٚک نہٕ سپدِتھ، امہِ موجوب چھےٚ تِم انگریزی منٛز۔';
+
+  @override
+  String get copyText => 'متن کاپی کٔرِو';
+
+  @override
+  String get copied => 'کاپی گوو';
+
+  @override
+  String get askTitle => 'سوال پرٛژھِو';
+
+  @override
+  String get askHint => 'مثلن: پَتہٕ کیاہ سپدِ؟';
+
+  @override
+  String get askSend => 'سوزِو';
+
+  @override
+  String get askHuman => 'سانہِ ٹیمُک اکھ شخص کرِ امہِ بابت تۄہہ سٕتۍ رابطہٕ۔';
+
+  @override
+  String get uploadPdf => 'PDF اپلوڈ کٔرِو';
+
+  @override
+  String get kfsFeeBase => 'پروسیسنگ فیس (0.5%)';
+
+  @override
+  String get kfsGst => 'فیسس پیٹھ GST (18%)';
+
+  @override
+  String get kfsNoteEngine =>
+      'یہِ چھُ امہِ پیشکشہِ خٲطرٕ کڈنہٕ آمُت۔ دستخط کرنہٕ آمُت اہم حقیقتن ہُند بیان یِیہِ تُہٕنٛدِس منظوری خطس سٕتۍ۔';
+
+  @override
+  String otpOnServer(String phone) {
+    return 'یہِ ٹیسٹ سرور چھُنہٕ SMS سوزان۔ $phone خٲطرٕ 6 ہندسن ہُند کوڈ چھُ کمپیوٹرٕچہِ سرور وِنڈوس منٛز باسان۔';
+  }
+
+  @override
+  String get resendOtp => 'نوٚو کوڈ سوزِو';
+
+  @override
+  String get newOtpSent => 'نوٚو کوڈ آو سوزنہٕ۔';
+
+  @override
+  String get otpExpired => 'یِمہِ کوڈٕچ میعاد گیہِ ختم۔ نوٚو کوڈ سوزِو دبٲوِو۔';
+
+  @override
+  String get otpTooManyTries => 'واریاہ لٹہٕ غلط کوڈ۔ نوٚو کوڈ سوزِو دبٲوِو۔';
+
+  @override
+  String get otpTooManySends =>
+      'واریاہ کوڈ آیہِ منگنہٕ۔ 15 منٹ پرارِتھ کٔرِو بیٚیہِ کوشش۔';
 }

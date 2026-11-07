@@ -1,6 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:nirnay_app/policy.dart';
-import 'package:nirnay_app/screens/decision_screen.dart';
 import 'package:nirnay_app/services/models.dart';
 
 void main() {
@@ -41,10 +40,9 @@ void main() {
   });
 
   test('KFS: the APR is above the interest rate because of the fee', () {
-    final d = Decision(stage: 'in_principle', outcome: Outcome.approve, amount: 4500000, years: 20, ratePct: 8.75,
-        emi: emi(4500000, 8.75, 240), reasons: []);
-    final k = Kfs.of(d);
-    expect(k.fee.round(), 26550);
+    final k = KeyFacts.compute(4500000, emi(4500000, 8.75, 240), 20);
+    expect(k.fee, 22500); // 0.5%
+    expect(k.gst, 4050); // 18% GST on the fee, as the engine does
     expect(k.aprPct, greaterThan(8.75));
     expect(k.aprPct, lessThan(8.9));
   });

@@ -60,8 +60,12 @@ class HttpNirnayApi implements NirnayApi {
   }
 
   @override
-  Future<void> sendOtp(String phone) async {
-    await _send(_http.post(_u('v1/otp/send'), headers: {'Content-Type': 'application/json'}, body: jsonEncode({'phone': phone})));
+  Future<String?> sendOtp(String phone) async {
+    http.Response? reply;
+    await _send(_http
+        .post(_u('v1/otp/send'), headers: {'Content-Type': 'application/json'}, body: jsonEncode({'phone': phone}))
+        .then((r) => reply = r));
+    return reply?.headers['x-otp-delivery'];
   }
 
   @override
@@ -77,8 +81,9 @@ class HttpNirnayApi implements NirnayApi {
   }
 
   @override
-  Future<Profile> fetchProfile(Session session, String pan) async {
-    final j = await _send(_http.post(_u(_app(session, '/profile')), headers: _auth(session), body: jsonEncode({'pan': pan})));
+  Future<Profile> fetchProfile(Session session, String pan, {Declaration? declared}) async {
+    final body = {'pan': pan, if (declared != null) 'declared': declared.toJson()};
+    final j = await _send(_http.post(_u(_app(session, '/profile')), headers: _auth(session), body: jsonEncode(body)));
     return Profile(
       name: j['name'] as String,
       dateOfBirth: DateTime.parse(j['dateOfBirth'] as String),
@@ -90,6 +95,11 @@ class HttpNirnayApi implements NirnayApi {
       monthlyIncome: (j['monthlyIncome'] as num).toDouble(),
       existingEmi: (j['existingEmi'] as num).toDouble(),
       bureauScore: (j['bureauScore'] as num?)?.toInt(),
+      requiredDocuments: (j['requiredDocuments'] as List?)
+          ?.map((s) => DocSlot.values.where((d) => d.name == s).firstOrNull)
+          .whereType<DocSlot>()
+          .toList(),
+      selfDeclared: j['selfDeclared'] as bool? ?? false,
     );
   }
 
@@ -124,6 +134,23 @@ class HttpNirnayApi implements NirnayApi {
       reasonCode: j['reasonCode'] as String?,
       fields: (j['fields'] as Map).map((k, v) => MapEntry(k as String, '$v')),
     );
+  }
+
+  @override
+  Future<DecisionLetter> decisionLetter(Session session, String lang) async {
+    final j = await _send(_http.get(_u(_app(session, '/letter')).replace(queryParameters: {'lang': lang}), headers: _auth(session)));
+    final engines = j['engines'] as Map? ?? {};
+    return DecisionLetter(
+      lines: [for (final l in j['lines'] as List) '$l'],
+      untranslated: (engines['untranslated'] as num? ?? 0).toInt(),
+    );
+  }
+
+  @override
+  Future<AssistantAnswer> ask(Session session, String question, String lang) async {
+    final j = await _send(
+        _http.post(_u(_app(session, '/assistant')), headers: _auth(session), body: jsonEncode({'question': question, 'lang': lang})));
+    return AssistantAnswer(answer: j['answer'] as String, handoff: j['handoff_to_human'] as bool? ?? false);
   }
 
   @override
@@ -205,5 +232,40 @@ Decision decisionFromJson(Map<String, dynamic> j) {
             high: (v['high'] as num).toDouble(),
             valueForLtv: (v['valueForLtv'] as num).toDouble(),
           ),
+    keyFacts: _keyFacts(j['kfs'] as Map<String, dynamic>?),
+    score: _score(j['score'] as Map<String, dynamic>?),
+    reference: _reference(j['record'] as Map<String, dynamic>?),
   );
+}
+
+double _d(Object? x) => (x as num? ?? 0).toDouble();
+
+KeyFacts? _keyFacts(Map<String, dynamic>? k) => k == null
+    ? null
+    : KeyFacts(
+        loanAmount: _d(k['loan_amount']),
+        fee: _d(k['processing_fee']),
+        gst: _d(k['gst_on_fee']),
+        totalInterest: _d(k['total_interest']),
+        totalPayable: _d(k['total_payable']),
+        aprPct: _d(k['apr_pct']),
+        coolingOffDays: (k['cooling_off_days'] as num? ?? 3).toInt(),
+      );
+
+ScoreBreakdown? _score(Map<String, dynamic>? s) => s == null
+    ? null
+    : ScoreBreakdown(
+        score: (s['score'] as num).toInt(),
+        grade: s['grade'] as String,
+        base: (s['base'] as num).toInt(),
+        factors: [
+          for (final f in s['factors'] as List)
+            ScoreFactor(input: f['input'] as String, bin: '${f['bin']}', points: (f['points'] as num).toInt()),
+        ],
+      );
+
+String? _reference(Map<String, dynamic>? r) {
+  if (r == null) return null;
+  final hash = '${r['hash'] ?? ''}';
+  return '#${r['seq']} · ${hash.length > 10 ? hash.substring(0, 10) : hash}';
 }

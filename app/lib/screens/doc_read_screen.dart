@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 import '../l10n/app_localizations.dart';
 import '../reasons.dart';
+import '../services/capture.dart';
 import '../services/models.dart';
 import '../theme.dart';
 import '../widgets/common.dart';
@@ -147,7 +148,15 @@ class _DocReadScreenState extends State<DocReadScreen> with SingleTickerProvider
         child: AnimatedBuilder(
           animation: _scan,
           builder: (context, _) => Stack(children: [
-            Image.memory(widget.bytes, width: double.infinity, fit: BoxFit.fitWidth, gaplessPlayback: true),
+            if (isPdf(widget.bytes))
+              Container(
+                height: 180,
+                width: double.infinity,
+                color: C.brandTint,
+                child: const Center(child: Icon(Icons.picture_as_pdf_outlined, size: 64, color: C.brand)),
+              )
+            else
+              Image.memory(widget.bytes, width: double.infinity, fit: BoxFit.fitWidth, gaplessPlayback: true),
             Positioned.fill(
               child: LayoutBuilder(builder: (context, box) {
                 final y = box.maxHeight * Curves.easeInOut.transform(_scan.value);

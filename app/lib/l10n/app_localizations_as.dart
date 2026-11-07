@@ -1032,4 +1032,170 @@ class AppLocalizationsAs extends AppLocalizations {
   @override
   String get checkMatchPending =>
       'ফটো মিলোৱা: আধাৰ বা পেন কাৰ্ড আপলোড কৰিলে হ\'ব';
+
+  @override
+  String get realDetailsIntro =>
+      'আপোনাৰ বিষয়ে কওক। প্ৰতিটো তথ্য আমি আপোনাৰ নথিৰ সৈতে মিলাই চাওঁ।';
+
+  @override
+  String get fullNameLabel => 'সম্পূৰ্ণ নাম (পেন কাৰ্ডত যেনেকৈ আছে)';
+
+  @override
+  String get emailLabel => 'ইমেইল';
+
+  @override
+  String get employerLabel => 'নিয়োগকৰ্তা বা ব্যৱসায়ৰ নাম';
+
+  @override
+  String get creditScoreLabel => 'ক্ৰেডিট স্ক\'ৰ (বৈকল্পিক)';
+
+  @override
+  String get creditScoreHint =>
+      'আপোনাৰ CIBIL বা Experian প্ৰতিবেদনৰ পৰা, যদি জানে';
+
+  @override
+  String get addressLabel => 'ঠিকনা';
+
+  @override
+  String get saveDetails => 'মোৰ তথ্য সাঁচি ৰাখক';
+
+  @override
+  String get selfDeclaredNote =>
+      'এই তথ্য আপুনি দিছে। ইয়াৰ পিছত আপুনি আপলোড কৰা নথিৰ সৈতে আমি মিলাই চাম।';
+
+  @override
+  String get pickDob => 'আপোনাৰ জন্ম তাৰিখ বাছক';
+
+  @override
+  String get fillDetails =>
+      'অনুগ্ৰহ কৰি নাম, জন্ম তাৰিখ, কাম, নিয়োগকৰ্তা আৰু আয় দিয়ক।';
+
+  @override
+  String get docSaleDeed => 'বিক্ৰী দলিল বা আৱণ্টন পত্ৰ';
+
+  @override
+  String get saleDeedBody =>
+      'পঞ্জীয়নভুক্ত বিক্ৰী দলিলৰ ফটো বা PDF আপল\'ড কৰক (সম্পত্তি আৰু ক্ৰেতা থকা পৃষ্ঠাটো)। মালিকীস্বত্ব পৰীক্ষা কৰিবলৈ আমি ইয়াক পঢ়োঁ।';
+
+  @override
+  String get statusPending => 'পৰ্যালোচনা বাকী';
+
+  @override
+  String decisionRef(String ref) {
+    return 'সিদ্ধান্তৰ ৰেকৰ্ড $ref';
+  }
+
+  @override
+  String get scoreTitle => 'আমি আপোনাৰ স্ক\'ৰ কেনেকৈ উলিয়ালোঁ';
+
+  @override
+  String get scoreOutOf => '900 ৰ ভিতৰত';
+
+  @override
+  String gradeLabel(String grade) {
+    return 'গ্ৰেড $grade';
+  }
+
+  @override
+  String scoreStart(String base) {
+    return 'সকলোৱে $base পইণ্টৰ পৰা আৰম্ভ কৰে। তলৰ প্ৰতিটো শাৰীয়ে পইণ্ট যোগ কৰে বা কমায়।';
+  }
+
+  @override
+  String get scoreNote =>
+      'এইটো সিদ্ধান্তৰ ক্ৰেডিট স্ক\'ৰৰ অংশ। আপোনাৰ উপাৰ্জন, পৰিচয়, নথি আৰু সম্পত্তিও পৰীক্ষা কৰা হয়।';
+
+  @override
+  String get factorBureau => 'ক্ৰেডিট ব্যুৰো স্ক\'ৰ';
+
+  @override
+  String get factorHistory => 'ক্ৰেডিট ইতিহাসৰ বছৰ';
+
+  @override
+  String get factorLtv => 'সম্পত্তিৰ মূল্যৰ তুলনাত ঋণৰ অংশ';
+
+  @override
+  String get factorLoanAmount => 'ঋণৰ পৰিমাণ';
+
+  @override
+  String get factorMissing => 'উপলব্ধ নহয়';
+
+  @override
+  String rangeBelow(String x) {
+    return '$xতকৈ কম';
+  }
+
+  @override
+  String rangeBetween(String a, String b) {
+    return '$aৰ পৰা $bলৈ';
+  }
+
+  @override
+  String rangeAtLeast(String x) {
+    return '$x বা তাতকৈ বেছি';
+  }
+
+  @override
+  String get viewLetter => 'সিদ্ধান্তৰ পত্ৰ';
+
+  @override
+  String get letterTitle => 'আপোনাৰ সিদ্ধান্তৰ পত্ৰ';
+
+  @override
+  String get letterPartlyEnglish =>
+      'কিছুমান শাৰী অনুবাদ কৰিব পৰা নগ\'ল, সেয়েহে সেইবোৰ ইংৰাজীত আছে।';
+
+  @override
+  String get copyText => 'লিখনি কপি কৰক';
+
+  @override
+  String get copied => 'কপি হ\'ল';
+
+  @override
+  String get askTitle => 'এটা প্ৰশ্ন সোধক';
+
+  @override
+  String get askHint => 'যেনে: ইয়াৰ পিছত কি হ\'ব?';
+
+  @override
+  String get askSend => 'পঠিয়াওক';
+
+  @override
+  String get askHuman =>
+      'আমাৰ দলৰ এজন ব্যক্তিয়ে এই বিষয়ে আপোনাৰ সৈতে যোগাযোগ কৰিব।';
+
+  @override
+  String get uploadPdf => 'PDF আপল\'ড কৰক';
+
+  @override
+  String get kfsFeeBase => 'প্ৰচেছিং মাচুল (0.5%)';
+
+  @override
+  String get kfsGst => 'মাচুলৰ ওপৰত GST (18%)';
+
+  @override
+  String get kfsNoteEngine =>
+      'এই প্ৰস্তাৱৰ বাবে হিচাপ কৰা হৈছে। স্বাক্ষৰিত মূল তথ্যৰ বিবৃতি আপোনাৰ মঞ্জুৰী পত্ৰৰ সৈতে আহিব।';
+
+  @override
+  String otpOnServer(String phone) {
+    return 'এই পৰীক্ষামূলক ছাৰ্ভাৰে SMS নপঠায়। $phoneৰ 6 অংকৰ ক\'ড কম্পিউটাৰৰ ছাৰ্ভাৰ উইণ্ড\'ত দেখা যায়।';
+  }
+
+  @override
+  String get resendOtp => 'নতুন ক\'ড পঠিয়াওক';
+
+  @override
+  String get newOtpSent => 'নতুন ক\'ড পঠিওৱা হ\'ল।';
+
+  @override
+  String get otpExpired => 'এই ক\'ডৰ ম্যাদ উকলিল। নতুন ক\'ড পঠিয়াওক টিপক।';
+
+  @override
+  String get otpTooManyTries =>
+      'বহুবাৰ ভুল ক\'ড দিয়া হ\'ল। নতুন ক\'ড পঠিয়াওক টিপক।';
+
+  @override
+  String get otpTooManySends =>
+      'বহুত বেছি ক\'ড বিচৰা হ\'ল। 15 মিনিট অপেক্ষা কৰি পুনৰ চেষ্টা কৰক।';
 }

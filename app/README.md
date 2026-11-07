@@ -97,7 +97,17 @@ adb install -r build/app/outputs/flutter-apk/app-release.apk
 ```
 `adb reverse` makes the phone's own `127.0.0.1:8000` reach the engine on the laptop. Android blocks plain `http://`, so `android/app/src/main/res/xml/network_security_config.xml` allows it only for `127.0.0.1`, `localhost` and `10.0.2.2`; every other host still needs HTTPS. Run `adb reverse` again whenever the phone is reconnected.
 
-**Tests:** 26 tests, run with `flutter test`.
+### Real mode: the APK to share
+
+A real-mode build (`--dart-define=NIRNAY_REAL=true`) is for real applicants. It has no demo people, sample buttons, demo code, demo banner or pre-filled demo address, and the details screen asks the applicant for their own name, date of birth, work, employer, income, EMIs, optional credit score and address. The engine then checks those against the documents, and asks for a bank statement and, at the property step, the sale deed. Build it against the deployed engine ([backend/DEPLOY.md](../backend/DEPLOY.md), step 4):
+
+```bash
+flutter build apk --release --dart-define=NIRNAY_API_URL=https://<your-engine> --dart-define=NIRNAY_REAL=true
+```
+
+Release builds are signed with the key named in `android/key.properties` (git-ignored; the keystore is in `K:\tools\nirnay-signing\`). Without that file they fall back to the debug key.
+
+**Tests:** 26 tests, run with `flutter test`. Two more run only in a real-mode build: `flutter test test/real_mode_test.dart --dart-define=NIRNAY_REAL=true`.
 - **Policy maths:** the report's worked example to the rupee: ₹45.26 lakh by income, ₹48 lakh by property, EMI ₹39,767, FOIR 49.8%, LTV 75%. Also the FOIR and LTV tiers, and the KFS APR.
 - **Photo checks:** blur, glare (but not a white scan background), darkness, and unreadable files.
 - **Full flows:** Ravi (approved, then sanctioned), Meena (referred) and Arjun (rejected), tapped through every screen, including the document AI view after each upload. Ravi also shapes a smaller offer, which the final sanction then uses. Plus the EMI calculator, resuming from Home, the switch to Hindi, picking each of the 23 languages (Urdu and Kashmiri switch to right to left), choosing consent options and seeing them in the history, and withdrawing a needed consent from the decision screen.

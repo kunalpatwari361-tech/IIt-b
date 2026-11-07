@@ -1039,4 +1039,170 @@ class AppLocalizationsBrx extends AppLocalizations {
   @override
   String get checkMatchPending =>
       'फट\' मिलाय: आधार एबा पेन कार्ड अपल\'ड खालामब्ला जागोन';
+
+  @override
+  String get realDetailsIntro =>
+      'नोंथांनि सोमोन्दै बुं। जों गासैबो मोननायखौ नोंथांनि कागजफोरजों नायख\'।';
+
+  @override
+  String get fullNameLabel => 'आबुं मुं (पेन कार्डआव दंनाय बादि)';
+
+  @override
+  String get emailLabel => 'इमेल';
+
+  @override
+  String get employerLabel => 'हाबा होग्रा एबा फालांनि मुं';
+
+  @override
+  String get creditScoreLabel => 'क्रेडिट स्कोर (सायखनाय)';
+
+  @override
+  String get creditScoreHint =>
+      'नोंथांनि CIBIL एबा Experian रिपोर्टनिफ्राय, मिथियाब्ला';
+
+  @override
+  String get addressLabel => 'थाखो';
+
+  @override
+  String get saveDetails => 'आंनि मोननायखौ थिना दोन';
+
+  @override
+  String get selfDeclaredNote =>
+      'बे मोननायखौ नोंथांनो हांखो। उननि नोंथां जाय कागज अपल\'ड खालामगोन, बेजों जों नायगोन।';
+
+  @override
+  String get pickDob => 'नोंथांनि जोनोम सान सायख\'';
+
+  @override
+  String get fillDetails =>
+      'अननानै मुं, जोनोम सान, हाबा, हाबा होग्रा आरो आयखौ हांखो।';
+
+  @override
+  String get docSaleDeed => 'फान्नाय दलिल एबा राननाय लायजाम';
+
+  @override
+  String get saleDeedBody =>
+      'रेजिस्टार खालामनाय फान्नाय दलिलनि फट\' एबा PDF अपल\'ड खालाम (मुलुग आरो बायग्रा दंनाय बिलाइ)। मालिकखौ नायनो जों बेखौ फरायो।';
+
+  @override
+  String get statusPending => 'नायनायाव थानाय';
+
+  @override
+  String decisionRef(String ref) {
+    return 'थाखोनि रेकर्ड $ref';
+  }
+
+  @override
+  String get scoreTitle => 'जों नोंथांनि स्कोरखौ माबोरै दिहुनदों';
+
+  @override
+  String get scoreOutOf => '900 नि गेजेराव';
+
+  @override
+  String gradeLabel(String grade) {
+    return 'ग्रेड $grade';
+  }
+
+  @override
+  String scoreStart(String base) {
+    return 'गासैबो $base पइन्टनिफ्राय जागायो। गाहायनि सारि गासैया पइन्ट दाजाबो एबा खमायो।';
+  }
+
+  @override
+  String get scoreNote =>
+      'बेयो थाखोनि क्रेडिट स्कोरनि बाहागो। नोंथांनि रांखान्थि, सिनायथि, कागज आरो मुलुगखौबो नायनाय जायो।';
+
+  @override
+  String get factorBureau => 'क्रेडिट ब्युरो स्कोर';
+
+  @override
+  String get factorHistory => 'क्रेडिट जारिमिननि बोसोर';
+
+  @override
+  String get factorLtv => 'मुलुगनि बेसेननि गेजेराव लोननि बाहागो';
+
+  @override
+  String get factorLoanAmount => 'लोननि रां';
+
+  @override
+  String get factorMissing => 'मोनाखै';
+
+  @override
+  String rangeBelow(String x) {
+    return '$x निख्रुई खम';
+  }
+
+  @override
+  String rangeBetween(String a, String b) {
+    return '$a निफ्राय $b सिम';
+  }
+
+  @override
+  String rangeAtLeast(String x) {
+    return '$x एबा बांसिन';
+  }
+
+  @override
+  String get viewLetter => 'थाखोनि बिलाइ';
+
+  @override
+  String get letterTitle => 'नोंथांनि थाखोनि बिलाइ';
+
+  @override
+  String get letterPartlyEnglish =>
+      'माखासे सारिखौ राव सोलायनो हायाखै, बेनि थाखाय बेफोरा इंराजियाव दं।';
+
+  @override
+  String get copyText => 'लिरथाय कपि खालाम';
+
+  @override
+  String get copied => 'कपि जाबाय';
+
+  @override
+  String get askTitle => 'सोंथि सों';
+
+  @override
+  String get askHint => 'जेरै: उननाव मा जागोन?';
+
+  @override
+  String get askSend => 'दैथाय';
+
+  @override
+  String get askHuman =>
+      'जोंनि दलनि मोनसे सुबुङा बेनि सोमोन्दै नोंथांजों सोमोन्दो दाग्लोबगोन।';
+
+  @override
+  String get uploadPdf => 'PDF आपल\'ड खालाम';
+
+  @override
+  String get kfsFeeBase => 'प्रसेसिं फि (0.5%)';
+
+  @override
+  String get kfsGst => 'फिनि सायाव GST (18%)';
+
+  @override
+  String get kfsNoteEngine =>
+      'बे अफारनि थाखाय दिहुननाय। सही होनाय गुबै थार बिबुंथिया नोंथांनि गनायथि बिलाइजों फैगोन।';
+
+  @override
+  String otpOnServer(String phone) {
+    return 'बे थाखो सार्भारा SMS दैथाया। $phone नि 6 अंकनि कडखौ कम्पिउटारनि सार्भार उइन्ड\'आव नुनो मोनो।';
+  }
+
+  @override
+  String get resendOtp => 'गोदान कड दैथाय';
+
+  @override
+  String get newOtpSent => 'गोदान कड दैथायबाय।';
+
+  @override
+  String get otpExpired => 'बे कडनि सम जोबबाय। गोदान कड दैथाय खौ हम।';
+
+  @override
+  String get otpTooManyTries =>
+      'गोबां खेबसे गोरोन्थि कड। गोदान कड दैथाय खौ हम।';
+
+  @override
+  String get otpTooManySends =>
+      'गोबां कड बिनायबाय। 15 मिनिट नेथ्रोबो फिन नाजा।';
 }

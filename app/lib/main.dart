@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import 'config.dart';
 import 'l10n/app_localizations.dart';
 import 'languages.dart';
 import 'screens/consent_screen.dart';
@@ -18,20 +19,17 @@ import 'services/mock_api.dart';
 import 'state.dart';
 import 'theme.dart';
 
-/// The engine to call, for example --dart-define=NIRNAY_API_URL=http://localhost:8000.
-/// Left empty, the app runs on the built-in sample engine.
-const engineUrl = String.fromEnvironment('NIRNAY_API_URL');
-
 void main() => runApp(NirnayApp(api: engineUrl.isEmpty ? MockNirnayApi() : HttpNirnayApi(engineUrl)));
 
 class NirnayApp extends StatelessWidget {
-  const NirnayApp({super.key, required this.api});
+  const NirnayApp({super.key, required this.api, this.state});
   final NirnayApi api;
+  final AppState? state; // tests can start from a prepared state
 
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (_) => AppState(api),
+      create: (_) => state ?? AppState(api),
       child: Builder(builder: (context) {
         final locale = context.watch<AppState>().locale;
         return MaterialApp(

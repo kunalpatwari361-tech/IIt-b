@@ -7,6 +7,11 @@ The customer app's calls (app/lib/services/api.dart) map one to one onto /v1 rou
 Customers authenticate with the session token from OTP sign-in (Authorization: Bearer)
 plus their device id (X-Device-Id), and can only reach their own application.
 Staff routes need the X-Staff-Key header (NIRNAY_STAFF_KEY).
+
+NIRNAY_SANDBOX=1 (default) runs the fictional demo people and stand-in data sources.
+NIRNAY_SANDBOX=0 is real mode: real phone numbers get SMS codes (backend/otp.py), applicants
+type their own details, their documents prove them, and everything is stored in the
+database (backend/db.py; Supabase when DATABASE_URL is set).
 """
 from __future__ import annotations
 
@@ -20,20 +25,24 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel, Field
 
-from . import intake, letters, pipeline, registry, sandbox
+from . import intake, letters, otp, pipeline, registry, sandbox
 from .config import settings
+from .db import Database
 from .intake import IntakeError
-from .ledger import Ledger
+from .ledger import DbLedger
+from .otp import OtpError
 from .store import Application, Store, now
 
 log = logging.getLogger("nirnay")
-store = Store()
-ledger = Ledger(settings.var_dir / "ledger.jsonl")
+db = Database(default_path=settings.var_dir / "nirnay.db")
+store = Store(db)
+ledger = DbLedger(db)
 
 app = FastAPI(title="Nirnay decision engine", version=pipeline.ENGINE_VERSION,
               description="Automated mortgage underwriting: 12 models, 8 gates, a compliance gate and hash-chained records.")
 app.add_middleware(CORSMiddleware, allow_origins=settings.cors_origins, allow_methods=["GET", "POST", "PUT"],
-                   allow_headers=["Authorization", "X-Device-Id", "Content-Type", "X-Staff-Key"])
+                   allow_headers=["Authorization", "X-Device-Id", "Content-Type", "X-Staff-Key"],
+                   expose_headers=["X-Otp-Delivery"])
 
 
 @app.exception_handler(IntakeError)
@@ -41,9 +50,16 @@ def _intake_error(_: Request, e: IntakeError):
     return JSONResponse({"error": e.code}, status_code=e.status)
 
 
+@app.exception_handler(OtpError)
+def _otp_error(_: Request, e: OtpError):
+    return JSONResponse({"error": e.code}, status_code=e.status)
+
+
 @app.exception_handler(Exception)
 def _unexpected(_: Request, e: Exception):
-    log.exception("unexpected error")       # details stay in the server log, not the response
+    # Details stay in the server log, not the response. The web server prints the traceback itself;
+    # log.exception here would add an empty "NoneType: None" (this runs outside the except block).
+    log.error("unexpected error: %s", type(e).__name__)
     return JSONResponse({"error": "internal_error"}, status_code=500)
 
 
@@ -84,7 +100,12 @@ def _read(file: UploadFile) -> bytes:
 
 @app.get("/v1/health")
 def health():
-    return {"ok": True, "engine": pipeline.ENGINE_VERSION, "sandbox": settings.sandbox}
+    try:
+        sms = otp.provider(settings.sandbox).name
+    except OtpError:
+        sms = None
+    return {"ok": True, "engine": pipeline.ENGINE_VERSION, "sandbox": settings.sandbox,
+            "mode": "sandbox" if settings.sandbox else "real", "database": db.describe()["backend"], "sms": sms}
 
 
 @app.get("/v1/models")
@@ -103,18 +124,21 @@ class OtpVerify(OtpSend):
 
 @app.post("/v1/otp/send", status_code=204)
 def otp_send(body: OtpSend):
-    if not settings.sandbox:
-        raise IntakeError("sms_not_configured", 501)
-    store.put_otp(body.phone, sandbox.DEMO_OTP, settings.otp_ttl_seconds, settings.otp_max_attempts)
-    return Response(status_code=204)
+    sms = otp.provider(settings.sandbox)
+    otp.send(store, sms, body.phone, settings.otp_ttl_seconds, settings.otp_max_attempts)
+    # How the code went out (sandbox, console, twilio, msg91), so the app can say where to find it:
+    # with "console" it's printed in the server's own window, not texted.
+    return Response(status_code=204, headers={"X-Otp-Delivery": sms.name})
 
 
 @app.post("/v1/otp/verify")
 def otp_verify(body: OtpVerify):
-    result = store.check_otp(body.phone, body.otp)
+    result = otp.verify(store, otp.provider(settings.sandbox), body.phone, body.otp)
     if result != "ok":
         raise IntakeError(result, 401)
-    a, token = store.new_application(body.phone, body.deviceId, sandbox.persona_for(body.phone), settings.session_ttl_hours)
+    persona = sandbox.persona_for(body.phone) if settings.sandbox else None
+    a, token = store.new_application(body.phone, body.deviceId, persona, "sandbox" if settings.sandbox else "real",
+                                     settings.session_ttl_hours)
     return {"token": token, "deviceId": body.deviceId, "applicationId": a.id}
 
 
@@ -153,19 +177,38 @@ class Consents(BaseModel):
 
 @app.put("/v1/applications/{application_id}/consents")
 def put_consents(body: Consents, a: Customer):
-    return intake.record_consents(a, body.model_dump())
+    c = intake.record_consents(a, body.model_dump())
+    store.save(a)
+    store.log_consent(a, a.consent_log[-1])
+    return c
+
+
+class Declared(BaseModel):
+    """What a real applicant types in (real mode). Each fact is marked self-declared."""
+    name: str = Field(min_length=2, max_length=80, pattern=r"^[A-Za-z][A-Za-z .'-]*$")
+    dob: str = Field(pattern=r"^\d{4}-\d{2}-\d{2}$")
+    email: str | None = Field(default=None, max_length=120, pattern=r"^[^@\s]+@[^@\s]+\.[^@\s]+$")
+    address: str | None = Field(default=None, max_length=200)
+    employment: Literal["salaried", "selfEmployed"]
+    employer: str = Field(min_length=2, max_length=100)
+    monthly_income: float = Field(gt=0, le=1e8)
+    existing_emi: float = Field(ge=0, le=1e8)
+    credit_score: int | None = Field(default=None, ge=300, le=900)
 
 
 class ProfileRequest(BaseModel):
     pan: str = Field(min_length=10, max_length=10)
+    declared: Declared | None = None
 
 
 @app.post("/v1/applications/{application_id}/profile")
 def profile(body: ProfileRequest, a: Customer):
-    p = intake.fetch_profile(a, body.pan)
-    return {"name": p["name"], "dateOfBirth": p["dob"], "panMasked": p["pan_masked"], "aadhaarMasked": p["aadhaar_masked"],
+    p = intake.fetch_profile(a, body.pan, body.declared.model_dump() if body.declared else None)
+    store.save(a)
+    return {"name": p["name"], "dateOfBirth": p["dob"], "panMasked": p["pan_masked"], "aadhaarMasked": p["aadhaar_masked"] or "",
             "address": p["address"], "employment": p["employment"], "employer": p["employer"],
-            "monthlyIncome": p["monthly_income"], "existingEmi": p["existing_emi"], "bureauScore": p["bureau"].get("score")}
+            "monthlyIncome": p["monthly_income"], "existingEmi": p["existing_emi"], "bureauScore": p["bureau"].get("score"),
+            "requiredDocuments": intake.required_documents(a), "selfDeclared": bool(p.get("self_declared"))}
 
 
 @app.post("/v1/applications/{application_id}/selfie")
@@ -173,6 +216,7 @@ def selfie(a: Customer, file: UploadFile = File(...)):
     if a.profile is None:
         raise IntakeError("profile_required", 409)
     r = intake.check_selfie(a, _read(file))
+    store.save(a)
     fm = a.face_match
     return {"faceFound": r["face_found"], "live": r["live"], "livenessScore": (r["liveness"] or {}).get("score", 0.0),
             "faceMatch": fm["match"] if fm else r["face_found"], "matchScore": (fm or {}).get("similarity") or 0.0,
@@ -184,6 +228,7 @@ def document(a: Customer, slot: Annotated[str, Form()], file: UploadFile = File(
     if a.profile is None:
         raise IntakeError("profile_required", 409)
     rec = intake.upload_document(store, a, slot, _read(file), file.filename or "")
+    store.save(a)
     return intake.doc_result(rec)
 
 
@@ -203,6 +248,7 @@ def in_principle(body: LoanRequest, a: Customer):
     if a.profile is None:
         raise IntakeError("profile_required", 409)
     r = pipeline.run(store, ledger, a, body.model_dump(), signals=_signals(a))
+    store.save(a)
     return pipeline.app_decision(r)
 
 
@@ -241,6 +287,7 @@ def final(a: Customer, request: Annotated[str, Form()], property: Annotated[str,
         raise IntakeError("bad_photos")
     shots = [{**m, "bytes": _read(f)} for m, f in zip(meta, photos)]
     r = pipeline.run(store, ledger, a, req, prop, shots, signals=_signals(a))
+    store.save(a)
     return pipeline.app_decision(r)
 
 
@@ -286,6 +333,16 @@ def _app(application_id: str) -> Application:
     if a is None:
         raise HTTPException(404, "not_found")
     return a
+
+
+@app.get("/v1/staff/applications")
+def staff_applications(_: Staff):
+    """Every application, newest first: who applied, where they are, and the outcomes so far."""
+    rows = sorted(store.apps.values(), key=lambda x: x.created_at, reverse=True)
+    return [{"applicationId": x.id, "mode": x.mode, "phone": x.phone[:2] + "XXXXXX" + x.phone[-2:],
+             "name": (x.profile or {}).get("name"), "createdAt": x.created_at.isoformat(), "status": letters.status_text(x),
+             "documents": sorted(x.documents), "inPrinciple": (x.in_principle or {}).get("offer", {}).get("outcome"),
+             "final": (x.final or {}).get("offer", {}).get("outcome")} for x in rows]
 
 
 @app.get("/v1/staff/applications/{application_id}/file-note")

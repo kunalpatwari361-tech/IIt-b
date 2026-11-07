@@ -27,6 +27,8 @@ class Settings:
     cors_origins: list[str] = field(default_factory=lambda: [
         o.strip() for o in os.environ.get("NIRNAY_CORS_ORIGINS", "http://localhost:8765,http://127.0.0.1:8765").split(",")
         if o.strip()])
+    # Keep uploaded document files in the database for officers (never Aadhaar images).
+    store_files: bool = field(default_factory=lambda: _flag("NIRNAY_STORE_FILES", True))
     otp_ttl_seconds: int = 300
     otp_max_attempts: int = 5
     session_ttl_hours: int = 12

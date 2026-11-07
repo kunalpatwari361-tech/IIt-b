@@ -1039,4 +1039,170 @@ class AppLocalizationsSat extends AppLocalizations {
   @override
   String get checkMatchPending =>
       'ᱪᱤᱛᱟᱹᱨ ᱢᱤᱞ: ᱟᱫᱷᱟᱨ ᱟᱨᱵᱟᱝ ᱯᱮᱱ ᱠᱟᱨᱰ ᱟᱯᱞᱳᱰ ᱠᱟᱛᱮ ᱦᱩᱭᱩᱜᱼᱟ';
+
+  @override
+  String get realDetailsIntro =>
+      'ᱟᱢᱟᱜ ᱵᱟᱵᱚᱫ ᱞᱟᱹᱭ ᱢᱮ᱾ ᱡᱚᱛᱚ ᱵᱤᱵᱨᱚᱬ ᱟᱵᱚ ᱟᱢᱟᱜ ᱠᱟᱜᱚᱡ ᱥᱟᱶ ᱧᱮᱞᱟᱵᱚᱭ᱾';
+
+  @override
+  String get fullNameLabel => 'ᱯᱩᱨᱟᱹ ᱧᱩᱛᱩᱢ (ᱯᱮᱱ ᱠᱟᱨᱰ ᱨᱮ ᱡᱮᱞᱮᱠᱟ)';
+
+  @override
+  String get emailLabel => 'ᱤᱢᱮᱞ';
+
+  @override
+  String get employerLabel => 'ᱠᱟᱹᱢᱤ ᱮᱢᱚᱜᱤᱡ ᱟᱨᱵᱟᱝ ᱵᱮᱵᱥᱟ ᱧᱩᱛᱩᱢ';
+
+  @override
+  String get creditScoreLabel => 'ᱠᱨᱮᱰᱤᱴ ᱥᱠᱚᱨ (ᱢᱚᱱᱮ ᱞᱮᱠᱟ)';
+
+  @override
+  String get creditScoreHint =>
+      'ᱟᱢᱟᱜ CIBIL ᱟᱨᱵᱟᱝ Experian ᱨᱤᱯᱚᱨᱴ ᱠᱷᱚᱱ, ᱵᱟᱰᱟᱭ ᱠᱷᱟᱱ';
+
+  @override
+  String get addressLabel => 'ᱴᱷᱤᱠᱟᱹᱱᱟ';
+
+  @override
+  String get saveDetails => 'ᱤᱧᱟᱜ ᱵᱤᱵᱨᱚᱬ ᱫᱚᱦᱚᱭ ᱢᱮ';
+
+  @override
+  String get selfDeclaredNote =>
+      'ᱱᱚᱶᱟ ᱵᱤᱵᱨᱚᱬ ᱟᱢ ᱮᱢ ᱟᱠᱟᱫᱟ᱾ ᱛᱟᱭᱚᱢ ᱟᱢ ᱡᱟᱦᱟᱸ ᱠᱟᱜᱚᱡ ᱟᱯᱞᱳᱰ ᱟᱢ, ᱚᱱᱟ ᱥᱟᱶ ᱟᱵᱚ ᱧᱮᱞᱟᱵᱚᱭ᱾';
+
+  @override
+  String get pickDob => 'ᱟᱢᱟᱜ ᱡᱟᱱᱟᱢ ᱢᱟᱹᱦᱤᱛ ᱵᱟᱪᱷᱟᱣ ᱢᱮ';
+
+  @override
+  String get fillDetails =>
+      'ᱫᱟᱭᱟ ᱠᱟᱛᱮ ᱧᱩᱛᱩᱢ, ᱡᱟᱱᱟᱢ ᱢᱟᱹᱦᱤᱛ, ᱠᱟᱹᱢᱤ, ᱠᱟᱹᱢᱤ ᱮᱢᱚᱜᱤᱡ ᱟᱨ ᱟᱹᱭᱫᱟᱹᱨ ᱯᱮᱨᱮᱡ ᱢᱮ᱾';
+
+  @override
+  String get docSaleDeed => 'ᱠᱤᱨᱤᱧ ᱫᱚᱞᱤᱞ ᱟᱨᱵᱟᱝ ᱦᱟᱹᱴᱤᱧ ᱪᱤᱴᱷᱤ';
+
+  @override
+  String get saleDeedBody =>
+      'ᱨᱮᱡᱤᱥᱴᱟᱨ ᱠᱤᱨᱤᱧ ᱫᱚᱞᱤᱞ ᱨᱮᱭᱟᱜ ᱯᱷᱚᱴᱚ ᱟᱨᱵᱟᱝ PDF ᱟᱯᱞᱳᱰ ᱢᱮ (ᱡᱟᱭᱫᱟᱫ ᱟᱨ ᱠᱤᱨᱤᱧᱤᱡ ᱢᱮᱱᱟᱜ ᱥᱟᱦᱴᱟ)᱾ ᱢᱟᱞᱤᱠ ᱥᱟᱹᱨᱤ ᱧᱮᱞ ᱞᱟᱹᱜᱤᱫ ᱟᱵᱚ ᱯᱟᱲᱦᱟᱣᱟ᱾';
+
+  @override
+  String get statusPending => 'ᱧᱮᱞ ᱵᱟᱠᱤ ᱢᱮᱱᱟᱜᱼᱟ';
+
+  @override
+  String decisionRef(String ref) {
+    return 'ᱯᱷᱟᱭᱥᱟᱞᱟ ᱨᱮᱠᱚᱨᱰ $ref';
+  }
+
+  @override
+  String get scoreTitle => 'ᱟᱵᱚ ᱟᱢᱟᱜ ᱥᱠᱚᱨ ᱪᱮᱫ ᱞᱮᱠᱟ ᱦᱤᱥᱟᱹᱵ ᱠᱮᱫᱟᱵᱚ';
+
+  @override
+  String get scoreOutOf => '900 ᱨᱮᱭᱟᱜ';
+
+  @override
+  String gradeLabel(String grade) {
+    return 'ᱜᱨᱮᱰ $grade';
+  }
+
+  @override
+  String scoreStart(String base) {
+    return 'ᱡᱚᱛᱚᱭ $base ᱯᱚᱭᱮᱱᱴ ᱠᱷᱚᱱ ᱮᱦᱚᱵᱚᱜᱼᱟ᱾ ᱞᱟᱛᱟᱨ ᱨᱮᱭᱟᱜ ᱡᱚᱛᱚ ᱛᱟᱹᱞᱤ ᱯᱚᱭᱮᱱᱴ ᱥᱮᱞᱮᱫᱼᱟ ᱟᱨᱵᱟᱝ ᱠᱚᱢᱚᱜᱼᱟ᱾';
+  }
+
+  @override
+  String get scoreNote =>
+      'ᱱᱚᱶᱟ ᱫᱚ ᱯᱷᱟᱭᱥᱟᱞᱟ ᱨᱮᱭᱟᱜ ᱠᱨᱮᱰᱤᱴ ᱥᱠᱚᱨ ᱦᱟᱹᱴᱤᱧ ᱠᱟᱱᱟ᱾ ᱟᱢᱟᱜ ᱟᱹᱢᱫᱟᱹᱱᱤ, ᱪᱤᱱᱦᱟᱹ, ᱠᱟᱜᱚᱡ ᱟᱨ ᱡᱟᱭᱫᱟᱫ ᱦᱚᱸ ᱧᱮᱞᱚᱜᱼᱟ᱾';
+
+  @override
+  String get factorBureau => 'ᱠᱨᱮᱰᱤᱴ ᱵᱭᱩᱨᱚ ᱥᱠᱚᱨ';
+
+  @override
+  String get factorHistory => 'ᱠᱨᱮᱰᱤᱴ ᱱᱟᱜᱟᱢ ᱨᱮᱭᱟᱜ ᱥᱮᱨᱢᱟ';
+
+  @override
+  String get factorLtv => 'ᱡᱟᱭᱫᱟᱫ ᱜᱚᱱᱚᱝ ᱛᱩᱞᱟᱹᱣ ᱨᱮ ᱞᱚᱱ ᱦᱟᱹᱴᱤᱧ';
+
+  @override
+  String get factorLoanAmount => 'ᱞᱚᱱ ᱨᱮᱭᱟᱜ ᱛᱟᱠᱟ';
+
+  @override
+  String get factorMissing => 'ᱵᱟᱹᱱᱩᱜᱼᱟ';
+
+  @override
+  String rangeBelow(String x) {
+    return '$x ᱠᱷᱚᱱ ᱠᱚᱢ';
+  }
+
+  @override
+  String rangeBetween(String a, String b) {
+    return '$a ᱠᱷᱚᱱ $b ᱦᱟᱹᱵᱤᱡ';
+  }
+
+  @override
+  String rangeAtLeast(String x) {
+    return '$x ᱟᱨᱵᱟᱝ ᱵᱟᱹᱲᱛᱤ';
+  }
+
+  @override
+  String get viewLetter => 'ᱯᱷᱟᱭᱥᱟᱞᱟ ᱪᱤᱴᱷᱤ';
+
+  @override
+  String get letterTitle => 'ᱟᱢᱟᱜ ᱯᱷᱟᱭᱥᱟᱞᱟ ᱪᱤᱴᱷᱤ';
+
+  @override
+  String get letterPartlyEnglish =>
+      'ᱛᱤᱱᱟᱹᱜ ᱛᱟᱹᱞᱤ ᱛᱚᱨᱡᱚᱢᱟ ᱵᱟᱝ ᱦᱩᱭ ᱫᱟᱲᱮᱭᱟᱫᱟ, ᱚᱱᱟᱛᱮ ᱩᱱᱤ ᱫᱚ ᱟᱝᱜᱽᱨᱮᱡᱤ ᱨᱮ ᱢᱮᱱᱟᱜᱼᱟ᱾';
+
+  @override
+  String get copyText => 'ᱚᱞ ᱠᱚᱯᱤ ᱢᱮ';
+
+  @override
+  String get copied => 'ᱠᱚᱯᱤ ᱮᱱᱟ';
+
+  @override
+  String get askTitle => 'ᱠᱩᱠᱞᱤ ᱠᱩᱞᱤ ᱢᱮ';
+
+  @override
+  String get askHint => 'ᱡᱮᱞᱮᱠᱟ: ᱛᱟᱭᱚᱢ ᱪᱮᱫ ᱦᱩᱭᱩᱜᱼᱟ?';
+
+  @override
+  String get askSend => 'ᱠᱩᱞ ᱢᱮ';
+
+  @override
+  String get askHuman =>
+      'ᱟᱞᱮᱭᱟᱜ ᱫᱚᱞ ᱨᱮᱭᱟᱜ ᱢᱤᱫᱴᱟᱹᱝ ᱦᱚᱲ ᱱᱚᱶᱟ ᱵᱟᱵᱚᱫ ᱟᱢ ᱥᱟᱶ ᱡᱚᱜᱟᱡᱚᱜ ᱟᱭ᱾';
+
+  @override
+  String get uploadPdf => 'PDF ᱟᱯᱞᱳᱰ ᱢᱮ';
+
+  @override
+  String get kfsFeeBase => 'ᱯᱨᱚᱥᱮᱥᱤᱝ ᱯᱷᱤ (0.5%)';
+
+  @override
+  String get kfsGst => 'ᱯᱷᱤ ᱪᱮᱛᱟᱱ ᱨᱮ GST (18%)';
+
+  @override
+  String get kfsNoteEngine =>
+      'ᱱᱚᱶᱟ ᱚᱯᱷᱟᱨ ᱞᱟᱹᱜᱤᱫ ᱦᱤᱥᱟᱹᱵ ᱟᱠᱟᱱᱟ᱾ ᱥᱟᱦᱤ ᱟᱠᱟᱱ ᱢᱩᱬᱩᱛ ᱛᱟᱛᱷᱚ ᱵᱤᱵᱨᱚᱬ ᱟᱢᱟᱜ ᱢᱚᱱᱡᱩᱨ ᱪᱤᱴᱷᱤ ᱥᱟᱶ ᱦᱤᱡᱩᱜᱼᱟ᱾';
+
+  @override
+  String otpOnServer(String phone) {
+    return 'ᱱᱚᱶᱟ ᱯᱚᱨᱤᱠᱷᱟ ᱥᱟᱨᱵᱷᱟᱨ ᱫᱚ SMS ᱵᱟᱭ ᱠᱩᱞᱟ᱾ $phone ᱞᱟᱹᱜᱤᱫ 6 ᱮᱞ ᱠᱳᱰ ᱠᱚᱢᱯᱭᱩᱴᱟᱨ ᱨᱮᱭᱟᱜ ᱥᱟᱨᱵᱷᱟᱨ ᱣᱤᱱᱰᱳ ᱨᱮ ᱧᱮᱞᱚᱜᱼᱟ᱾';
+  }
+
+  @override
+  String get resendOtp => 'ᱱᱟᱶᱟ ᱠᱳᱰ ᱠᱩᱞ ᱢᱮ';
+
+  @override
+  String get newOtpSent => 'ᱱᱟᱶᱟ ᱠᱳᱰ ᱠᱩᱞ ᱮᱱᱟ᱾';
+
+  @override
+  String get otpExpired =>
+      'ᱱᱚᱶᱟ ᱠᱳᱰ ᱨᱮᱭᱟᱜ ᱚᱠᱛᱚ ᱪᱟᱵᱟ ᱮᱱᱟ᱾ ᱱᱟᱶᱟ ᱠᱳᱰ ᱠᱩᱞ ᱢᱮ ᱞᱤᱱ ᱢᱮ᱾';
+
+  @override
+  String get otpTooManyTries => 'ᱟᱹᱰᱤ ᱥᱟᱦᱟᱣ ᱵᱷᱩᱞ ᱠᱳᱰ᱾ ᱱᱟᱶᱟ ᱠᱳᱰ ᱠᱩᱞ ᱢᱮ ᱞᱤᱱ ᱢᱮ᱾';
+
+  @override
+  String get otpTooManySends =>
+      'ᱟᱹᱰᱤ ᱵᱟᱹᱲᱛᱤ ᱠᱳᱰ ᱠᱟᱹᱢᱤ ᱮᱱᱟ᱾ 15 ᱢᱤᱱᱤᱴ ᱛᱟᱹᱝᱜᱤ ᱠᱟᱛᱮ ᱫᱩᱦᱲᱟᱹ ᱠᱩᱨᱩᱢᱩᱴᱩᱭ ᱢᱮ᱾';
 }

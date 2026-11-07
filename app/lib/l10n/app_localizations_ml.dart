@@ -1046,4 +1046,171 @@ class AppLocalizationsMl extends AppLocalizations {
   @override
   String get checkMatchPending =>
       'ഫോട്ടോ പൊരുത്തം: ആധാർ അല്ലെങ്കിൽ പാൻ കാർഡ് അപ്‌ലോഡ് ചെയ്യുമ്പോൾ നടക്കും';
+
+  @override
+  String get realDetailsIntro =>
+      'നിങ്ങളെക്കുറിച്ച് പറയൂ. ഓരോ വിവരവും നിങ്ങളുടെ രേഖകളുമായി ഒത്തുനോക്കുന്നു.';
+
+  @override
+  String get fullNameLabel => 'മുഴുവൻ പേര് (പാൻ കാർഡിലുള്ളതുപോലെ)';
+
+  @override
+  String get emailLabel => 'ഇമെയിൽ';
+
+  @override
+  String get employerLabel => 'തൊഴിലുടമയുടെയോ ബിസിനസിന്റെയോ പേര്';
+
+  @override
+  String get creditScoreLabel => 'ക്രെഡിറ്റ് സ്കോർ (ഓപ്ഷണൽ)';
+
+  @override
+  String get creditScoreHint =>
+      'നിങ്ങളുടെ CIBIL അല്ലെങ്കിൽ Experian റിപ്പോർട്ടിൽ നിന്ന്, അറിയാമെങ്കിൽ';
+
+  @override
+  String get addressLabel => 'വിലാസം';
+
+  @override
+  String get saveDetails => 'എന്റെ വിവരങ്ങൾ സേവ് ചെയ്യുക';
+
+  @override
+  String get selfDeclaredNote =>
+      'ഈ വിവരങ്ങൾ നിങ്ങൾ നൽകിയതാണ്. അടുത്തതായി അപ്‌ലോഡ് ചെയ്യുന്ന രേഖകളുമായി ഞങ്ങൾ ഇവ പരിശോധിക്കും.';
+
+  @override
+  String get pickDob => 'നിങ്ങളുടെ ജനനത്തീയതി തിരഞ്ഞെടുക്കുക';
+
+  @override
+  String get fillDetails =>
+      'ദയവായി പേര്, ജനനത്തീയതി, ജോലി, തൊഴിലുടമ, വരുമാനം എന്നിവ പൂരിപ്പിക്കുക.';
+
+  @override
+  String get docSaleDeed => 'വിൽപ്പന ആധാരം അല്ലെങ്കിൽ അലോട്ട്മെന്റ് കത്ത്';
+
+  @override
+  String get saleDeedBody =>
+      'രജിസ്റ്റർ ചെയ്ത വിൽപ്പന ആധാരത്തിന്റെ ഫോട്ടോ അല്ലെങ്കിൽ PDF അപ്‌ലോഡ് ചെയ്യുക (വസ്തുവും വാങ്ങുന്നയാളും ഉള്ള പേജ്). ഉടമസ്ഥത പരിശോധിക്കാൻ ഞങ്ങൾ ഇത് വായിക്കുന്നു.';
+
+  @override
+  String get statusPending => 'പരിശോധന ബാക്കി';
+
+  @override
+  String decisionRef(String ref) {
+    return 'തീരുമാന രേഖ $ref';
+  }
+
+  @override
+  String get scoreTitle => 'നിങ്ങളുടെ സ്കോർ ഞങ്ങൾ എങ്ങനെ കണക്കാക്കി';
+
+  @override
+  String get scoreOutOf => '900-ൽ';
+
+  @override
+  String gradeLabel(String grade) {
+    return 'ഗ്രേഡ് $grade';
+  }
+
+  @override
+  String scoreStart(String base) {
+    return 'എല്ലാവരും $base പോയിന്റിൽ തുടങ്ങുന്നു. താഴെയുള്ള ഓരോ വരിയും പോയിന്റ് കൂട്ടുകയോ കുറയ്ക്കുകയോ ചെയ്യുന്നു.';
+  }
+
+  @override
+  String get scoreNote =>
+      'ഇത് തീരുമാനത്തിലെ ക്രെഡിറ്റ് സ്കോർ ഭാഗമാണ്. നിങ്ങളുടെ വരുമാനം, തിരിച്ചറിയൽ, രേഖകൾ, വസ്തു എന്നിവയും പരിശോധിക്കും.';
+
+  @override
+  String get factorBureau => 'ക്രെഡിറ്റ് ബ്യൂറോ സ്കോർ';
+
+  @override
+  String get factorHistory => 'ക്രെഡിറ്റ് ചരിത്രത്തിന്റെ വർഷങ്ങൾ';
+
+  @override
+  String get factorLtv => 'വസ്തുവിന്റെ മൂല്യത്തിൽ വായ്പയുടെ പങ്ക്';
+
+  @override
+  String get factorLoanAmount => 'വായ്പ തുക';
+
+  @override
+  String get factorMissing => 'ലഭ്യമല്ല';
+
+  @override
+  String rangeBelow(String x) {
+    return '$x-ൽ താഴെ';
+  }
+
+  @override
+  String rangeBetween(String a, String b) {
+    return '$a മുതൽ $b വരെ';
+  }
+
+  @override
+  String rangeAtLeast(String x) {
+    return '$x അല്ലെങ്കിൽ കൂടുതൽ';
+  }
+
+  @override
+  String get viewLetter => 'തീരുമാന കത്ത്';
+
+  @override
+  String get letterTitle => 'നിങ്ങളുടെ തീരുമാന കത്ത്';
+
+  @override
+  String get letterPartlyEnglish =>
+      'ചില വരികൾ വിവർത്തനം ചെയ്യാനായില്ല, അവ ഇംഗ്ലീഷിലാണ്.';
+
+  @override
+  String get copyText => 'ടെക്സ്റ്റ് പകർത്തുക';
+
+  @override
+  String get copied => 'പകർത്തി';
+
+  @override
+  String get askTitle => 'ചോദ്യം ചോദിക്കുക';
+
+  @override
+  String get askHint => 'ഉദാ: ഇനി എന്ത് സംഭവിക്കും?';
+
+  @override
+  String get askSend => 'അയയ്ക്കുക';
+
+  @override
+  String get askHuman =>
+      'ഞങ്ങളുടെ ടീമിലെ ഒരാൾ ഇതിനെക്കുറിച്ച് നിങ്ങളെ ബന്ധപ്പെടും.';
+
+  @override
+  String get uploadPdf => 'PDF അപ്‌ലോഡ് ചെയ്യുക';
+
+  @override
+  String get kfsFeeBase => 'പ്രോസസ്സിംഗ് ഫീസ് (0.5%)';
+
+  @override
+  String get kfsGst => 'ഫീസിന്മേൽ GST (18%)';
+
+  @override
+  String get kfsNoteEngine =>
+      'ഈ ഓഫറിനായി കണക്കാക്കിയത്. ഒപ്പിട്ട പ്രധാന വസ്തുതാ പ്രസ്താവന നിങ്ങളുടെ അനുമതി കത്തിനൊപ്പം വരും.';
+
+  @override
+  String otpOnServer(String phone) {
+    return 'ഈ ടെസ്റ്റ് സെർവർ SMS അയയ്ക്കില്ല. $phone-നുള്ള 6 അക്ക കോഡ് കമ്പ്യൂട്ടറിലെ സെർവർ വിൻഡോയിൽ കാണാം.';
+  }
+
+  @override
+  String get resendOtp => 'പുതിയ കോഡ് അയയ്ക്കുക';
+
+  @override
+  String get newOtpSent => 'പുതിയ കോഡ് അയച്ചു.';
+
+  @override
+  String get otpExpired =>
+      'ഈ കോഡിന്റെ കാലാവധി കഴിഞ്ഞു. പുതിയ കോഡ് അയയ്ക്കുക അമർത്തുക.';
+
+  @override
+  String get otpTooManyTries =>
+      'പലതവണ തെറ്റായ കോഡ്. പുതിയ കോഡ് അയയ്ക്കുക അമർത്തുക.';
+
+  @override
+  String get otpTooManySends =>
+      'വളരെയധികം കോഡുകൾ ചോദിച്ചു. 15 മിനിറ്റ് കാത്തിരുന്ന് വീണ്ടും ശ്രമിക്കുക.';
 }

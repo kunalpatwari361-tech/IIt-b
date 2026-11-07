@@ -47,3 +47,8 @@ models/face_match/weights/*.onnx
 models/ocr/weights/*.onnx
 models/translation/weights/
 models/face_match/reports/*.npy
+
+# Android release signing: keep the keystore and its passwords out of git (back them up!)
+app/android/key.properties
+*.jks
+*.keystore

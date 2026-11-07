@@ -55,11 +55,15 @@ def credit_inputs(profile: dict, loan: float, property_value: float, today: date
 
 def anomaly_inputs(profile: dict, loan: float, property_value: float, today: date) -> dict:
     b = profile["bureau"]
+    # A self-declared score comes without the bureau's account list, so to the detector it
+    # would look like "a score with no loans", which its integrity rules call impossible.
+    # The detector checks bureau records for consistency, so it only gets a pulled score.
+    score = 0 if b.get("status") == "self_declared" else (b.get("score") or 0)
     return {
         "loan_amount": round(loan * AMOUNT_SCALE),
         "asset_cost": round(property_value * AMOUNT_SCALE),
         "ltv": round(100 * loan / property_value, 2) if property_value else 0,
-        "bureau_score": b.get("score") or 0,
+        "bureau_score": score,
         "total_accounts": b.get("total_accounts", 0),
         "active_accounts": b.get("active_accounts", 0),
         "overdue_accounts": b.get("overdue_accounts", 0),
